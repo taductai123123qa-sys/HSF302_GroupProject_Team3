@@ -1,0 +1,161 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Manrope',sans-serif;
+    background:#fbf9f8;
+    color:#1b1c1c;
+}
+
+.verify-header{
+    text-align:center;
+    padding:30px;
+}
+
+.verify-header h1{
+    font-family:'Playfair Display',serif;
+    font-size:32px;
+}
+
+.verify-container{
+    max-width:1300px;
+    margin:auto;
+    padding:30px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:50px;
+    align-items:center;
+}
+
+.verify-image{
+    position:relative;
+    height:700px;
+    overflow:hidden;
+}
+
+.verify-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.image-overlay{
+    position:absolute;
+    bottom:40px;
+    left:40px;
+    color:white;
+}
+
+.image-overlay p{
+    letter-spacing:2px;
+    font-size:12px;
+    margin-bottom:15px;
+}
+
+.image-overlay h2{
+    font-family:'Playfair Display',serif;
+    font-size:32px;
+}
+
+.section-label{
+    color:#775a19;
+    font-weight:700;
+    letter-spacing:2px;
+    font-size:12px;
+}
+.logo-link{
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.logo-link:hover{
+    opacity: 0.8;
+}
+.verify-content h2{
+    margin:20px 0;
+    font-size:42px;
+    font-family:'Playfair Display',serif;
+}
+
+.verify-content p{
+    color:#666;
+    line-height:1.8;
+}
+
+.otp-group{
+    display:flex;
+    gap:12px;
+    margin:40px 0;
+}
+
+.otp-input{
+    width:60px;
+    height:70px;
+    text-align:center;
+    font-size:28px;
+    border:none;
+    border-bottom:2px solid #ccc;
+    background:#f5f3f3;
+}
+
+.otp-input:focus{
+    outline:none;
+    border-color:#775a19;
+}
+
+.btn-verify{
+    width:100%;
+    border:none;
+    background:black;
+    color:white;
+    padding:18px;
+    cursor:pointer;
+    letter-spacing:2px;
+    font-weight:700;
+}
+
+.btn-verify:hover{
+    background:#222;
+}
+
+.verify-info{
+    margin-top:40px;
+    border-top:1px solid #ddd;
+    padding-top:30px;
+}
+
+.verify-info h4{
+    margin-bottom:10px;
+}
+
+.btn-resend{
+    margin-top:20px;
+    border:none;
+    background:none;
+    color:#775a19;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.verify-footer{
+    margin-top:50px;
+    padding:25px;
+    text-align:center;
+    border-top:1px solid #ddd;
+}
+
+@media(max-width:992px){
+
+    .verify-container{
+        grid-template-columns:1fr;
+    }
+
+    .verify-image{
+        display:none;
+    }
+
+}

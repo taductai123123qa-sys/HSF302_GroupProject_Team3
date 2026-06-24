@@ -1,0 +1,195 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Manrope',sans-serif;
+    min-height:100vh;
+    overflow:hidden;
+}
+
+.background{
+    position:fixed;
+    inset:0;
+    background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQ8Unpw5_XWdZHeLO4MPGwF9xGrwcWMbE9X5TYQtrxtoerHmbQeGpEvY8Pg2q6Cjb1QRoxqYY_AKW6y1ckwaLeHDQD5yHrJjYlwxge9JN4KbNDw5ccY3_zSgfPOZF-Sg8JLk3Tg9tLOpip_B9fOnH0r4w7rNwpwgozdwA2ua5dJRlH-zKE2wI1UrIQDPIw4CpAEzCB87IYtW0KDnSLecgNTCGI5bEPvNgMfnVkn9Zj7Tgkwo_63m9jR4Lgr4niySE_nxfseimvWW0o");
+    background-size:cover;
+    background-position:center;
+    filter:blur(3px);
+    transform:scale(1.05);
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.35);
+}
+
+.login-container{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.login-card{
+    width:100%;
+    max-width:500px;
+    padding:50px;
+    background:rgba(255,255,255,.9);
+    backdrop-filter:blur(12px);
+    box-shadow:0 20px 40px rgba(0,0,0,.2);
+}
+
+.header{
+    text-align:center;
+    margin-bottom:40px;
+}
+.logo-link{
+    text-decoration:none;
+    color:inherit;
+}
+
+.header h1{
+    font-family:'Playfair Display',serif;
+    font-size:36px;
+    margin-bottom:10px;
+}
+
+.header p{
+    font-size:12px;
+    letter-spacing:3px;
+    color:#666;
+}
+
+.form-group{
+    margin-bottom:25px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-size:12px;
+    font-weight:bold;
+    letter-spacing:1px;
+    color:#555;
+}
+
+.form-group input{
+    width:100%;
+    border:none;
+    border-bottom:1px solid #bbb;
+    padding:12px 0;
+    background:transparent;
+}
+
+.form-group input:focus{
+    outline:none;
+    border-bottom:1px solid #775a19;
+}
+
+.password-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.password-header a{
+    text-decoration:none;
+    color:#775a19;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.password-box{
+    position:relative;
+}
+
+.password-box button{
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    cursor:pointer;
+}
+
+.remember{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:20px 0;
+}
+
+.btn-login{
+    width:100%;
+    padding:15px;
+    border:none;
+    background:#000;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+    letter-spacing:2px;
+    margin-top:15px;
+}
+.btn-booking{
+    width:100%;
+    padding:15px;
+    border:none;
+    background:#775a19;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+    letter-spacing:2px;
+    margin-top:15px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+
+    text-decoration:none;   /* QUAN TRỌNG */
+}
+
+.btn-login:hover{
+    opacity:.9;
+}
+
+.btn-booking:hover{
+    opacity:.9;
+}
+
+footer{
+    margin-top:35px;
+    text-align:center;
+}
+
+footer a{
+    color:#775a19;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.icons{
+    margin-top:25px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    color:#888;
+}
+
+@media(max-width:768px){
+
+    .login-card{
+        padding:30px;
+    }
+
+    .header h1{
+        font-size:28px;
+    }
+}

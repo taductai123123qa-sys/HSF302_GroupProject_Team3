@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+    --primary-color: #0b1b3d;
+    /* Navy Luxury */
+    --secondary-color: #d4af37;
+    /* Gold Metallic chuẩn Resort */
+    --gold-light: #fbf6e6;
+    /* Nền vàng kem dịu mắt */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+    --bg-light: #f8f9fa;
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: var(--font-body);
+    color: #333;
+}
+
+/* Page Title Luxury Decoration */
+.page-title-wrap {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.page-title {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    font-size: 38px;
+    font-weight: 700;
+}
+
+.page-title-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: var(--secondary-color);
+}
+
+/* Định dạng các tông màu chữ và nền */
+.bg-navy {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-gold {
+    background-color: var(--secondary-color) !important;
+}
+
+.bg-gold-light {
+    background-color: var(--gold-light) !important;
+}
+
+.text-gold {
+    color: var(--secondary-color) !important;
+}
+
+.text-navy {
+    color: var(--primary-color) !important;
+}
+
+.font-heading {
+    font-family: var(--font-heading) !important;
+}
+
+.letter-spacing-1 {
+    letter-spacing: 1px;
+}
+
+.letter-spacing-2 {
+    letter-spacing: 2px;
+}
+
+.fs-7 {
+    font-size: 0.875rem;
+}
+
+.fs-8 {
+    font-size: 0.775rem;
+}
+
+/* Làm đậm nét viền vàng quanh thẻ phương thức thanh toán VNPay */
+.payment-card-vnpay {
+    border: 2px solid var(--secondary-color) !important;
+    /* Viền vàng đậm 2px */
+    background-color: #ffffff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15) !important;
+    /* Đổ bóng vàng nhẹ */
+    transition: all 0.3s ease;
+}
+
+.custom-card {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff !important;
+    transition: all 0.3s ease;
+}
+
+/* Điểm nhấn đậm viền vàng quanh vùng chứa ảnh QR Code */
+.qr-box-premium {
+    border: 2px solid var(--secondary-color) !important;
+    /* Viền vàng bao quanh ảnh QR */
+    padding: 20px;
+    background-color: #ffffff;
+    display: inline-block;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Hiệu ứng xung mạch nhẹ cho Spinner trạng thái chờ khách quét mã */
+.text-gold-pulse {
+    color: var(--secondary-color);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+/* Tóm tắt đơn hàng (Card bên phải) */
+.summary-card {
+    border-radius: 8px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 8px 25px rgba(11, 27, 61, 0.08) !important;
+}
+
+.summary-item {
+    font-size: 14.5px;
+    font-weight: 500;
+}
+
+.border-dashed {
+    border-top: 1px dashed #ced4da;
+}
+
+/* Nút bấm hạng sang */
+.btn-navy {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    transition: all 0.4s ease;
+}
+
+.btn-navy:hover:not(.disabled) {
+    background-color: #050d1e;
+    color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(11, 27, 61, 0.3);
+}

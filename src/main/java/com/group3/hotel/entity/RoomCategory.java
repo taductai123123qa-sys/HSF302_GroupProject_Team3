@@ -35,4 +35,7 @@ public class RoomCategory {
 
     @OneToMany(mappedBy = "roomCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Room> rooms;
+
+    @OneToMany(mappedBy = "roomCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RoomImage> images;
 }

@@ -1,0 +1,287 @@
+/* ==========================================================================
+   Tour Booking Page Styles - Lush Heritage
+   ========================================================================== */
+
+   @import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+   :root {
+     /* Lush Heritage Colors */
+     --lh-surface: #fff8f5;
+     --lh-surface-dim: #e1d8d4;
+     --lh-surface-bright: #fff8f5;
+     --lh-surface-container-lowest: #ffffff;
+     --lh-surface-container-low: #fbf2ed;
+     --lh-surface-container: #f5ece7;
+     --lh-surface-container-high: #efe6e2;
+     --lh-surface-container-highest: #e9e1dc;
+     --lh-on-surface: #1e1b18;
+     --lh-on-surface-variant: #414846;
+     --lh-inverse-surface: #34302c;
+     --lh-inverse-on-surface: #f8efea;
+     --lh-outline: #717976;
+     --lh-outline-variant: #c1c8c4;
+     --lh-surface-tint: #43655c;
+     --lh-primary: #01261f;
+     --lh-on-primary: #ffffff;
+     --lh-primary-container: #1a3c34;
+     --lh-on-primary-container: #83a69c;
+     --lh-inverse-primary: #aacec3;
+     --lh-secondary: #775a19;
+     --lh-on-secondary: #ffffff;
+     --lh-secondary-container: #fed488;
+     --lh-on-secondary-container: #785a1a;
+     --lh-tertiary: #21211e;
+     --lh-on-tertiary: #ffffff;
+     --lh-tertiary-container: #363633;
+     --lh-on-tertiary-container: #a19f9b;
+     --lh-error: #ba1a1a;
+     --lh-on-error: #ffffff;
+     --lh-error-container: #ffdad6;
+     --lh-on-error-container: #93000a;
+     --lh-background: #fff8f5;
+     --lh-on-background: #1e1b18;
+     --lh-surface-variant: #e9e1dc;
+   
+     /* Typography */
+     --font-headline: 'Libre Caslon Text', serif;
+     --font-body: 'Plus Jakarta Sans', sans-serif;
+   
+     /* Rounded Corners */
+     --rounded-sm: 0.25rem; /* 4px */
+     --rounded: 0.5rem; /* 8px */
+     --rounded-md: 0.75rem; /* 12px */
+     --rounded-lg: 1rem; /* 16px */
+     --rounded-xl: 1.5rem; /* 24px */
+     --rounded-full: 9999px;
+   
+     /* Spacing */
+     --container-max: 1280px;
+     --gutter: 24px;
+     --margin-desktop: 80px;
+     --margin-mobile: 20px;
+     --stack-sm: 8px;
+     --stack-md: 16px;
+     --stack-lg: 32px;
+     --stack-xl: 64px;
+   
+     /* Depth */
+     --shadow-level-2: 0px 4px 20px rgba(1, 38, 31, 0.15);
+     --border-level-2: 1px solid rgba(1, 38, 31, 0.1);
+     --transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+   }
+   
+   body {
+       background-color: var(--lh-background);
+       font-family: var(--font-body);
+       color: var(--lh-on-surface);
+   }
+   
+   .booking-page {
+       padding: 2rem 0 4rem 0;
+       background-color: var(--lh-background);
+   }
+
+   /* --- Typography --- */
+   h2, h3, h4, .modal-title {
+       font-family: var(--font-headline);
+       color: var(--lh-primary);
+       font-weight: 400 !important;
+   }
+   
+   .text-primary {
+       color: var(--lh-primary) !important;
+   }
+   
+   .text-secondary-gold {
+       color: var(--lh-secondary) !important;
+   }
+   
+   .text-danger {
+       color: var(--lh-error) !important;
+   }
+   
+   .bg-light {
+       background-color: var(--lh-surface-container) !important;
+   }
+
+   .border-primary {
+       border-color: var(--lh-primary) !important;
+   }
+
+   .border-danger {
+       border-color: var(--lh-error) !important;
+   }
+
+   /* --- Breadcrumb Stepper --- */
+   .breadcrumb-container {
+       margin-bottom: 2rem;
+       padding-bottom: 1rem;
+       border-bottom: 1px solid var(--lh-surface-variant);
+   }
+
+   .breadcrumb {
+       background: transparent;
+       padding: 0;
+       margin: 0;
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+       font-family: var(--font-body);
+       font-size: 14px;
+       font-weight: 600;
+       text-transform: uppercase;
+       letter-spacing: 0.05em;
+   }
+
+   .breadcrumb li {
+       display: flex;
+       align-items: center;
+       color: var(--lh-outline);
+   }
+
+   .breadcrumb li a {
+       color: var(--lh-outline);
+       text-decoration: none;
+       transition: var(--transition-fast);
+   }
+
+   .breadcrumb li a:hover {
+       color: var(--lh-primary);
+   }
+
+   .breadcrumb li + li::before {
+       content: '—';
+       padding: 0 0.5rem;
+       color: var(--lh-secondary); /* Heritage Gold Line */
+   }
+
+   .breadcrumb li.active {
+       color: var(--lh-primary);
+   }
+   
+   /* --- Cards --- */
+   .customer-card {
+       background: var(--lh-surface-container-lowest);
+       border-radius: var(--rounded-lg);
+       box-shadow: var(--shadow-level-2);
+       margin-bottom: 24px;
+       padding: 24px;
+       border: var(--border-level-2);
+   }
+   
+   .customer-card-header {
+       border-bottom: 1px solid var(--lh-surface-variant);
+       padding-bottom: 16px;
+       margin-bottom: 24px;
+       display: flex;
+       align-items: center;
+   }
+   
+   .customer-card-header h4 {
+       margin: 0;
+       color: var(--lh-primary);
+       font-size: 24px;
+   }
+   
+   .customer-card-header .badge {
+       font-size: 1rem;
+       margin-right: 12px;
+       background-color: var(--lh-secondary-container);
+       color: var(--lh-on-secondary-container);
+       font-family: var(--font-body);
+       border-radius: var(--rounded);
+   }
+   
+   /* --- Input Fields (Stationary Style) --- */
+   .form-label {
+       font-weight: 600;
+       color: var(--lh-on-surface-variant);
+       font-family: var(--font-body);
+       font-size: 14px;
+       letter-spacing: 0.05em;
+       text-transform: uppercase;
+   }
+   
+   .form-control, .form-select {
+       background-color: var(--lh-surface-variant);
+       border: none;
+       border-bottom: 1px solid var(--lh-primary);
+       border-radius: var(--rounded-sm) var(--rounded-sm) 0 0;
+       padding: 12px 16px;
+       color: var(--lh-on-surface);
+       font-family: var(--font-body);
+       transition: var(--transition-fast);
+       box-shadow: none !important;
+   }
+   
+   .form-control:focus,
+   .form-select:focus {
+       background-color: var(--lh-surface-container-lowest);
+       border-bottom: 2px solid var(--lh-secondary);
+       outline: none;
+   }
+   
+   .form-control::placeholder {
+       color: var(--lh-outline-variant);
+   }
+   
+   /* --- Summary Sidebar Widget --- */
+   .summary-card {
+       background: rgba(255, 255, 255, 0.7);
+       backdrop-filter: blur(12px);
+       -webkit-backdrop-filter: blur(12px);
+       border-radius: var(--rounded-lg);
+       padding: 24px;
+       border: var(--border-level-2);
+       position: sticky;
+       top: 100px;
+   }
+
+   .summary-card h5 {
+       font-family: var(--font-headline);
+       color: var(--lh-primary);
+       font-size: 24px;
+   }
+   
+   .summary-card .fs-4 {
+       font-family: var(--font-headline);
+       color: var(--lh-secondary) !important; /* Total Price */
+       font-size: 32px !important;
+       font-weight: 400 !important;
+   }
+   
+   /* --- Buttons --- */
+   .btn-submit {
+       background-color: var(--lh-primary);
+       color: var(--lh-on-primary);
+       font-weight: 600;
+       padding: 14px 24px;
+       font-size: 16px;
+       border-radius: var(--rounded);
+       width: 100%;
+       transition: var(--transition-fast);
+       font-family: var(--font-body);
+       letter-spacing: 0.05em;
+       text-transform: uppercase;
+       border: none;
+   }
+   
+   .btn-submit:hover {
+       background-color: var(--lh-primary-container);
+       color: var(--lh-on-primary);
+       transform: translateY(-2px);
+       box-shadow: var(--shadow-level-2);
+   }
+
+   /* Modals */
+   .modal-content {
+       border-radius: var(--rounded-lg);
+       background: var(--lh-surface-container-lowest);
+       border: none;
+       box-shadow: var(--shadow-level-2);
+   }
+   
+   .modal-header {
+       border-bottom: 1px solid var(--lh-surface-variant);
+   }
+   

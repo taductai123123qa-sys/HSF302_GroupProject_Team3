@@ -1,0 +1,686 @@
+/* F&B Dashboard CSS integrating with Heritage Sanctuary Style */
+
+/* =========================================
+   EXTREME PREMIUM F&B STYLING
+   ========================================= */
+body {
+    background-color: #f4f7f6;
+    background-image: radial-gradient(circle at top right, rgba(179, 142, 94, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at bottom left, rgba(1, 30, 65, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+}
+
+.top-header {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(179, 142, 94, 0.2) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.sidebar {
+    background: linear-gradient(180deg, #011E41 0%, #0a1f3a 100%) !important;
+    border-right: 1px solid rgba(179, 142, 94, 0.3) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-brand h2 {
+    text-shadow: 0 2px 10px rgba(179, 142, 94, 0.4);
+}
+
+.fnb-dashboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+        filter: blur(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* Metrics Grid matching Heritage Sanctuary */
+.fnb-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.fnb-metric-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.fnb-metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #B38E5E 0%, #e6d3a8 50%, #B38E5E 100%);
+    background-size: 200% auto;
+    animation: gradientShine 3s linear infinite;
+}
+
+@keyframes gradientShine {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.fnb-metric-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(179, 142, 94, 0.2);
+    border-color: rgba(179, 142, 94, 0.5);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.fnb-metric-info h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+}
+
+.fnb-metric-value {
+    font-size: 36px;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    color: var(--color-navy-dark);
+    margin: 0;
+}
+
+.fnb-metric-icon {
+    width: 48px;
+    height: 48px;
+    background-color: var(--color-gold-light);
+    color: var(--color-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border-radius: 4px;
+}
+
+.fnb-icon-cooking {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.fnb-icon-revenue {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+/* KOT Tickets Section */
+.kot-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: var(--border-width) solid var(--color-gold);
+    padding-bottom: 12px;
+}
+
+.kot-section-header h2 {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-navy-dark);
+}
+
+.fnb-tickets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+/* Ticket Card */
+.fnb-ticket-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.fnb-ticket-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: var(--border-color);
+    transition: all 0.4s ease;
+}
+
+.fnb-ticket-card:hover {
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-6px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* Status Colors */
+.fnb-status-pending::before {
+    background-color: var(--color-warning);
+}
+
+.fnb-status-cooking::before {
+    background-color: var(--color-info);
+}
+
+.fnb-status-delivered::before {
+    background-color: var(--color-success);
+}
+
+.fnb-status-cancelled::before {
+    background-color: var(--color-text-muted);
+}
+
+.fnb-ticket-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background-color: var(--color-bg-parchment);
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.fnb-order-id {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-navy-dark);
+}
+
+.fnb-order-time {
+    color: var(--color-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.fnb-customer-info {
+    padding: 16px;
+    border-bottom: var(--border-width) solid var(--border-color);
+    background-color: var(--color-surface);
+}
+
+.fnb-location-badge {
+    display: inline-block;
+    background-color: var(--color-gold-light);
+    color: var(--color-navy-dark);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    border: 1px solid var(--color-gold);
+}
+
+.fnb-customer-name {
+    display: block;
+    font-size: 13.5px;
+    color: var(--color-text-muted);
+}
+
+.fnb-ticket-items {
+    padding: 16px;
+    flex-grow: 1;
+    background-color: var(--color-surface);
+}
+
+.fnb-ticket-items ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.fnb-ticket-items li {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--color-navy-dark);
+    align-items: center;
+}
+
+.fnb-ticket-items li:last-child {
+    margin-bottom: 0;
+}
+
+.fnb-item-quantity {
+    font-weight: 700;
+    color: var(--color-gold);
+    font-size: 15px;
+    min-width: 24px;
+}
+
+.fnb-ticket-footer {
+    padding: 16px;
+    background-color: var(--color-bg-parchment);
+    border-top: var(--border-width) solid var(--border-color);
+}
+
+.fnb-status-select {
+    width: 100%;
+    padding: 10px 14px;
+    background-color: var(--color-surface);
+    color: var(--color-navy-dark);
+    border: var(--border-width) solid var(--color-gold);
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+.fnb-status-select:focus {
+    border-color: var(--color-navy-dark);
+    box-shadow: 0 0 0 2px rgba(1, 30, 65, 0.1);
+}
+
+.fnb-status-select option {
+    font-weight: 500;
+}
+
+.fnb-empty-state {
+    text-align: center;
+    padding: 48px;
+    color: var(--color-text-muted);
+    font-size: 14px;
+    background-color: var(--color-surface);
+    border: 1px dashed var(--border-color);
+}
+
+/* =========================================
+   TABLES MAP (Sơ đồ Bàn ăn)
+   ========================================= */
+.table-map-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.table-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    cursor: pointer;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.table-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: var(--border-color);
+    transition: all 0.4s ease;
+}
+
+.table-card:hover {
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px) scale(1.02);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.table-status-available::after {
+    background-color: var(--color-success);
+}
+
+.table-status-occupied::after {
+    background-color: var(--color-danger);
+}
+
+.table-status-reserved::after {
+    background-color: var(--color-warning);
+}
+
+.table-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.table-status-available .table-icon {
+    color: var(--color-success);
+}
+
+.table-status-occupied .table-icon {
+    color: var(--color-danger);
+}
+
+.table-status-reserved .table-icon {
+    color: var(--color-warning);
+}
+
+.table-name {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-navy-dark);
+    margin-bottom: 8px;
+}
+
+.table-capacity {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+}
+
+.badge-status {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.filter-tab {
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.filter-tab:hover {
+    color: var(--color-navy-dark);
+}
+
+.filter-tab.active {
+    color: var(--color-gold);
+    border-bottom-color: var(--color-gold);
+}
+
+/* =========================================
+   MENU LOOKUP (Tra cứu Menu)
+   ========================================= */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.menu-item-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.menu-item-card:hover {
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
+    transform: translateY(-8px);
+}
+
+.menu-item-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.menu-item-card:hover .menu-item-image {
+    transform: scale(1.08);
+}
+
+.menu-item-content {
+    padding: 16px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item-title {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-navy-dark);
+    margin-bottom: 4px;
+}
+
+.menu-item-category {
+    font-size: 12px;
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.menu-item-desc {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+    flex-grow: 1;
+}
+
+.menu-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 12px;
+}
+
+.menu-item-price {
+    font-weight: 700;
+    color: var(--color-navy-dark);
+    font-size: 15px;
+}
+
+.menu-filter {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.search-box {
+    flex-grow: 1;
+    max-width: 400px;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 14px 16px;
+    padding-left: 44px;
+    border: 1px solid rgba(179, 142, 94, 0.3);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.search-box input:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 4px 20px rgba(179, 142, 94, 0.15);
+    background: #ffffff;
+}
+
+.search-box i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-gold);
+    font-size: 16px;
+}
+
+/* =========================================
+   INVOICES (Hóa đơn F&B)
+   ========================================= */
+.invoice-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    margin-bottom: 24px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.invoice-card:hover {
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: linear-gradient(90deg, var(--color-bg-parchment) 0%, var(--color-surface) 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.invoice-id {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-navy-dark);
+}
+
+.invoice-date {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-left: 12px;
+}
+
+.invoice-body {
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-customer h4,
+.invoice-amount h4 {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.invoice-customer p {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-navy-dark);
+    margin-bottom: 4px;
+}
+
+.invoice-amount {
+    text-align: right;
+}
+
+.amount-value {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-gold);
+}
+
+.invoice-footer {
+    padding: 16px 24px;
+    background-color: var(--color-surface);
+    border-top: 1px dashed rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-charge {
+    background: linear-gradient(135deg, var(--color-navy-dark) 0%, #1a304e 100%);
+    color: var(--color-text-inverse);
+    border: none;
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(1, 30, 65, 0.2);
+}
+
+.btn-charge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(1, 30, 65, 0.3);
+    background: linear-gradient(135deg, #1a304e 0%, var(--color-navy-dark) 100%);
+}

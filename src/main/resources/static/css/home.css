@@ -1,0 +1,39 @@
+/* 
+  Custom CSS cực kỳ đơn giản cho Phúc Nguyên Hotel.
+  Phần lớn giao diện sử dụng class có sẵn của Bootstrap 5.
+  File này chỉ dùng để đè (override) vài màu sắc cơ bản và hover effect.
+*/
+
+:root {
+    --primary-color: #0d6efd;
+    --primary-hover: #0b5ed7;
+}
+
+/* Đổi màu nền Hero Banner một chút nếu muốn tối hơn, hoặc dùng ảnh nền */
+.hero-banner {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1542314831-c6a4d1409b1c?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
+    padding-top: 100px !important;
+    padding-bottom: 120px !important;
+}
+
+/* Đẩy nhẹ card tìm kiếm lên trên Banner */
+.booking-search-card {
+    margin-top: -50px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Hiệu ứng hover cho thẻ Room Card */
+.room-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Sửa khoảng cách chung */
+section {
+    overflow-x: hidden;
+}
