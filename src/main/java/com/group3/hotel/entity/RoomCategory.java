@@ -31,6 +31,9 @@ public class RoomCategory {
     @Column(nullable = false)
     private Integer capacity;
 
+    @Column(name = "room_size")
+    private Double size;
+
     private String imgUrl;
 
     @OneToMany(mappedBy = "roomCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

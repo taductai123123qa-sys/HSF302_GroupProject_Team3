@@ -38,6 +38,9 @@ public class RoomBooking {
     @Column(nullable = false)
     private BookingStatus bookingStatus;
 
+    @Column(nullable = false)
+    private Integer numberOfGuests;
+
     @Column(columnDefinition = "TEXT")
     private String notes;
 

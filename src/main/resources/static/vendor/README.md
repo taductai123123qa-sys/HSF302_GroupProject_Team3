@@ -1,4 +1,4 @@
-# static/vendor/ — Quản lý thư viện Frontend
+# hãy static/vendor/ — Quản lý thư viện Frontend
 
 Thư mục này chứa các thư viện frontend (CSS/JS) được dùng **offline** (không phụ thuộc CDN).
 
@@ -42,31 +42,35 @@ vendor/
 
 ## Tại sao dùng vendor/ thay vì CDN?
 
-| | CDN | vendor/ |
-|---|---|---|
-| Hoạt động offline | ❌ | ✅ |
-| Tốc độ khi Internet chậm | ❌ | ✅ |
-| Kiểm soát version | ⚠️ | ✅ |
-| Dung lượng repo | ✅ | ⚠️ |
+|                              | CDN  | vendor/ |
+| ---------------------------- | ---- | ------- |
+| Hoạt động offline         | ❌   | ✅      |
+| Tốc độ khi Internet chậm | ❌   | ✅      |
+| Kiểm soát version          | ⚠️ | ✅      |
+| Dung lượng repo            | ✅   | ⚠️    |
 
 ## Hướng dẫn tải về thư viện
 
 ### Bootstrap 5
+
 ```
 https://getbootstrap.com/docs/5.3/getting-started/download/
 ```
 
 ### Font Awesome 6 (Free)
+
 ```
 https://fontawesome.com/download
 ```
 
 ### Flatpickr
+
 ```
 https://flatpickr.js.org/
 ```
 
 ### DataTables
+
 ```
 https://datatables.net/download/
 ```

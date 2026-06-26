@@ -24,12 +24,12 @@
         
         <!-- Dữ liệu ngầm cho Javascript đối chiếu -->
         <!-- Lấy số lượng khách và đêm để JS tính toán Audit Sức chứa và Tổng giá -->
-        <input type="hidden" id="search-capacity" th:value="${searchRequest.capacity != null ? searchRequest.capacity : 2}">
+        <input type="hidden" id="search-capacity" th:value="${searchRequest.capacity != null ? searchRequest.capacity : 1}">
         <input type="hidden" id="search-nights" th:value="${searchRequest.numberOfNights != null ? searchRequest.numberOfNights : 1}">
 
         <!-- Mini Booking Bar -->
         <section class="search-bar-container">
-            <form action="/customer/booking/rooms" method="GET" class="search-bar-wrapper" th:object="${searchRequest}">
+            <form action="/customer/rooms" method="GET" class="search-bar-wrapper" th:object="${searchRequest}">
                 <div class="search-bar main-search">
                     <div class="search-group">
                         <label for="checkInDate">Ngày nhận phòng</label>
@@ -175,9 +175,9 @@
 
                         <div class="room-card-footer" style="flex-direction: column; align-items: flex-end;">
                             <div class="room-price-wrap" style="text-align: right; width: 100%;">
-                                <span class="price-label" th:text="'Tổng cho 1 phòng / ' + ${searchRequest.numberOfNights} + ' đêm'">Tổng cộng</span>
+                                <span class="price-label" th:id="'price-label-' + ${category.id}" th:text="'Tổng cho 1 phòng / ' + ${searchRequest.numberOfNights} + ' đêm'">Tổng cộng</span>
                                 <span class="price-value">
-                                    <span th:text="${category.pricePerNight != null ? #numbers.formatDecimal(category.pricePerNight * searchRequest.numberOfNights, 0, 'COMMA', 0, 'POINT') : 0}">0</span>
+                                    <span th:id="'price-val-' + ${category.id}" th:text="${category.pricePerNight != null ? #numbers.formatDecimal(category.pricePerNight * searchRequest.numberOfNights, 0, 'COMMA', 0, 'POINT') : 0}">0</span>
                                     <span class="price-night">VNĐ</span>
                                 </span>
                             </div>
@@ -191,6 +191,9 @@
                                 <!-- Truyền ID phòng và tham số 1 (Cộng) -->
                                 <button type="button" class="btn-quantity-plus" th:onclick="'updateQuantity(' + ${category.id} + ', 1)'">+</button>
                             </div>
+                            
+                            <!-- Nút đặt phòng hiển thị khi số lượng > 0 -->
+                            <button type="button" class="btn-submit-room" th:id="'btn-book-' + ${category.id}" style="display: none; width: 100%; margin-top: 15px; background: #b8960c; color: #fff; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; padding: 14px 20px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease;" th:onmouseover="this.style.background='#8a6a00'; this.style.transform='translateY(-2px)';" th:onmouseout="this.style.background='#b8960c'; this.style.transform='none';" th:onclick="'submitBooking(' + ${category.id} + ')'">Tiến Hành Đặt Phòng</button>
                         </div>
 
                     </div>
@@ -200,36 +203,10 @@
 
     </main>
     
-    <!-- KHỐI PANEL GIỎ HÀNG NỔI (STICKY FLOATING CART) -->
-    <!-- Mặc định class d-none ẩn đi, chỉ hiện khi Giỏ hàng có đồ -->
-    <div id="booking-cart-panel" class="floating-cart-panel d-none">
-        <h4>Giỏ Hàng Của Bạn</h4>
-        
-        <!-- Nơi JS sẽ nhồi các mục HTML (Li) tương ứng với từng hạng phòng đã chọn -->
-        <ul id="cart-items-list">
-        </ul>
-        
-        <!-- Khối thống kê Sức chứa Audit -->
-        <div class="cart-capacity-summary">
-            <!-- Hiển thị lại số người từ form Search -->
-            <p><strong>Đoàn của bạn:</strong> <span th:text="${searchRequest.capacity}"></span> Khách</p>
-            <!-- ID để JS ghi đè tổng sức chứa tính toán được -->
-            <p><strong>Sức chứa đã chọn:</strong> <span id="cart-total-capacity">0</span> Khách</p>
-        </div>
-        
-        <!-- Khối thống kê Tiền bạc -->
-        <div class="cart-price-summary">
-            <p><strong>Tổng tiền tạm tính:</strong> <span id="cart-total-price">0</span> VNĐ</p>
-        </div>
-        
-        <!-- FORM ẨN ĐỂ ĐẨY LÊN BACKEND -->
-        <!-- Form GET này sẽ gom toàn bộ dữ liệu biến thành URL param để đẩy sang trang Information -->
-        <form id="hidden-booking-form" action="/customer/booking/information" method="GET">
-        </form>
-        
-        <!-- Nút chốt đơn, sẽ bị disabled nếu vướng lỗi sức chứa -->
-        <button type="button" id="btn-submit-booking" class="w-100" disabled onclick="submitBooking()">Tiến Hành Đặt Phòng</button>
-    </div>
+    <!-- FORM ẨN ĐỂ ĐẨY LÊN BACKEND -->
+    <!-- Form GET này sẽ gom toàn bộ dữ liệu biến thành URL param để đẩy sang trang Information -->
+    <form id="hidden-booking-form" action="/customer/booking/information" method="GET">
+    </form>
 
     <!-- Footer -->
     <footer th:replace="~{layout/fragments :: customer_footer}"></footer>
@@ -250,6 +227,13 @@
          * Hàm điều khiển Logic Tăng/Giảm (Trigger khi bấm +/-)
          */
         function updateQuantity(categoryId, delta) {
+            // Chặn chọn nhiều hạng phòng khác nhau
+            const currentCartKeys = Object.keys(cart);
+            if (delta > 0 && currentCartKeys.length > 0 && !currentCartKeys.includes(categoryId.toString())) {
+                alert("Hệ thống hiện chỉ cho phép đặt nhiều phòng trong cùng một hạng phòng. Vui lòng bỏ chọn hạng phòng hiện tại trước khi chọn hạng phòng mới.");
+                return;
+            }
+
             // Định vị ra thẻ HTML cha (Room Card) chứa dữ liệu của Hạng phòng đang bấm
             const card = document.querySelector(`.room-card[data-category-id='${categoryId}']`);
             if (!card) return;
@@ -273,6 +257,7 @@
             // Đồng bộ vào bộ nhớ Object Giỏ Hàng
             if (newQty === 0) {
                 delete cart[categoryId];
+                document.getElementById('btn-book-' + categoryId).style.display = 'none';
             } else {
                 cart[categoryId] = {
                     categoryId: categoryId,
@@ -281,82 +266,35 @@
                     price: parseFloat(card.getAttribute('data-price-per-night')) || 0,
                     quantity: newQty
                 };
+                document.getElementById('btn-book-' + categoryId).style.display = 'block';
             }
 
-            // Gọi hàm tính toán lại Giỏ hàng để cập nhật giao diện
-            renderCart();
-        }
-
-        /**
-         * Hàm chạy thuật toán Audit (Kiểm tra Sức chứa) và Render HTML
-         */
-        function renderCart() {
-            // Lấy các Document Node thao tác
-            const cartPanel = document.getElementById('booking-cart-panel');
-            const cartList = document.getElementById('cart-items-list');
-            const capacityDisplay = document.getElementById('cart-total-capacity');
-            const priceDisplay = document.getElementById('cart-total-price');
-            const submitBtn = document.getElementById('btn-submit-booking');
-
-            // Xóa rỗng danh sách phòng cũ để vẽ lại từ đầu
-            cartList.innerHTML = ''; 
-
-            // Các biến cộng dồn thuật toán
-            let totalCapacity = 0;
-            let totalPrice = 0;
-            let hasItems = Object.keys(cart).length > 0; // Cờ kiểm tra giỏ có hàng không
-
-            // Vòng lặp duyệt qua từng item trong Giỏ hàng
-            for (const id in cart) {
-                const item = cart[id];
-                
-                // Thuật toán: Cộng dồn Sức chứa = (Số phòng * Capacity/Phòng)
-                totalCapacity += (item.capacity * item.quantity);
-                
-                // Thuật toán: Cộng dồn Tiền = (Giá gốc 1 đêm * Số lượng phòng) * Số đêm lưu trú
-                totalPrice += (item.price * item.quantity * searchNights);
-
-                // Dựng cục HTML ListItem hiển thị lên trên Giao diện
-                const li = document.createElement('li');
-                li.innerHTML = `<span><strong>${item.categoryName}</strong></span> <span>SL: ${item.quantity}</span>`;
-                cartList.appendChild(li);
+            // Cập nhật giá tiền hiển thị trên card
+            let displayQty = newQty > 0 ? newQty : 1;
+            let currentPrice = (parseFloat(card.getAttribute('data-price-per-night')) || 0) * searchNights * displayQty;
+            const priceValSpan = document.getElementById('price-val-' + categoryId);
+            if(priceValSpan) {
+                priceValSpan.innerText = new Intl.NumberFormat('vi-VN').format(currentPrice);
             }
-
-            // Cập nhật mảng Text HTML
-            capacityDisplay.innerText = totalCapacity;
             
-            // Format chuẩn tiền tệ phân cách bằng dấu phẩy
-            priceDisplay.innerText = new Intl.NumberFormat('vi-VN').format(totalPrice);
-
-            // Bật/Tắt khối Panel nổi lên màn hình
-            if (hasItems) {
-                cartPanel.classList.remove('d-none');
-            } else {
-                cartPanel.classList.add('d-none');
-            }
-
-            // Bật/tắt nút Submit dựa vào việc giỏ hàng có đồ hay không
-            if (hasItems) {
-                submitBtn.disabled = false;
-            } else {
-                submitBtn.disabled = true;
+            const priceLabelSpan = document.getElementById('price-label-' + categoryId);
+            if(priceLabelSpan) {
+                priceLabelSpan.innerText = 'Tổng cho ' + displayQty + ' phòng / ' + searchNights + ' đêm';
             }
         }
 
         /**
          * Hàm Đóng gói dữ liệu và Ném lên Backend
          */
-        function submitBooking() {
+        function submitBooking(categoryId) {
+            if (!cart[categoryId]) return;
+
             // 1. KIỂM TRA SỨC CHỨA TRƯỚC KHI SUBMIT
-            let totalCapacity = 0;
+            let totalCapacity = cart[categoryId].capacity * cart[categoryId].quantity;
             
-            for (const id in cart) {
-                totalCapacity += (cart[id].capacity * cart[id].quantity);
-            }
-            
-            // Nếu tổng sức chứa trong Giỏ hàng < Số người đã nhập tìm kiếm
+            // Nếu tổng sức chứa phòng chọn < Số người đã nhập tìm kiếm
             if (totalCapacity < searchCapacity) {
-                alert("Lưu ý về sức chứa: Số lượng khách hiện tại vượt quá sức chứa tối đa của phòng đã chọn. Vui lòng cân nhắc chọn thêm phòng để đảm bảo không gian thoải mái cho tất cả thành viên trong đoàn!");
+                alert("Lưu ý về sức chứa: Sức chứa của số phòng này (" + totalCapacity + " khách) đang thấp hơn số khách bạn đang tìm kiếm (" + searchCapacity + " khách). Vui lòng chọn thêm phòng hoặc thay đổi số lượng khách.");
                 return; // Chặn đứng, không cho Submit form
             }
 
@@ -364,27 +302,19 @@
             const form = document.getElementById('hidden-booking-form');
             form.innerHTML = ''; // Clear Form
 
-            let index = 0;
-            // Vòng lặp đẻ ra các thẻ Input Hidden tương thích chuẩn List<CartItemDTO> của Spring Boot
-            for (const id in cart) {
-                const item = cart[id];
-                
-                // Thuộc tính categoryId -> Bind tương ứng Spring: cartItems[0].categoryId
-                const inputId = document.createElement('input');
-                inputId.type = 'hidden';
-                inputId.name = `cartItems[${index}].categoryId`;
-                inputId.value = item.categoryId;
-                form.appendChild(inputId);
+            // Thuộc tính categoryId -> Bind tương ứng Spring: cartItems[0].categoryId
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = `cartItems[0].categoryId`;
+            inputId.value = cart[categoryId].categoryId;
+            form.appendChild(inputId);
 
-                // Thuộc tính quantity -> Bind tương ứng Spring: cartItems[0].quantity
-                const inputQty = document.createElement('input');
-                inputQty.type = 'hidden';
-                inputQty.name = `cartItems[${index}].quantity`;
-                inputQty.value = item.quantity;
-                form.appendChild(inputQty);
-                
-                index++;
-            }
+            // Thuộc tính quantity -> Bind tương ứng Spring: cartItems[0].quantity
+            const inputQty = document.createElement('input');
+            inputQty.type = 'hidden';
+            inputQty.name = `cartItems[0].quantity`;
+            inputQty.value = cart[categoryId].quantity;
+            form.appendChild(inputQty);
 
             // Phát hỏa Form GET đi thẳng sang URL: /customer/booking/information
             form.submit();

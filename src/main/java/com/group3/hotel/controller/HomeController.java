@@ -13,12 +13,4 @@ public class HomeController {
     public String home() {
         return "home/homepage";
     }
-
-    @GetMapping("/rooms")
-    public String rooms(Model model) {
-        model.addAttribute("searchRequest", new RoomSearchRequest());
-        model.addAttribute("roomCategories", new ArrayList<>());
-        model.addAttribute("allRoomCategories", new ArrayList<>());
-        return "customer/room-list";
-    }
 }
