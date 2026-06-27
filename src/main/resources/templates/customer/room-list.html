@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{layout/fragments :: html_head('Danh sách phòng trống - Phúc Nguyên Hotel')}">
     <meta charset="UTF-8">
     <title>Danh sách phòng trống</title>
 </head>
+
 <body class="bg-light">
 
     <!-- Header -->
     <header th:replace="~{layout/fragments :: customer_header}"></header>
 
     <link rel="stylesheet" th:href="@{/css/customer/room-list.css}">
-    
+
 
 
     <!-- Page Header -->
@@ -21,15 +23,17 @@
 
     <!-- Main Content -->
     <main class="container">
-        
+
         <!-- Dữ liệu ngầm cho Javascript đối chiếu -->
         <!-- Lấy số lượng khách và đêm để JS tính toán Audit Sức chứa và Tổng giá -->
-        <input type="hidden" id="search-capacity" th:value="${searchRequest.capacity != null ? searchRequest.capacity : 1}">
-        <input type="hidden" id="search-nights" th:value="${searchRequest.numberOfNights != null ? searchRequest.numberOfNights : 1}">
+        <input type="hidden" id="search-capacity"
+            th:value="${searchRequest.capacity != null ? searchRequest.capacity : 1}">
+        <input type="hidden" id="search-nights"
+            th:value="${searchRequest.numberOfNights != null ? searchRequest.numberOfNights : 1}">
 
         <!-- Mini Booking Bar -->
         <section class="search-bar-container">
-            <form action="/customer/rooms" method="GET" class="search-bar-wrapper" th:object="${searchRequest}">
+            <form action="/customer/rooms/search" method="GET" class="search-bar-wrapper" th:object="${searchRequest}">
                 <div class="search-bar main-search">
                     <div class="search-group">
                         <label for="checkInDate">Ngày nhận phòng</label>
@@ -56,7 +60,7 @@
                         <button type="submit" class="btn-search">Tìm Phòng</button>
                     </div>
                 </div>
-                
+
                 <!-- Filters -->
                 <div class="filter-bar">
                     <div class="search-group">
@@ -65,7 +69,8 @@
                             <i class="fas fa-door-open"></i>
                             <select id="roomCategory" th:field="*{roomCategory}" class="filter-select">
                                 <option value="">Tất cả hạng phòng</option>
-                                <option th:if="${allRoomCategories != null}" th:each="cat : ${allRoomCategories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                                <option th:if="${allRoomCategories != null}" th:each="cat : ${allRoomCategories}"
+                                    th:value="${cat.id}" th:text="${cat.name}"></option>
                                 <!-- Fallback static options for UI -->
                                 <option th:if="${allRoomCategories == null}" value="1">Standard</option>
                                 <option th:if="${allRoomCategories == null}" value="2">Deluxe</option>
@@ -77,14 +82,14 @@
                         <label for="minPrice">Giá từ (VNĐ)</label>
                         <div class="search-input-wrap">
                             <i class="fas fa-money-bill-wave"></i>
-                            <input type="number" id="minPrice" th:field="*{minPrice}" placeholder="Tối thiểu" min="0" step="100000">
+                            <input type="number" id="minPrice" th:field="*{minPrice}" placeholder="Tối thiểu" min="0">
                         </div>
                     </div>
                     <div class="search-group">
                         <label for="maxPrice">Đến (VNĐ)</label>
                         <div class="search-input-wrap">
                             <i class="fas fa-money-bill-wave"></i>
-                            <input type="number" id="maxPrice" th:field="*{maxPrice}" placeholder="Tối đa" min="0" step="100000">
+                            <input type="number" id="maxPrice" th:field="*{maxPrice}" placeholder="Tối đa" min="0">
                         </div>
                     </div>
                 </div>
@@ -103,12 +108,10 @@
             <div class="room-list-wrapper">
                 <!-- VÒNG LẶP RENDER DỮ LIỆU TỪ DB LÊN HTML -->
                 <!-- Nhúng data-* để biến thẻ div này thành 1 kho chứa dữ liệu ngầm cho JavaScript -->
-                <div class="room-card" th:each="category : ${roomCategories}"
-                     th:data-category-id="${category.id}"
-                     th:data-category-name="${category.name}"
-                     th:data-capacity="${category.capacity}"
-                     th:data-price-per-night="${category.pricePerNight}"
-                     th:data-available-count="5"> <!-- Mock data for availability -->
+                <div class="room-card" th:each="category : ${roomCategories}" th:data-category-id="${category.id}"
+                    th:data-category-name="${category.name}" th:data-capacity="${category.capacity}"
+                    th:data-price-per-night="${category.pricePerNight}" th:data-available-count="5">
+                    <!-- Mock data for availability -->
 
                     <!-- ── Image Side ── -->
                     <div class="room-card-img">
@@ -122,29 +125,26 @@
                         <!-- Slider nếu có nhiều ảnh -->
                         <th:block th:if="${category.images != null and category.images.size() > 1}">
                             <div class="slider-wrapper" th:id="'slider-' + ${category.id}">
-                                <img th:each="img, stat : ${category.images}"
-                                     th:src="${img.imageUrl}"
-                                     alt="Room Image"
-                                     class="slider-image"
-                                     th:style="${stat.index == 0 ? 'display:block' : 'display:none'}">
+                                <img th:each="img, stat : ${category.images}" th:src="${img.imageUrl}" alt="Room Image"
+                                    class="slider-image"
+                                    th:style="${stat.index == 0 ? 'display:block' : 'display:none'}">
                             </div>
                             <button type="button" class="img-slider-btn prev-btn"
-                                    th:onclick="'changeImage(' + ${category.id} + ', -1)'">
+                                th:onclick="'changeImage(' + ${category.id} + ', -1)'">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                             <button type="button" class="img-slider-btn next-btn"
-                                    th:onclick="'changeImage(' + ${category.id} + ', 1)'">
+                                th:onclick="'changeImage(' + ${category.id} + ', 1)'">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </th:block>
 
                         <!-- Ảnh đơn -->
                         <th:block th:if="${category.images == null or category.images.size() <= 1}">
-                            <img th:src="${category.images != null and !category.images.isEmpty()
+                            <img th:src="@{${category.images != null and !category.images.isEmpty()
                                     ? category.images[0].imageUrl
-                                    : (category.imgUrl != null ? category.imgUrl : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800&auto=format&fit=crop')}"
-                                 alt="Room Image"
-                                 class="slider-image">
+                                    : (category.imgUrl != null ? category.imgUrl : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800&auto=format&fit=crop')}}"
+                                alt="Room Image" class="slider-image">
                         </th:block>
                     </div>
 
@@ -154,46 +154,59 @@
                         <p class="room-category-label">Hạng Phòng</p>
                         <h3 class="room-card-title" th:text="${category.name}">Room Name</h3>
                         <p class="room-desc"
-                           th:text="'Phòng ' + ${category.name} + ' sang trọng và tiện nghi, mang đến trải nghiệm nghỉ dưỡng đẳng cấp tại Phúc Nguyên Hotel.'">
+                            th:text="'Phòng ' + ${category.name} + ' sang trọng và tiện nghi, mang đến trải nghiệm nghỉ dưỡng đẳng cấp tại Phúc Nguyên Hotel.'">
                             Description
                         </p>
 
                         <div class="room-features">
                             <div class="room-feature-item">
                                 <i class="fas fa-vector-square"></i>
-                                <span><strong>Diện tích:</strong> <span th:text="${category.size != null ? category.size : '45'}"></span> m²</span>
+                                <span><strong>Diện tích:</strong> <span
+                                        th:text="${category.size != null ? category.size : '45'}"></span> m²</span>
                             </div>
                             <div class="room-feature-item">
                                 <i class="fas fa-user-friends"></i>
-                                <span><strong>Sức chứa tối đa:</strong> <span th:text="${category.capacity}"></span> khách</span>
+                                <span><strong>Sức chứa tối đa:</strong> <span th:text="${category.capacity}"></span>
+                                    khách</span>
                             </div>
                             <div class="room-feature-item">
                                 <i class="fas fa-moon"></i>
-                                <span><strong>Giá theo đêm:</strong> <span th:text="${category.pricePerNight != null ? #numbers.formatDecimal(category.pricePerNight, 0, 'COMMA', 0, 'POINT') : 0} + ' VNĐ'"></span></span>
+                                <span><strong>Giá theo đêm:</strong> <span
+                                        th:text="${category.pricePerNight != null ? #numbers.formatDecimal(category.pricePerNight, 0, 'COMMA', 0, 'POINT') : 0} + ' VNĐ'"></span></span>
                             </div>
                         </div>
 
                         <div class="room-card-footer" style="flex-direction: column; align-items: flex-end;">
                             <div class="room-price-wrap" style="text-align: right; width: 100%;">
-                                <span class="price-label" th:id="'price-label-' + ${category.id}" th:text="'Tổng cho 1 phòng / ' + ${searchRequest.numberOfNights} + ' đêm'">Tổng cộng</span>
+                                <span class="price-label" th:id="'price-label-' + ${category.id}"
+                                    th:text="'Tổng cho 1 phòng / ' + ${searchRequest.numberOfNights} + ' đêm'">Tổng
+                                    cộng</span>
                                 <span class="price-value">
-                                    <span th:id="'price-val-' + ${category.id}" th:text="${category.pricePerNight != null ? #numbers.formatDecimal(category.pricePerNight * searchRequest.numberOfNights, 0, 'COMMA', 0, 'POINT') : 0}">0</span>
+                                    <span th:id="'price-val-' + ${category.id}"
+                                        th:text="${category.pricePerNight != null ? #numbers.formatDecimal(category.pricePerNight * searchRequest.numberOfNights, 0, 'COMMA', 0, 'POINT') : 0}">0</span>
                                     <span class="price-night">VNĐ</span>
                                 </span>
                             </div>
-                            
+
                             <!-- BỘ ĐIỀU KHIỂN SỐ LƯỢNG MỚI (QUANTITY CONTROLLER) -->
                             <div class="quantity-controller">
                                 <!-- Gọi hàm updateQuantity() của JS, truyền ID phòng và tham số -1 (Trừ) -->
-                                <button type="button" class="btn-quantity-minus" th:onclick="'updateQuantity(' + ${category.id} + ', -1)'">-</button>
+                                <button type="button" class="btn-quantity-minus"
+                                    th:onclick="'updateQuantity(' + ${category.id} + ', -1)'">-</button>
                                 <!-- Ô nhập số liệu dạng Readonly để tránh User gõ chữ bậy -->
-                                <input type="number" class="room-quantity-input" th:id="'qty-' + ${category.id}" value="0" min="0" readonly>
+                                <input type="number" class="room-quantity-input" th:id="'qty-' + ${category.id}"
+                                    value="0" min="0" readonly>
                                 <!-- Truyền ID phòng và tham số 1 (Cộng) -->
-                                <button type="button" class="btn-quantity-plus" th:onclick="'updateQuantity(' + ${category.id} + ', 1)'">+</button>
+                                <button type="button" class="btn-quantity-plus"
+                                    th:onclick="'updateQuantity(' + ${category.id} + ', 1)'">+</button>
                             </div>
-                            
+
                             <!-- Nút đặt phòng hiển thị khi số lượng > 0 -->
-                            <button type="button" class="btn-submit-room" th:id="'btn-book-' + ${category.id}" style="display: none; width: 100%; margin-top: 15px; background: #b8960c; color: #fff; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; padding: 14px 20px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease;" th:onmouseover="this.style.background='#8a6a00'; this.style.transform='translateY(-2px)';" th:onmouseout="this.style.background='#b8960c'; this.style.transform='none';" th:onclick="'submitBooking(' + ${category.id} + ')'">Tiến Hành Đặt Phòng</button>
+                            <button type="button" class="btn-submit-room" th:id="'btn-book-' + ${category.id}"
+                                style="display: none; width: 100%; margin-top: 15px; background: #b8960c; color: #fff; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; padding: 14px 20px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease;"
+                                th:onmouseover="this.style.background='#8a6a00'; this.style.transform='translateY(-2px)';"
+                                th:onmouseout="this.style.background='#b8960c'; this.style.transform='none';"
+                                th:onclick="'submitBooking(' + ${category.id} + ')'">Tiến Hành Đặt Phòng</button>
                         </div>
 
                     </div>
@@ -202,7 +215,7 @@
         </section>
 
     </main>
-    
+
     <!-- FORM ẨN ĐỂ ĐẨY LÊN BACKEND -->
     <!-- Form GET này sẽ gom toàn bộ dữ liệu biến thành URL param để đẩy sang trang Information -->
     <form id="hidden-booking-form" action="/customer/booking/information" method="GET">
@@ -240,7 +253,7 @@
 
             // Rút số lượng phòng trống từ Data Attribute
             const availableCount = parseInt(card.getAttribute('data-available-count')) || 0;
-            
+
             // Tìm số lượng hiện tại trong Giỏ hàng
             let currentQty = cart[categoryId] ? cart[categoryId].quantity : 0;
             // Áp dụng phép toán (+1 hoặc -1)
@@ -273,12 +286,12 @@
             let displayQty = newQty > 0 ? newQty : 1;
             let currentPrice = (parseFloat(card.getAttribute('data-price-per-night')) || 0) * searchNights * displayQty;
             const priceValSpan = document.getElementById('price-val-' + categoryId);
-            if(priceValSpan) {
+            if (priceValSpan) {
                 priceValSpan.innerText = new Intl.NumberFormat('vi-VN').format(currentPrice);
             }
-            
+
             const priceLabelSpan = document.getElementById('price-label-' + categoryId);
-            if(priceLabelSpan) {
+            if (priceLabelSpan) {
                 priceLabelSpan.innerText = 'Tổng cho ' + displayQty + ' phòng / ' + searchNights + ' đêm';
             }
         }
@@ -291,7 +304,7 @@
 
             // 1. KIỂM TRA SỨC CHỨA TRƯỚC KHI SUBMIT
             let totalCapacity = cart[categoryId].capacity * cart[categoryId].quantity;
-            
+
             // Nếu tổng sức chứa phòng chọn < Số người đã nhập tìm kiếm
             if (totalCapacity < searchCapacity) {
                 alert("Lưu ý về sức chứa: Sức chứa của số phòng này (" + totalCapacity + " khách) đang thấp hơn số khách bạn đang tìm kiếm (" + searchCapacity + " khách). Vui lòng chọn thêm phòng hoặc thay đổi số lượng khách.");
@@ -319,7 +332,7 @@
             // Phát hỏa Form GET đi thẳng sang URL: /customer/booking/information
             form.submit();
         }
-        
+
         // -- Logic Slider hình ảnh cũ của UI -- //
         function changeImage(categoryId, direction) {
             const slider = document.getElementById('slider-' + categoryId);
@@ -348,4 +361,5 @@
         }
     </script>
 </body>
+
 </html>

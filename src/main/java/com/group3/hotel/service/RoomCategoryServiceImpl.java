@@ -31,6 +31,27 @@ public class RoomCategoryServiceImpl implements RoomCategoryService {
         if(!checkout.isAfter(checkIn)){
             checkout = checkIn.plusDays(1);
         }
-        return roomCategoryRepository.findAvailableCategories(checkIn,checkout, guests);
+        
+        List<RoomCategory> available = roomCategoryRepository.findAvailableCategories(checkIn, checkout, guests);
+
+        if (searchRequest.getRoomCategory() != null) {
+            available = available.stream()
+                    .filter(c -> c.getId().equals(searchRequest.getRoomCategory()))
+                    .toList();
+        }
+
+        if (searchRequest.getMinPrice() != null) {
+            available = available.stream()
+                    .filter(c -> c.getPricePerNight().doubleValue() >= searchRequest.getMinPrice())
+                    .toList();
+        }
+
+        if (searchRequest.getMaxPrice() != null) {
+            available = available.stream()
+                    .filter(c -> c.getPricePerNight().doubleValue() <= searchRequest.getMaxPrice())
+                    .toList();
+        }
+
+        return available;
     }
 }
