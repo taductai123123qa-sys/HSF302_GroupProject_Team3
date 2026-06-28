@@ -54,4 +54,9 @@ public class RoomCategoryServiceImpl implements RoomCategoryService {
 
         return available;
     }
+
+    @Override
+    public RoomCategory getCategoryById(Long id) {
+        return roomCategoryRepository.findById(id).orElse(null);
+    }
 }

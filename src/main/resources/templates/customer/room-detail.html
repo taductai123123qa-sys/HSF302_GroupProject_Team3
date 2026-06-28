@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/fragments :: html_head('Chi tiết phòng - Phúc Nguyên Hotel')}">
+    <meta charset="UTF-8">
+    <title>Chi tiết phòng</title>
+</head>
+
+<body class="bg-light">
+
+    <!-- Header -->
+    <header th:replace="~{layout/fragments :: customer_header}"></header>
+
+    <!-- Page Header -->
+    <div class="container mt-5 pt-4">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/customer/rooms">Danh sách phòng</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${category.name}">Chi tiết</li>
+            </ol>
+        </nav>
+        <h2 class="mb-4" th:text="${category.name}">Tên Hạng Phòng</h2>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mb-5">
+        <div class="row g-4">
+            <!-- CỘT TRÁI: THÔNG TIN PHÒNG & DỊCH VỤ -->
+            <div class="col-md-8">
+                <!-- Ảnh Phòng -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <img th:src="@{${category.imgUrl != null ? category.imgUrl : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800&auto=format&fit=crop'}}"
+                         class="card-img-top img-fluid" alt="Ảnh phòng" style="max-height: 500px; object-fit: cover;">
+                </div>
+
+                <!-- Chi tiết phòng -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">Thông tin chi tiết</h4>
+                        <div class="d-flex gap-4 mb-3 text-muted">
+                            <div><i class="fas fa-expand-arrows-alt me-2"></i> Diện tích: <span th:text="${category.size != null ? category.size : '25.0'}">25.0</span> m²</div>
+                            <div><i class="fas fa-user-friends me-2"></i> Sức chứa tối đa: <span th:text="${category.capacity}">2</span> người</div>
+                        </div>
+                        <p class="card-text" th:text="${category.description}">Mô tả chi tiết hạng phòng.</p>
+                    </div>
+                </div>
+
+                <!-- Dịch vụ khách sạn -->
+                <div class="card border-0 shadow-sm mb-4" th:if="${not #lists.isEmpty(hotelServices)}">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">Dịch vụ & Tiện ích tại khách sạn</h4>
+                        <p class="text-muted small mb-3">Các dịch vụ dưới đây hiện đang được cung cấp tại khách sạn. Quý khách có thể yêu cầu thêm với lễ tân khi làm thủ tục nhận phòng.</p>
+                        <div class="row g-3">
+                            <div class="col-md-6" th:each="service : ${hotelServices}">
+                                <div class="card h-100 bg-light border-0">
+                                    <div class="card-body p-3">
+                                        <h6 class="card-title mb-1" th:text="${service.name}">Tên dịch vụ</h6>
+                                        <p class="card-text small text-muted mb-2" th:text="${service.description}">Mô tả dịch vụ</p>
+                                        <span class="text-primary fw-bold" th:text="${#numbers.formatDecimal(service.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">100,000 VNĐ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: FORM ĐẶT PHÒNG -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm sticky-top" style="top: 80px; z-index: 10;">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                        <h4 class="card-title text-primary mb-0">Đặt Phòng</h4>
+                        <div class="mt-2 text-muted small">
+                            <i class="far fa-calendar-alt me-1"></i> <span th:text="${bookingRequest.checkInDate}"></span> 
+                            <i class="fas fa-arrow-right mx-1"></i> <span th:text="${bookingRequest.checkOutDate}"></span>
+                            (<span th:text="${totalNights}">1</span> đêm)
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form th:action="@{/bookings/select-payment}" method="POST" th:object="${bookingRequest}">
+                            
+                            <!-- Hidden Fields -->
+                            <input type="hidden" th:field="*{categoryId}" />
+                            <input type="hidden" th:field="*{checkInDate}" />
+                            <input type="hidden" th:field="*{checkOutDate}" />
+                            <input type="hidden" id="pricePerNight" th:value="${category.pricePerNight}" />
+                            <input type="hidden" id="totalNights" th:value="${totalNights}" />
+
+                            <!-- Số lượng phòng đặt -->
+                            <div class="mb-3">
+                                <label for="roomCount" class="form-label fw-bold">Số lượng phòng</label>
+                                <input type="number" class="form-control" id="roomCount" th:field="*{roomCount}" min="1" max="10" onchange="calculateTotal()" required>
+                            </div>
+
+                            <hr>
+                            <h6 class="fw-bold mb-3">Thông tin khách hàng</h6>
+
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="fullName" th:field="*{fullName}" required placeholder="Vd: Nguyễn Văn A">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone" th:field="*{phone}" required placeholder="Vd: 0901234567">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="idCard" class="form-label">CCCD / Passport <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="idCard" th:field="*{idCard}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Ghi chú thêm</label>
+                                <textarea class="form-control" id="notes" th:field="*{notes}" rows="2" placeholder="Yêu cầu đặc biệt (nếu có)..."></textarea>
+                            </div>
+
+                            <hr>
+
+                            <!-- Bảng tính tiền -->
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Giá 1 phòng / đêm</span>
+                                <span class="fw-bold" th:text="${#numbers.formatDecimal(category.pricePerNight, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Thời gian lưu trú</span>
+                                <span class="fw-bold" th:text="${totalNights} + ' đêm'">1 đêm</span>
+                            </div>
+                            <div class="d-flex justify-content-between border-top pt-3 mb-4">
+                                <span class="h5 mb-0">Tổng tiền tạm tính</span>
+                                <span class="h5 mb-0 text-primary" id="totalPriceDisplay">
+                                    <span th:text="${#numbers.formatDecimal(category.pricePerNight * totalNights * bookingRequest.roomCount, 0, 'COMMA', 0, 'POINT')}"></span> VNĐ
+                                </span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" style="font-size: 1.1rem;">
+                                Xác nhận đặt phòng
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="~{layout/fragments :: customer_footer}"></footer>
+
+    <!-- Scripts -->
+    <div th:replace="~{layout/fragments :: html_scripts}"></div>
+    <script>
+        function calculateTotal() {
+            const price = parseFloat(document.getElementById('pricePerNight').value) || 0;
+            const nights = parseInt(document.getElementById('totalNights').value) || 1;
+            const rooms = parseInt(document.getElementById('roomCount').value) || 1;
+            
+            const total = price * nights * rooms;
+            
+            // Format number to VNĐ
+            const formattedTotal = total.toLocaleString('en-US') + ' VNĐ';
+            document.getElementById('totalPriceDisplay').innerText = formattedTotal;
+        }
+    </script>
+</body>
+</html>

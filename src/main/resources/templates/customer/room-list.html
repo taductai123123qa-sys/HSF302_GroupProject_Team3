@@ -110,42 +110,24 @@
                 <!-- Nhúng data-* để biến thẻ div này thành 1 kho chứa dữ liệu ngầm cho JavaScript -->
                 <div class="room-card" th:each="category : ${roomCategories}" th:data-category-id="${category.id}"
                     th:data-category-name="${category.name}" th:data-capacity="${category.capacity}"
-                    th:data-price-per-night="${category.pricePerNight}" th:data-available-count="5">
-                    <!-- Mock data for availability -->
+                    th:data-price-per-night="${category.pricePerNight}" th:data-available-count="${category.availableRoomCount}">
 
                     <!-- ── Image Side ── -->
                     <div class="room-card-img">
 
                         <!-- Availability pill — nằm trên ảnh -->
-                        <div class="room-avail-pill">
+                        <div class="room-avail-pill" th:if="${category.availableRoomCount > 0}">
                             <span class="room-avail-dot"></span>
-                            <span>Còn 5 phòng trống</span>
+                            <span th:text="'Còn ' + ${category.availableRoomCount} + ' phòng trống'">Còn 5 phòng trống</span>
+                        </div>
+                        <div class="room-avail-pill" th:if="${category.availableRoomCount == 0}" style="background-color: #ff4d4f; color: white;">
+                            <span class="room-avail-dot" style="background-color: white;"></span>
+                            <span>Hết phòng</span>
                         </div>
 
-                        <!-- Slider nếu có nhiều ảnh -->
-                        <th:block th:if="${category.images != null and category.images.size() > 1}">
-                            <div class="slider-wrapper" th:id="'slider-' + ${category.id}">
-                                <img th:each="img, stat : ${category.images}" th:src="${img.imageUrl}" alt="Room Image"
-                                    class="slider-image"
-                                    th:style="${stat.index == 0 ? 'display:block' : 'display:none'}">
-                            </div>
-                            <button type="button" class="img-slider-btn prev-btn"
-                                th:onclick="'changeImage(' + ${category.id} + ', -1)'">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button type="button" class="img-slider-btn next-btn"
-                                th:onclick="'changeImage(' + ${category.id} + ', 1)'">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </th:block>
-
-                        <!-- Ảnh đơn -->
-                        <th:block th:if="${category.images == null or category.images.size() <= 1}">
-                            <img th:src="@{${category.images != null and !category.images.isEmpty()
-                                    ? category.images[0].imageUrl
-                                    : (category.imgUrl != null ? category.imgUrl : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800&auto=format&fit=crop')}}"
-                                alt="Room Image" class="slider-image">
-                        </th:block>
+                        <!-- Ảnh -->
+                        <img th:src="@{${category.imgUrl != null ? category.imgUrl : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800&auto=format&fit=crop'}}"
+                            alt="Room Image" class="slider-image">
                     </div>
 
                     <!-- ── Content Side ── -->
@@ -261,6 +243,7 @@
 
             // Ràng buộc giới hạn không cho rớt xuống âm
             if (newQty < 0) newQty = 0;
+            // Ràng buộc giới hạn không vượt quá số phòng trống
             if (newQty > availableCount) newQty = availableCount;
 
             // Cập nhật lại số liệu hiển thị trên ô Input HTML
@@ -311,26 +294,16 @@
                 return; // Chặn đứng, không cho Submit form
             }
 
-            // 2. Lấy thẻ Form ảo để submit
-            const form = document.getElementById('hidden-booking-form');
-            form.innerHTML = ''; // Clear Form
+            // Phát hỏa đi thẳng sang URL Chi tiết & Đặt phòng (gửi kèm số lượng phòng đã chọn)
+            // Ta lấy thêm ngày tháng từ form filter nếu có để truyền đi luôn
+            const checkInDate = document.getElementById('checkInDate') ? document.getElementById('checkInDate').value : '';
+            const checkOutDate = document.getElementById('checkOutDate') ? document.getElementById('checkOutDate').value : '';
+            
+            let targetUrl = `/customer/rooms/${categoryId}?roomCount=${cart[categoryId].quantity}`;
+            if (checkInDate) targetUrl += `&checkInDate=${checkInDate}`;
+            if (checkOutDate) targetUrl += `&checkOutDate=${checkOutDate}`;
 
-            // Thuộc tính categoryId -> Bind tương ứng Spring: cartItems[0].categoryId
-            const inputId = document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = `cartItems[0].categoryId`;
-            inputId.value = cart[categoryId].categoryId;
-            form.appendChild(inputId);
-
-            // Thuộc tính quantity -> Bind tương ứng Spring: cartItems[0].quantity
-            const inputQty = document.createElement('input');
-            inputQty.type = 'hidden';
-            inputQty.name = `cartItems[0].quantity`;
-            inputQty.value = cart[categoryId].quantity;
-            form.appendChild(inputQty);
-
-            // Phát hỏa Form GET đi thẳng sang URL: /customer/booking/information
-            form.submit();
+            window.location.href = targetUrl;
         }
 
         // -- Logic Slider hình ảnh cũ của UI -- //

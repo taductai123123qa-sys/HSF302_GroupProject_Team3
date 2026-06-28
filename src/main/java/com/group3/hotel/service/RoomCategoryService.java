@@ -9,4 +9,5 @@ public interface RoomCategoryService {
 
     public List<RoomCategory> getAllCategories();
     public List<RoomCategory> searchCategory(RoomSearchRequest searchRequest);
+    public RoomCategory getCategoryById(Long id);
 }

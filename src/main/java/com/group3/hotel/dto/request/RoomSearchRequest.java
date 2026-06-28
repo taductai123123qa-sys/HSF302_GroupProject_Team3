@@ -1,10 +1,16 @@
 package com.group3.hotel.dto.request;
 
 import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class RoomSearchRequest {
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkInDate = LocalDate.now();
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkOutDate = LocalDate.now().plusDays(1);
+    
     private Integer capacity = 2;
     private Long roomCategory;
     private Double minPrice;

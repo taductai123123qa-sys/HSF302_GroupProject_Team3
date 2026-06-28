@@ -39,6 +39,11 @@ public class RoomCategory {
     @OneToMany(mappedBy = "roomCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Room> rooms;
 
-    @OneToMany(mappedBy = "roomCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RoomImage> images;
+    @Transient
+    public int getAvailableRoomCount() {
+        if (rooms == null) return 0;
+        return (int) rooms.stream()
+                .filter(room -> room.getRoomStatus() != null && room.getRoomStatus().name().equals("AVAILABLE"))
+                .count();
+    }
 }
