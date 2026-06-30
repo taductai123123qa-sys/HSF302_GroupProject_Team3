@@ -31,8 +31,25 @@ public class RoomCategory {
     @Column(nullable = false)
     private Integer capacity;
 
+    @Column(name = "room_size")
+    private Double size;
+
     private String imgUrl;
 
     @OneToMany(mappedBy = "roomCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Room> rooms;
+
+    @Transient
+    private Integer dynamicAvailableCount;
+
+    @Transient
+    public int getAvailableRoomCount() {
+        if (dynamicAvailableCount != null) {
+            return dynamicAvailableCount;
+        }
+        if (rooms == null) return 0;
+        return (int) rooms.stream()
+                .filter(room -> room.getRoomStatus() != null && room.getRoomStatus().name().equals("AVAILABLE"))
+                .count();
+    }
 }

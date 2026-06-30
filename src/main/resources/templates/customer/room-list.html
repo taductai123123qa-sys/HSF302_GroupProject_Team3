@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/fragments :: html_head('Danh sách phòng trống - Phúc Nguyên Hotel')}">
+    <meta charset="UTF-8">
+    <title>Danh sách phòng trống</title>
+</head>
+
+<body class="bg-light">
+
+    <!-- Header -->
+    <header th:replace="~{layout/fragments :: customer_header}"></header>
+
+    <link rel="stylesheet" th:href="@{/css/customer/room-list.css}">
+
+
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-overlay"></div>
+        <h1 class="page-title">Khám Phá Không Gian Nghỉ Dưỡng</h1>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Dữ liệu ngầm cho Javascript đối chiếu -->
+        <!-- Lấy số lượng khách và đêm để JS tính toán Audit Sức chứa và Tổng giá -->
+        <input type="hidden" id="search-capacity"
+            th:value="${searchRequest.capacity != null ? searchRequest.capacity : 1}">
+        <input type="hidden" id="search-nights"
+            th:value="${searchRequest.numberOfNights != null ? searchRequest.numberOfNights : 1}">
+
+        <!-- Mini Booking Bar -->
+        <section class="search-bar-container">
+            <form action="/customer/rooms/search" method="GET" class="search-bar-wrapper" th:object="${searchRequest}">
+                <div class="search-bar main-search">
+                    <div class="search-group">
+                        <label for="checkInDate">Ngày nhận phòng</label>
+                        <div class="search-input-wrap">
+                            <i class="far fa-calendar-alt"></i>
+                            <input type="date" id="checkInDate" th:field="*{checkInDate}">
+                        </div>
+                    </div>
+                    <div class="search-group">
+                        <label for="checkOutDate">Ngày trả phòng</label>
+                        <div class="search-input-wrap">
+                            <i class="far fa-calendar-alt"></i>
+                            <input type="date" id="checkOutDate" th:field="*{checkOutDate}">
+                        </div>
+                    </div>
+                    <div class="search-group">
+                        <label for="capacity">Số khách</label>
+                        <div class="search-input-wrap">
+                            <i class="far fa-user"></i>
+                            <input type="number" id="capacity" min="1" th:field="*{capacity}">
+                        </div>
+                    </div>
+                    <div class="search-group">
+                        <button type="submit" class="btn-search">Tìm Phòng</button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <div class="search-group">
+                        <label for="roomCategory">Hạng phòng</label>
+                        <div class="search-input-wrap">
+                            <i class="fas fa-door-open"></i>
+                            <select id="roomCategory" th:field="*{roomCategory}" class="filter-select">
+                                <option value="">Tất cả hạng phòng</option>
+                                <option th:if="${allRoomCategories != null}" th:each="cat : ${allRoomCategories}"
+                                    th:value="${cat.id}" th:text="${cat.name}"></option>
+                                <!-- Fallback static options for UI -->
+                                <option th:if="${allRoomCategories == null}" value="1">Standard</option>
+                                <option th:if="${allRoomCategories == null}" value="2">Deluxe</option>
+                                <option th:if="${allRoomCategories == null}" value="3">Suite</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="search-group">
+                        <label for="minPrice">Giá từ (VNĐ)</label>
+                        <div class="search-input-wrap">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <input type="number" id="minPrice" th:field="*{minPrice}" placeholder="Tối thiểu" min="0">
+                        </div>
+                    </div>
+                    <div class="search-group">
+                        <label for="maxPrice">Đến (VNĐ)</label>
+                        <div class="search-input-wrap">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <input type="number" id="maxPrice" th:field="*{maxPrice}" placeholder="Tối đa" min="0">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Room List Section -->
+        <section class="room-list-container">
+
+            <p class="rl-section-eyebrow">Lựa chọn của bạn</p>
+            <h2 class="rl-section-title">Danh Sách Phòng Trống</h2>
+
+            <!-- Error message -->
+            <div th:if="${errorMessage}" class="rl-alert" th:text="${errorMessage}"></div>
+
+            <div class="room-list-wrapper">
+                <!-- VÒNG LẶP RENDER DỮ LIỆU TỪ DB LÊN HTML -->
+                <!-- Nhúng data-* để biến thẻ div này thành 1 kho chứa dữ liệu ngầm cho JavaScript -->
+                <div class="room-card" th:each="category : ${roomCategories}" th:data-category-id="${category.id}"
+                    th:data-category-name="${category.name}" th:data-capacity="${category.capacity}"
+                    th:data-price-per-night="${category.pricePerNight}" th:data-available-count="${category.availableRoomCount}">
+
+                    <!-- ── Image Side ── -->
+                    <div class="room-card-img">
+
+                        <!-- Availability pill — nằm trên ảnh -->
+                        <div class="room-avail-pill" th:if="${category.availableRoomCount > 0}">
+                            <span class="room-avail-dot"></span>
+                            <span th:text="'Còn ' + ${category.availableRoomCount} + ' phòng trống'">Còn 5 phòng trống</span>
+                        </div>
+                        <div class="room-avail-pill" th:if="${category.availableRoomCount == 0}" style="background-color: #ff4d4f; color: white;">
+                            <span class="room-avail-dot" style="background-color: white;"></span>
+                            <span>Hết phòng</span>
+                        </div>
+
+                        <!-- Ảnh -->
+                        <img th:src="@{${category.imgUrl != null ? category.imgUrl : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800&auto=format&fit=crop'}}"
+                            alt="Room Image" class="slider-image">
+                    </div>
+
+                    <!-- ── Content Side ── -->
+                    <div class="room-card-content">
+
+                        <p class="room-category-label">Hạng Phòng</p>
+                        <h3 class="room-card-title" th:text="${category.name}">Room Name</h3>
+                        <p class="room-desc"
+                            th:text="'Phòng ' + ${category.name} + ' sang trọng và tiện nghi, mang đến trải nghiệm nghỉ dưỡng đẳng cấp tại Phúc Nguyên Hotel.'">
+                            Description
+                        </p>
+
+                        <div class="room-features">
+                            <div class="room-feature-item">
+                                <i class="fas fa-vector-square"></i>
+                                <span><strong>Diện tích:</strong> <span
+                                        th:text="${category.size != null ? category.size : '45'}"></span> m²</span>
+                            </div>
+                            <div class="room-feature-item">
+                                <i class="fas fa-user-friends"></i>
+                                <span><strong>Sức chứa tối đa:</strong> <span th:text="${category.capacity}"></span>
+                                    khách</span>
+                            </div>
+                            <div class="room-feature-item">
+                                <i class="fas fa-moon"></i>
+                                <span><strong>Giá theo đêm:</strong> <span
+                                        th:text="${category.pricePerNight != null ? #numbers.formatDecimal(category.pricePerNight, 0, 'COMMA', 0, 'POINT') : 0} + ' VNĐ'"></span></span>
+                            </div>
+                        </div>
+
+                        <div class="room-card-footer" style="flex-direction: column; align-items: flex-end;">
+                            <div class="room-price-wrap" style="text-align: right; width: 100%;">
+                                <span class="price-label" th:id="'price-label-' + ${category.id}"
+                                    th:text="'Tổng cho 1 phòng / ' + ${searchRequest.numberOfNights} + ' đêm'">Tổng
+                                    cộng</span>
+                                <span class="price-value">
+                                    <span th:id="'price-val-' + ${category.id}"
+                                        th:text="${category.pricePerNight != null ? #numbers.formatDecimal(category.pricePerNight * searchRequest.numberOfNights, 0, 'COMMA', 0, 'POINT') : 0}">0</span>
+                                    <span class="price-night">VNĐ</span>
+                                </span>
+                            </div>
+
+                            <!-- BỘ ĐIỀU KHIỂN SỐ LƯỢNG MỚI (QUANTITY CONTROLLER) -->
+                            <div class="quantity-controller">
+                                <!-- Gọi hàm updateQuantity() của JS, truyền ID phòng và tham số -1 (Trừ) -->
+                                <button type="button" class="btn-quantity-minus"
+                                    th:onclick="'updateQuantity(' + ${category.id} + ', -1)'">-</button>
+                                <!-- Ô nhập số liệu dạng Readonly để tránh User gõ chữ bậy -->
+                                <input type="number" class="room-quantity-input" th:id="'qty-' + ${category.id}"
+                                    value="0" min="0" readonly>
+                                <!-- Truyền ID phòng và tham số 1 (Cộng) -->
+                                <button type="button" class="btn-quantity-plus"
+                                    th:onclick="'updateQuantity(' + ${category.id} + ', 1)'">+</button>
+                            </div>
+
+                            <!-- Nút đặt phòng hiển thị khi số lượng > 0 -->
+                            <button type="button" class="btn-submit-room" th:id="'btn-book-' + ${category.id}"
+                                style="display: none; width: 100%; margin-top: 15px; background: #b8960c; color: #fff; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; padding: 14px 20px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease;"
+                                th:onmouseover="this.style.background='#8a6a00'; this.style.transform='translateY(-2px)';"
+                                th:onmouseout="this.style.background='#b8960c'; this.style.transform='none';"
+                                th:onclick="'submitBooking(' + ${category.id} + ')'">Tiến Hành Đặt Phòng</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FORM ẨN ĐỂ ĐẨY LÊN BACKEND -->
+    <!-- Form GET này sẽ gom toàn bộ dữ liệu biến thành URL param để đẩy sang trang Information -->
+    <form id="hidden-booking-form" action="/customer/booking/information" method="GET">
+    </form>
+
+    <!-- Footer -->
+    <footer th:replace="~{layout/fragments :: customer_footer}"></footer>
+
+    <!-- Scripts -->
+    <th:block th:replace="~{layout/fragments :: html_scripts}"></th:block>
+    <script>
+        // -- JAVASCRIPT XỬ LÝ NGHIỆP VỤ GIỎ HÀNG THÔNG MINH -- //
+
+        // Object toàn cục lưu trữ danh sách các phòng được chọn (Giỏ hàng)
+        let cart = {};
+
+        // Bóc tách dữ liệu gốc từ HTML
+        const searchCapacity = parseInt(document.getElementById('search-capacity').value) || 2;
+        const searchNights = parseInt(document.getElementById('search-nights').value) || 1;
+
+        /**
+         * Hàm điều khiển Logic Tăng/Giảm (Trigger khi bấm +/-)
+         */
+        function updateQuantity(categoryId, delta) {
+            // Chặn chọn nhiều hạng phòng khác nhau
+            const currentCartKeys = Object.keys(cart);
+            if (delta > 0 && currentCartKeys.length > 0 && !currentCartKeys.includes(categoryId.toString())) {
+                alert("Hệ thống hiện chỉ cho phép đặt nhiều phòng trong cùng một hạng phòng. Vui lòng bỏ chọn hạng phòng hiện tại trước khi chọn hạng phòng mới.");
+                return;
+            }
+
+            // Định vị ra thẻ HTML cha (Room Card) chứa dữ liệu của Hạng phòng đang bấm
+            const card = document.querySelector(`.room-card[data-category-id='${categoryId}']`);
+            if (!card) return;
+
+            // Rút số lượng phòng trống từ Data Attribute
+            const availableCount = parseInt(card.getAttribute('data-available-count')) || 0;
+
+            // Tìm số lượng hiện tại trong Giỏ hàng
+            let currentQty = cart[categoryId] ? cart[categoryId].quantity : 0;
+            // Áp dụng phép toán (+1 hoặc -1)
+            let newQty = currentQty + delta;
+
+            // Ràng buộc giới hạn không cho rớt xuống âm
+            if (newQty < 0) newQty = 0;
+            // Ràng buộc giới hạn không vượt quá số phòng trống
+            if (newQty > availableCount) newQty = availableCount;
+
+            // Cập nhật lại số liệu hiển thị trên ô Input HTML
+            const input = document.getElementById('qty-' + categoryId);
+            if (input) input.value = newQty;
+
+            // Đồng bộ vào bộ nhớ Object Giỏ Hàng
+            if (newQty === 0) {
+                delete cart[categoryId];
+                document.getElementById('btn-book-' + categoryId).style.display = 'none';
+            } else {
+                cart[categoryId] = {
+                    categoryId: categoryId,
+                    categoryName: card.getAttribute('data-category-name'),
+                    capacity: parseInt(card.getAttribute('data-capacity')) || 0,
+                    price: parseFloat(card.getAttribute('data-price-per-night')) || 0,
+                    quantity: newQty
+                };
+                document.getElementById('btn-book-' + categoryId).style.display = 'block';
+            }
+
+            // Cập nhật giá tiền hiển thị trên card
+            let displayQty = newQty > 0 ? newQty : 1;
+            let currentPrice = (parseFloat(card.getAttribute('data-price-per-night')) || 0) * searchNights * displayQty;
+            const priceValSpan = document.getElementById('price-val-' + categoryId);
+            if (priceValSpan) {
+                priceValSpan.innerText = new Intl.NumberFormat('vi-VN').format(currentPrice);
+            }
+
+            const priceLabelSpan = document.getElementById('price-label-' + categoryId);
+            if (priceLabelSpan) {
+                priceLabelSpan.innerText = 'Tổng cho ' + displayQty + ' phòng / ' + searchNights + ' đêm';
+            }
+        }
+
+        /**
+         * Hàm Đóng gói dữ liệu và Ném lên Backend
+         */
+        function submitBooking(categoryId) {
+            if (!cart[categoryId]) return;
+
+            // 1. KIỂM TRA SỨC CHỨA TRƯỚC KHI SUBMIT
+            let totalCapacity = cart[categoryId].capacity * cart[categoryId].quantity;
+
+            // Nếu tổng sức chứa phòng chọn < Số người đã nhập tìm kiếm
+            if (totalCapacity < searchCapacity) {
+                alert("Lưu ý về sức chứa: Sức chứa của số phòng này (" + totalCapacity + " khách) đang thấp hơn số khách bạn đang tìm kiếm (" + searchCapacity + " khách). Vui lòng chọn thêm phòng hoặc thay đổi số lượng khách.");
+                return; // Chặn đứng, không cho Submit form
+            }
+
+            // Phát hỏa đi thẳng sang URL Chi tiết & Đặt phòng (gửi kèm số lượng phòng đã chọn)
+            // Ta lấy thêm ngày tháng từ form filter nếu có để truyền đi luôn
+            const checkInDate = document.getElementById('checkInDate') ? document.getElementById('checkInDate').value : '';
+            const checkOutDate = document.getElementById('checkOutDate') ? document.getElementById('checkOutDate').value : '';
+            
+            let targetUrl = `/customer/rooms/${categoryId}?roomCount=${cart[categoryId].quantity}`;
+            if (checkInDate) targetUrl += `&checkInDate=${checkInDate}`;
+            if (checkOutDate) targetUrl += `&checkOutDate=${checkOutDate}`;
+
+            window.location.href = targetUrl;
+        }
+
+        // -- Logic Slider hình ảnh cũ của UI -- //
+        function changeImage(categoryId, direction) {
+            const slider = document.getElementById('slider-' + categoryId);
+            if (!slider) return;
+            const images = slider.querySelectorAll('.slider-image');
+            if (images.length <= 1) return;
+
+            let currentIndex = 0;
+            for (let i = 0; i < images.length; i++) {
+                if (images[i].style.display !== 'none') {
+                    currentIndex = i;
+                    break;
+                }
+            }
+
+            images[currentIndex].style.display = 'none';
+
+            let nextIndex = currentIndex + direction;
+            if (nextIndex >= images.length) {
+                nextIndex = 0;
+            } else if (nextIndex < 0) {
+                nextIndex = images.length - 1;
+            }
+
+            images[nextIndex].style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
