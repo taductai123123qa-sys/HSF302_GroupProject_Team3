@@ -38,4 +38,10 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus status;
+
+    @Column(name = "txn_ref", unique = true)
+    private String txnRef;
+
+    @Column(name = "gateway_transaction_no")
+    private String gatewayTransactionNo;
 }

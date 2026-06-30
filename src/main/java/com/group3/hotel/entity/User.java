@@ -4,8 +4,6 @@ import com.group3.hotel.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "users")
 @Getter
@@ -25,17 +23,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String fullName;
-
-    private String phone;
-
-    private String avatarUrl;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RoomBooking> bookings;
+    // Không còn List<RoomBooking> bookings ở đây nữa. Sẽ chuyển qua Customer.
 }

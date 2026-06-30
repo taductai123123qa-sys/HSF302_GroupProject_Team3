@@ -5,6 +5,11 @@ import com.group3.hotel.entity.RoomCategory;
 import com.group3.hotel.enums.RoomStatus;
 import com.group3.hotel.repository.RoomCategoryRepository;
 import com.group3.hotel.repository.RoomRepository;
+import com.group3.hotel.entity.User;
+import com.group3.hotel.entity.Customer;
+import com.group3.hotel.enums.UserRole;
+import com.group3.hotel.repository.UserRepository;
+import com.group3.hotel.repository.CustomerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,13 +21,35 @@ import java.util.Arrays;
 public class DataInitializer {
 
     @Bean
-    public CommandLineRunner initData(RoomCategoryRepository roomCategoryRepository, RoomRepository roomRepository) {
+    public CommandLineRunner initData(
+            RoomCategoryRepository roomCategoryRepository, 
+            RoomRepository roomRepository,
+            UserRepository userRepository,
+            CustomerRepository customerRepository) {
         return args -> {
+            // 1. Khởi tạo dữ liệu người dùng (Customer) để test luồng Đặt phòng
+            if (userRepository.findByEmail("guest@hotel.com").isEmpty()) {
+                User guestUser = User.builder()
+                        .email("guest@hotel.com")
+                        .password("123456")
+                        .role(UserRole.GUEST)
+                        .build();
+                userRepository.save(guestUser);
+
+                Customer guestCustomer = Customer.builder()
+                        .user(guestUser)
+                        .fullName("Guest User")
+                        .phone("0123456789")
+                        .build();
+                customerRepository.save(guestCustomer);
+                System.out.println("Initialized Guest Customer Data!");
+            }
+
             if (roomCategoryRepository.count() == 0) {
                 // Create Room Categories
                 RoomCategory standard = RoomCategory.builder()
                         .name("Standard Room")
-                        .pricePerNight(new BigDecimal("100.00"))
+                        .pricePerNight(new BigDecimal("1000000.00"))
                         .description("A comfortable standard room with basic amenities.")
                         .capacity(2)
                         .size(25.0)

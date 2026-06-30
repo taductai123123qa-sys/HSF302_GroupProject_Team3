@@ -86,11 +86,16 @@
                             <input type="hidden" th:field="*{checkOutDate}" />
                             <input type="hidden" id="pricePerNight" th:value="${category.pricePerNight}" />
                             <input type="hidden" id="totalNights" th:value="${totalNights}" />
+                            <input type="hidden" id="maxAvailableCount" th:value="${category.dynamicAvailableCount}" />
 
                             <!-- Số lượng phòng đặt -->
                             <div class="mb-3">
                                 <label for="roomCount" class="form-label fw-bold">Số lượng phòng</label>
-                                <input type="number" class="form-control" id="roomCount" th:field="*{roomCount}" min="1" max="10" onchange="calculateTotal()" required>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="number" class="form-control" id="roomCount" th:field="*{roomCount}" min="1" th:max="${category.dynamicAvailableCount}" oninput="checkMaxRooms(); calculateTotal()" required>
+                                    <span class="badge bg-success" th:text="'Còn ' + ${category.dynamicAvailableCount} + ' phòng'">Còn X phòng</span>
+                                </div>
+                                <small id="roomCountError" class="text-danger d-none">Số lượng phòng vượt quá số phòng trống!</small>
                             </div>
 
                             <hr>
@@ -134,7 +139,7 @@
                                 </span>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" style="font-size: 1.1rem;">
+                            <button type="submit" id="btnSubmitBooking" class="btn btn-primary w-100 py-2 fw-bold" style="font-size: 1.1rem;">
                                 Xác nhận đặt phòng
                             </button>
                         </form>
@@ -150,6 +155,33 @@
     <!-- Scripts -->
     <div th:replace="~{layout/fragments :: html_scripts}"></div>
     <script>
+        function checkMaxRooms() {
+            const input = document.getElementById('roomCount');
+            const errorMsg = document.getElementById('roomCountError');
+            const submitBtn = document.getElementById('btnSubmitBooking');
+            const maxAvailable = parseInt(document.getElementById('maxAvailableCount').value) || 0;
+            let currentVal = parseInt(input.value);
+            
+            // Nếu người dùng nhập linh tinh, kệ nó để form validation mặc định xử lý
+            if (isNaN(currentVal)) return;
+
+            if (currentVal > maxAvailable) {
+                // Tự động chặn và trả về mức tối đa, hiện lỗi
+                input.value = maxAvailable;
+                errorMsg.classList.remove('d-none');
+            } else if (currentVal <= 0) {
+                input.value = 1;
+            } else {
+                errorMsg.classList.add('d-none');
+            }
+            
+            // Disable nút submit nếu hoàn toàn hết phòng (maxAvailable = 0)
+            if (maxAvailable === 0) {
+                submitBtn.disabled = true;
+                input.value = 0;
+            }
+        }
+
         function calculateTotal() {
             const price = parseFloat(document.getElementById('pricePerNight').value) || 0;
             const nights = parseInt(document.getElementById('totalNights').value) || 1;
@@ -161,6 +193,11 @@
             const formattedTotal = total.toLocaleString('en-US') + ' VNĐ';
             document.getElementById('totalPriceDisplay').innerText = formattedTotal;
         }
+
+        // Gọi hàm một lần khi load trang để xử lý trường hợp vừa vào đã hết phòng
+        document.addEventListener('DOMContentLoaded', function() {
+            checkMaxRooms();
+        });
     </script>
 </body>
 </html>

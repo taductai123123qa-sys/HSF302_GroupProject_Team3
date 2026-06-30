@@ -10,4 +10,5 @@ public interface RoomCategoryService {
     public List<RoomCategory> getAllCategories();
     public List<RoomCategory> searchCategory(RoomSearchRequest searchRequest);
     public RoomCategory getCategoryById(Long id);
+    public int getAvailableRoomCount(Long categoryId, java.time.LocalDate checkIn, java.time.LocalDate checkOut);
 }

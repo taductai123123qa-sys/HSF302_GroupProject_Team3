@@ -72,4 +72,30 @@ public class RoomAllocationServiceImpl implements RoomAllocationService {
         }
         log.info("Đã giải phóng phòng vật lý cho đơn hàng bị hủy/thất bại ID: {}", booking.getId());
     }
+
+    @org.springframework.scheduling.annotation.Scheduled(cron = "0 * * * * *") // Chạy mỗi phút
+    @Transactional
+    public void cleanupExpiredPendingBookings() {
+        LocalDateTime now = LocalDateTime.now();
+        List<RoomBooking> expiredBookings = roomBookingRepository.findByBookingStatusAndExpiredAtBefore(BookingStatus.PENDING, now);
+        
+        for (RoomBooking booking : expiredBookings) {
+            // Đổi trạng thái Booking thành CANCELLED
+            booking.setBookingStatus(BookingStatus.CANCELLED);
+            roomBookingRepository.save(booking);
+
+            // Cập nhật trạng thái Payment (nếu có)
+            if (booking.getPayments() != null) {
+                for (com.group3.hotel.entity.Payment p : booking.getPayments()) {
+                    if (p.getStatus() == com.group3.hotel.enums.PaymentStatus.UNPAID) {
+                        // Hiện tại hệ thống không còn FAILED, có thể giữ UNPAID
+                    }
+                }
+            }
+
+            // Giải phóng phòng
+            releaseRoomsForCancelledBooking(booking);
+            log.info("CronJob: Đã hủy đơn hàng {} do quá hạn thanh toán VNPay.", booking.getId());
+        }
+    }
 }

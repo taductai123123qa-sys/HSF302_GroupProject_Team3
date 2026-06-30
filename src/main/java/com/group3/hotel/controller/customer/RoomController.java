@@ -76,6 +76,10 @@ public class RoomController {
             searchRequest.setCheckOutDate(LocalDate.now().plusDays(1));
         }
         model.addAttribute("searchRequest", searchRequest);
+        
+        // Tính số lượng phòng trống thực tế
+        int availableCount = roomCategoryService.getAvailableRoomCount(id, searchRequest.getCheckInDate(), searchRequest.getCheckOutDate());
+        category.setDynamicAvailableCount(Math.max(0, availableCount));
 
         // Khởi tạo BookingRequest
         BookingCreateRequest bookingRequest = new BookingCreateRequest();

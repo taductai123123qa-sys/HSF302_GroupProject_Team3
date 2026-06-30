@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> findByRoomCategoryIdAndRoomStatus(Long categoryId, RoomStatus status);
+    long countByRoomCategoryIdAndRoomStatusNot(Long categoryId, RoomStatus status);
 }

@@ -40,7 +40,13 @@ public class RoomCategory {
     private List<Room> rooms;
 
     @Transient
+    private Integer dynamicAvailableCount;
+
+    @Transient
     public int getAvailableRoomCount() {
+        if (dynamicAvailableCount != null) {
+            return dynamicAvailableCount;
+        }
         if (rooms == null) return 0;
         return (int) rooms.stream()
                 .filter(room -> room.getRoomStatus() != null && room.getRoomStatus().name().equals("AVAILABLE"))

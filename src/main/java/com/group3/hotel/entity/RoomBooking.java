@@ -23,8 +23,8 @@ public class RoomBooking {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @Column(nullable = false)
     private LocalDate checkInDate;
@@ -57,10 +57,14 @@ public class RoomBooking {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column
+    private LocalDateTime expiredAt;
+
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
+            this.expiredAt = this.createdAt.plusMinutes(5);
         }
     }
 }

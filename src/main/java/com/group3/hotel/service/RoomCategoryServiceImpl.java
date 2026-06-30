@@ -10,11 +10,22 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+import java.util.ArrayList;
+import com.group3.hotel.repository.RoomRepository;
+import com.group3.hotel.repository.BookingDetailRepository;
+import com.group3.hotel.enums.RoomStatus;
+
 @Service
 public class RoomCategoryServiceImpl implements RoomCategoryService {
 
     @Autowired
     private RoomCategoryRepository roomCategoryRepository;
+    
+    @Autowired
+    private RoomRepository roomRepository;
+    
+    @Autowired
+    private BookingDetailRepository bookingDetailRepository;
 
     @Override
     public List<RoomCategory> getAllCategories() {
@@ -32,7 +43,23 @@ public class RoomCategoryServiceImpl implements RoomCategoryService {
             checkout = checkIn.plusDays(1);
         }
         
-        List<RoomCategory> available = roomCategoryRepository.findAvailableCategories(checkIn, checkout, guests);
+        List<RoomCategory> allCategories = roomCategoryRepository.findAll();
+        List<RoomCategory> available = new ArrayList<>();
+        
+        for (RoomCategory rc : allCategories) {
+            if (rc.getCapacity() < guests) {
+                continue;
+            }
+            
+            long totalRooms = roomRepository.countByRoomCategoryIdAndRoomStatusNot(rc.getId(), RoomStatus.MAINTENANCE);
+            long bookedRooms = bookingDetailRepository.countBookedRooms(rc.getId(), checkIn, checkout);
+            
+            int availableCount = (int) (totalRooms - bookedRooms);
+            if (availableCount > 0) {
+                rc.setDynamicAvailableCount(availableCount);
+                available.add(rc);
+            }
+        }
 
         if (searchRequest.getRoomCategory() != null) {
             available = available.stream()
@@ -58,5 +85,12 @@ public class RoomCategoryServiceImpl implements RoomCategoryService {
     @Override
     public RoomCategory getCategoryById(Long id) {
         return roomCategoryRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public int getAvailableRoomCount(Long categoryId, LocalDate checkIn, LocalDate checkOut) {
+        long totalRooms = roomRepository.countByRoomCategoryIdAndRoomStatusNot(categoryId, RoomStatus.MAINTENANCE);
+        long bookedRooms = bookingDetailRepository.countBookedRooms(categoryId, checkIn, checkOut);
+        return (int) (totalRooms - bookedRooms);
     }
 }
