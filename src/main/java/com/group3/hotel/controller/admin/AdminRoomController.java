@@ -1,54 +1,59 @@
 package com.group3.hotel.controller.admin;
 
 import com.group3.hotel.entity.Room;
+import com.group3.hotel.enums.RoomStatus;
 import com.group3.hotel.repository.RoomCategoryRepository;
-import com.group3.hotel.repository.RoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.group3.hotel.service.AdminRoomService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/rooms")
+@RequiredArgsConstructor
 public class AdminRoomController {
 
-    @Autowired
-    private RoomRepository roomRepository;
-
-    @Autowired
-    private RoomCategoryRepository categoryRepository;
+    private final AdminRoomService adminRoomService;
+    private final RoomCategoryRepository roomCategoryRepository;
 
     @GetMapping
     public String listRooms(Model model) {
-        model.addAttribute("rooms", roomRepository.findAll());
-        return "admin/room-list";
+        model.addAttribute("rooms", adminRoomService.getAllRooms());
+        return "admin/rooms";
     }
 
-    @GetMapping("/add")
-    public String showAddForm(Model model) {
-        model.addAttribute("room", new Room());
-        model.addAttribute("categories", categoryRepository.findAll());
+    @GetMapping("/create")
+    public String createForm(Model model) {
+        model.addAttribute("room", Room.builder().roomStatus(RoomStatus.AVAILABLE).floor(1).build());
+        addFormData(model);
         return "admin/room-form";
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phòng với ID: " + id));
-        model.addAttribute("room", room);
-        model.addAttribute("categories", categoryRepository.findAll());
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("room", adminRoomService.getRoomById(id));
+        addFormData(model);
         return "admin/room-form";
     }
 
     @PostMapping("/save")
-    public String saveRoom(@ModelAttribute("room") Room room) {
-        roomRepository.save(room);
+    public String saveRoom(@ModelAttribute Room room, RedirectAttributes redirectAttributes) {
+        adminRoomService.saveRoom(room);
+        redirectAttributes.addFlashAttribute("success", "Lưu phòng thành công");
         return "redirect:/admin/rooms";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteRoom(@PathVariable("id") Long id) {
-        roomRepository.deleteById(id);
+    public String deleteRoom(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        adminRoomService.deleteRoom(id);
+        redirectAttributes.addFlashAttribute("success", "Xóa phòng thành công");
         return "redirect:/admin/rooms";
+    }
+
+    private void addFormData(Model model) {
+        model.addAttribute("categories", roomCategoryRepository.findAllByOrderByNameAsc());
+        model.addAttribute("statuses", RoomStatus.values());
     }
 }
