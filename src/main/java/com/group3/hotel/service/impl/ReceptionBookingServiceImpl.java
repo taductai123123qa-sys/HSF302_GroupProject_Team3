@@ -36,7 +36,6 @@ public class ReceptionBookingServiceImpl implements IReceptionBookingService {
     public void approveBooking(Long bookingId) {
         RoomBooking booking = getBookingDetail(bookingId);
         
-        // Validation: Only PENDING can be approved
         if (booking.getBookingStatus() != BookingStatus.PENDING) {
             throw new IllegalStateException("Chỉ có thể duyệt đơn đang ở trạng thái PENDING.");
         }
