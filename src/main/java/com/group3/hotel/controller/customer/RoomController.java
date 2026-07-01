@@ -102,4 +102,12 @@ public class RoomController {
         return "customer/room-detail";
     }
 
+    @GetMapping("/booking/history")
+    public String bookingHistory(Model model) {
+        // TODO: Viết logic lấy danh sách Booking từ Database theo User đang đăng nhập ở đây
+        // Tạm thời mock 1 list rỗng hoặc null để load giao diện trước
+        model.addAttribute("bookings", java.util.Collections.emptyList());
+
+        return "customer/booking-history";
+    }
 }
