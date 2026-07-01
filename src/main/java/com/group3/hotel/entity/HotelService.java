@@ -1,5 +1,7 @@
 package com.group3.hotel.entity;
 
+import com.group3.hotel.enums.ServiceStatus;
+import com.group3.hotel.enums.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +28,11 @@ public class HotelService {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+    @Enumerated(EnumType.STRING)
+    @Column
+    private ServiceType serviceType;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private ServiceStatus status;
 }

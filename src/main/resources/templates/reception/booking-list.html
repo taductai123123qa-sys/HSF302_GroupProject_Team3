@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<!-- Alert Toast (Auto Hide after 3s) -->
+<!-- Alert Toast -->
 <div th:if="${success}" class="alert alert-success alert-dismissible fade show alert-toast" role="alert" id="successAlert">
     <div class="d-flex align-items-center">
         <span class="fs-5 me-2">✓</span>
@@ -29,37 +29,49 @@
 </div>
 
 <!-- Sidebar -->
+<!-- Sidebar -->
 <div class="sidebar">
-    <div class="sidebar-brand">Reception</div>
+    <div class="sidebar-brand">
+        Reception
+    </div>
+
+    <div class="sidebar-group">Đặt phòng</div>
     <a href="/reception/bookings" class="active">
-        <span class="sidebar-icon">≡</span> Quản lý đặt phòng
+        <span class="sidebar-icon"></span> Danh sách đơn
     </a>
-    <a href="#">
-        <span class="sidebar-icon">▦</span> Sơ đồ phòng (Matrix)
+    <a href="/reception/rooms">
+        <span class="sidebar-icon"></span> Sơ đồ phòng
     </a>
-    <!-- Thêm các menu khác sau nếu cần -->
+
+    <div class="mt-auto mb-3">
+        <a href="#">
+            <span class="sidebar-icon"></span> Cài đặt
+        </a>
+        <a href="#">
+            <span class="sidebar-icon"></span> Đăng xuất
+        </a>
+    </div>
 </div>
 
 <!-- Main Content -->
 <div class="main-wrapper">
     
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="page-header d-flex justify-content-between align-items-center">
         <h1 class="page-title">Danh sách đơn đặt phòng</h1>
-        <button class="btn btn-primary">+ Tạo đơn đặt phòng</button>
+        <!-- <button class="btn btn-primary">+ Tạo đơn đặt phòng</button> -->
     </div>
 
     <!-- Filter Form -->
-    <div class="card filter-area">
-        <form th:action="@{/reception/bookings}" method="get" class="row g-3 align-items-end">
-            <div class="col-md-5">
+    <div class="toolbar">
+        <form th:action="@{/reception/bookings}" method="get" class="w-100 d-flex gap-3 align-items-end">
+            <div class="flex-grow-1">
                 <label class="form-label">Tìm kiếm</label>
                 <div class="position-relative">
-                    <span class="position-absolute top-50 translate-middle-y ms-3 text-muted">🔍</span>
                     <input type="text" name="keyword" class="form-control ps-5" th:value="${keyword}" placeholder="Mã đơn, Tên khách, SĐT...">
                 </div>
             </div>
-            <div class="col-md-3">
+            <div style="width: 250px;">
                 <label class="form-label">Trạng thái</label>
                 <select name="status" class="form-select">
                     <option value="">Tất cả trạng thái</option>
@@ -69,7 +81,7 @@
                             th:selected="${stat == status}"></option>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div style="width: 250px;">
                 <label class="form-label">Sắp xếp theo</label>
                 <select name="sort" class="form-select">
                     <option value="createdAt,desc" th:selected="${sortParam == 'createdAt,desc'}">Ngày tạo (Mới nhất)</option>
@@ -78,33 +90,34 @@
                     <option value="checkInDate,desc" th:selected="${sortParam == 'checkInDate,desc'}">Ngày Check-in (Giảm dần)</option>
                 </select>
             </div>
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-primary w-100">Lọc</button>
+            <div>
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                <a href="/reception/bookings" class="btn btn-outline-secondary ms-2" style="height: 42px; line-height: 28px;">Xóa bộ lọc</a>
             </div>
         </form>
     </div>
 
     <!-- Table Card -->
-    <div class="card">
+    <div class="card p-0 overflow-hidden">
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Mã đơn</th>
                         <th>Khách hàng</th>
                         <th>Check-in</th>
                         <th>Check-out</th>
-                        <th>Số lượng khách</th>
+                        <th>Khách</th>
                         <th>Tổng tiền</th>
                         <th>Trạng thái</th>
-                        <th>Thao tác</th>
+                        <th class="text-end pe-4">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="booking : ${bookingPage.content}">
                         <td><a th:href="@{/reception/bookings/{id}(id=${booking.id})}" class="booking-id" th:text="'BK' + ${booking.id}">BK001</a></td>
                         <td>
-                            <div class="customer-name" th:text="${booking.customer.fullName}">Nguyễn Văn A</div>
+                            <div class="fw-medium text-dark" th:text="${booking.customer.fullName}">Nguyễn Văn A</div>
                         </td>
                         <td th:text="${#temporals.format(booking.checkInDate, 'dd/MM/yyyy')}">15/05/2025</td>
                         <td th:text="${#temporals.format(booking.checkOutDate, 'dd/MM/yyyy')}">17/05/2025</td>
@@ -119,8 +132,8 @@
                                 <span th:case="'CANCELLED'" class="status-badge bg-cancelled">CANCELLED</span>
                             </span>
                         </td>
-                        <td>
-                            <a th:href="@{/reception/bookings/{id}(id=${booking.id})}" class="action-btn">Chi tiết</a>
+                        <td class="text-end pe-4">
+                            <a th:href="@{/reception/bookings/{id}(id=${booking.id})}" class="btn btn-sm btn-outline-primary" style="height: auto; padding: 4px 12px; font-size: 0.85rem;">Chi tiết</a>
                         </td>
                     </tr>
                     
@@ -128,9 +141,8 @@
                     <tr th:if="${bookingPage.content.isEmpty()}">
                         <td colspan="8" class="text-center py-5">
                             <div class="text-muted fs-1 mb-3">📄</div>
-                            <h5 class="text-main fw-semibold">Không tìm thấy đơn đặt phòng</h5>
-                            <p class="text-muted mb-4">Thử thay đổi bộ lọc tìm kiếm hoặc từ khóa.</p>
-                            <a href="/reception/bookings" class="btn btn-outline-secondary btn-sm">Xóa bộ lọc</a>
+                            <h5 class="fw-semibold text-dark">Không tìm thấy đơn đặt phòng</h5>
+                            <p class="text-muted mb-0">Thử thay đổi bộ lọc tìm kiếm hoặc từ khóa.</p>
                         </td>
                     </tr>
                 </tbody>
@@ -138,11 +150,11 @@
         </div>
         
         <!-- Pagination -->
-        <div class="card-footer bg-white border-top-0 py-3 d-flex justify-content-between align-items-center" th:if="${bookingPage.totalPages > 0}">
-            <div class="text-muted" style="font-size: 13px;">
-                Hiển thị <span th:text="${bookingPage.number * bookingPage.size + 1}">1</span> đến 
-                <span th:text="${bookingPage.number * bookingPage.size + bookingPage.numberOfElements}">10</span> 
-                của <span th:text="${bookingPage.totalElements}">25</span> đơn
+        <div class="bg-white px-4 py-3 border-top d-flex justify-content-between align-items-center" th:if="${bookingPage.totalPages > 0}">
+            <div class="text-muted" style="font-size: 0.85rem;">
+                Hiển thị <span class="fw-medium text-dark" th:text="${bookingPage.number * bookingPage.size + 1}">1</span> đến 
+                <span class="fw-medium text-dark" th:text="${bookingPage.number * bookingPage.size + bookingPage.numberOfElements}">10</span> 
+                của <span class="fw-medium text-dark" th:text="${bookingPage.totalElements}">25</span> đơn
             </div>
             
             <ul th:if="${bookingPage.totalPages > 1}" class="pagination pagination-sm m-0">

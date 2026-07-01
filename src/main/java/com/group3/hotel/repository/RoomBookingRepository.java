@@ -15,6 +15,7 @@ import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface RoomBookingRepository extends JpaRepository<RoomBooking, Long> {
+    List<RoomBooking> findAllByOrderByCheckInDateDesc();
     List<RoomBooking> findByBookingStatusAndExpiredAtBefore(BookingStatus status, LocalDateTime now);
 
     @Query("SELECT rb FROM RoomBooking rb WHERE " +

@@ -34,4 +34,28 @@ public interface IReceptionBookingService {
      * @param bookingId Mã đơn
      */
     void rejectBooking(Long bookingId);
+
+    /**
+     * Lễ tân thực hiện Check-in (CONFIRMED -> CHECKED_IN)
+     * Đồng thời gán các phòng thực tế (Room) vào các chi tiết đơn (BookingDetail)
+     * @param bookingId Mã đơn
+     * @param detailRoomMap Map chứa {BookingDetailId : RoomId} do Lễ tân chọn
+     */
+    void checkInBooking(Long bookingId, java.util.Map<Long, Long> detailRoomMap);
+
+    /**
+     * Lễ tân thực hiện Check-out (CHECKED_IN -> CHECKED_OUT)
+     * Đổi trạng thái các phòng thành NEED_CLEANING
+     * @param bookingId Mã đơn
+     */
+    void checkOutBooking(Long bookingId);
+
+    /**
+     * Đổi phòng cho khách đã check-in
+     * @param bookingId Mã đơn
+     * @param detailId Mã chi tiết đơn
+     * @param newRoomId Mã phòng mới
+     * @param keepPrice Giữ nguyên giá phòng cũ hay tính theo giá mới
+     */
+    void changeRoom(Long bookingId, Long detailId, Long newRoomId, boolean keepPrice);
 }

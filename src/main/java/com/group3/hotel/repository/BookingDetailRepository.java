@@ -36,4 +36,10 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, Lo
             "JOIN bd.roomBooking rb " +
             "GROUP BY c.name")
     List<Object[]> getBookingCountByCategory();
+
+    @Query("SELECT bd FROM BookingDetail bd " +
+           "JOIN bd.roomBooking rb " +
+           "WHERE bd.room.id = :roomId " +
+           "AND rb.bookingStatus = com.group3.hotel.enums.BookingStatus.CHECKED_IN")
+    List<BookingDetail> findActiveDetailByRoomId(@Param("roomId") Long roomId);
 }
