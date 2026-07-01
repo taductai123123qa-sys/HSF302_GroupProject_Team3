@@ -13,6 +13,7 @@ import com.group3.hotel.repository.CustomerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder; // Mới thêm
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -22,31 +23,47 @@ public class DataInitializer {
 
     @Bean
     public CommandLineRunner initData(
-            RoomCategoryRepository roomCategoryRepository, 
+            RoomCategoryRepository roomCategoryRepository,
             RoomRepository roomRepository,
             UserRepository userRepository,
-            CustomerRepository customerRepository) {
+            CustomerRepository customerRepository,
+            PasswordEncoder passwordEncoder) { // Bơm bộ mã hóa vào đây
         return args -> {
-            // 1. Khởi tạo dữ liệu người dùng (Customer) để test luồng Đặt phòng
-            if (userRepository.findByEmail("guest@hotel.com").isEmpty()) {
+
+            // 1. TẠO TÀI KHOẢN ADMIN (MỚI THÊM)
+            if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
+                User adminUser = User.builder()
+                        .email("admin@gmail.com")
+                        // Đã được mã hóa BCrypt
+                        .password(passwordEncoder.encode("123456"))
+                        .role(UserRole.ADMIN)
+                        .build();
+                userRepository.save(adminUser);
+                System.out.println("Tạo thành công tài khoản ADMIN: admin@gmail.com / 123456");
+            }
+
+            // 2. KHỞI TẠO TÀI KHOẢN GUEST MỚI (ĐÃ FIX MÃ HÓA)
+            // Đổi email một chút thành guest2 để code chạy lệnh tạo mới
+            if (userRepository.findByEmail("guest2@hotel.com").isEmpty()) {
                 User guestUser = User.builder()
-                        .email("guest@hotel.com")
-                        .password("123456")
+                        .email("guest2@hotel.com")
+                        // Đã được mã hóa BCrypt
+                        .password(passwordEncoder.encode("123456"))
                         .role(UserRole.GUEST)
                         .build();
                 userRepository.save(guestUser);
 
                 Customer guestCustomer = Customer.builder()
                         .user(guestUser)
-                        .fullName("Guest User")
+                        .fullName("Guest User 2")
                         .phone("0123456789")
                         .build();
                 customerRepository.save(guestCustomer);
-                System.out.println("Initialized Guest Customer Data!");
+                System.out.println("Tạo thành công tài khoản GUEST: guest2@hotel.com / 123456");
             }
 
+            // 3. DỮ LIỆU PHÒNG (GIỮ NGUYÊN NHƯ CŨ)
             if (roomCategoryRepository.count() == 0) {
-                // Create Room Categories
                 RoomCategory standard = RoomCategory.builder()
                         .name("Standard Room")
                         .pricePerNight(new BigDecimal("1000000.00"))
@@ -76,7 +93,6 @@ public class DataInitializer {
 
                 roomCategoryRepository.saveAll(Arrays.asList(standard, deluxe, suite));
 
-                // Create Rooms
                 Room room101 = Room.builder().roomNumber("101").roomStatus(RoomStatus.AVAILABLE).roomCategory(standard).build();
                 Room room102 = Room.builder().roomNumber("102").roomStatus(RoomStatus.AVAILABLE).roomCategory(standard).build();
                 Room room103 = Room.builder().roomNumber("103").roomStatus(RoomStatus.OCCUPIED).roomCategory(standard).build();
@@ -87,30 +103,8 @@ public class DataInitializer {
                 Room room301 = Room.builder().roomNumber("301").roomStatus(RoomStatus.AVAILABLE).roomCategory(suite).build();
 
                 roomRepository.saveAll(Arrays.asList(room101, room102, room103, room201, room202, room301));
-                
+
                 System.out.println("Sample Data Initialized!");
-            } else {
-                // Update existing categories if they still have the old placeholder URLs
-                var categories = roomCategoryRepository.findAll();
-                boolean updated = false;
-                for (RoomCategory cat : categories) {
-                    if (cat.getImgUrl() != null && cat.getImgUrl().contains("example.com")) {
-                        if (cat.getName().contains("Standard")) {
-                            cat.setImgUrl("/images/room/standard/standard_08.jpg");
-                        } else if (cat.getName().contains("Deluxe")) {
-                            cat.setImgUrl("/images/room/deluxe/deluxe_08.jpg");
-                        } else if (cat.getName().contains("Suite")) {
-                            cat.setImgUrl("/images/room/suite/suite_08.jpg");
-                        } else {
-                            cat.setImgUrl("/images/room/standard/standard_08.jpg");
-                        }
-                        updated = true;
-                    }
-                }
-                if (updated) {
-                    roomCategoryRepository.saveAll(categories);
-                    System.out.println("Sample Data Updated with Local Image URLs!");
-                }
             }
         };
     }

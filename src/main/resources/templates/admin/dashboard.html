@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Thống Kê</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Dashboard Tổng Quan</h2>
+        <a href="/" class="btn btn-outline-secondary">Về trang chủ</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-center">Doanh thu theo hạng phòng</h5>
+                </div>
+                <div class="card-body d-flex justify-content-center">
+                    <div style="width: 80%;">
+                        <canvas id="revenuePieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-center">Tỷ lệ lấp đầy (%)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="occupancyBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // Lấy dữ liệu từ Controller
+    const labels = /*[[${categoryLabels}]]*/ ['Standard', 'Deluxe', 'Suite'];
+    const revenueData = /*[[${categoryRevenue}]]*/ [0, 0, 0];
+    const occupancyData = /*[[${occupancyRates}]]*/ [0, 0, 0];
+
+    // 1. Vẽ Biểu đồ Tròn (Doanh thu)
+    const ctxPie = document.getElementById('revenuePieChart').getContext('2d');
+    new Chart(ctxPie, {
+        type: 'doughnut', // Biểu đồ bánh donut
+        data: {
+            labels: labels,
+            datasets: [{
+                data: revenueData,
+                backgroundColor: ['#0d6efd', '#198754', '#ffc107']
+            }]
+        }
+    });
+
+    // 2. Vẽ Biểu đồ Cột (Tỷ lệ lấp đầy)
+    const ctxBar = document.getElementById('occupancyBarChart').getContext('2d');
+    new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Tỷ lệ lấp đầy (%)',
+                data: occupancyData,
+                backgroundColor: '#0dcaf0',
+                borderRadius: 5
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true, max: 100 } // Tỷ lệ phần trăm tối đa là 100
+            }
+        }
+    });
+</script>
+</body>
+</html>
