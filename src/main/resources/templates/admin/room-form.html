@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form phòng</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 230px;
+            background: #1f3b64;
+            color: white;
+            padding: 24px 18px;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 28px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover {
+            background: #2c5288;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1f3b64;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-actions {
+            margin-top: 22px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 7px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #2c7be5;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <div class="sidebar">
+        <h2>Hotel Admin</h2>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/rooms">Quản lý phòng</a>
+        <a href="/admin/services">Quản lý dịch vụ</a>
+        <a href="/admin/statistics">Thống kê</a>
+    </div>
+
+    <div class="content">
+        <h1 th:text="${room != null and room.id != null ? 'Cập nhật phòng' : 'Thêm phòng mới'}">
+            Thêm phòng mới
+        </h1>
+
+        <p>Nhập thông tin phòng cụ thể.</p>
+
+        <div class="card">
+            <form th:action="@{/admin/rooms/save}" th:object="${room}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="two-col">
+                    <div class="form-group">
+                        <label for="roomNumber">Số phòng</label>
+                        <input id="roomNumber"
+                               type="text"
+                               th:field="*{roomNumber}"
+                               placeholder="Ví dụ: 101"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="floor">Tầng</label>
+                        <input id="floor"
+                               type="number"
+                               th:field="*{floor}"
+                               min="1"
+                               placeholder="Ví dụ: 1"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="roomCategory">Hạng phòng</label>
+                    <select id="roomCategory" th:field="*{roomCategory.id}" required>
+                        <option value="">-- Chọn hạng phòng --</option>
+
+                        <option th:each="category : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}">
+                            Standard
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="roomStatus">Trạng thái phòng</label>
+                    <select id="roomStatus" th:field="*{roomStatus}" required>
+                        <option value="">-- Chọn trạng thái --</option>
+
+                        <option th:each="status : ${roomStatuses}"
+                                th:value="${status}"
+                                th:text="${status}">
+                            AVAILABLE
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <a href="/admin/rooms" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

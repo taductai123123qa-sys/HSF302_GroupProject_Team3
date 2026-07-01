@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 230px;
+            background: #1f3b64;
+            color: white;
+            padding: 24px 18px;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 28px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover {
+            background: #2c5288;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1f3b64;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #555;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #2c7be5;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #2c7be5;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background: #1a5fb4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <div class="sidebar">
+        <h2>Hotel Admin</h2>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/rooms">Quản lý phòng</a>
+        <a href="/admin/services">Quản lý dịch vụ</a>
+        <a href="/admin/statistics">Thống kê</a>
+    </div>
+
+    <div class="content">
+        <h1>Admin Dashboard</h1>
+        <p>Trang quản lý hệ thống khách sạn.</p>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Tổng phòng</h3>
+                <div class="number" th:text="${totalRooms != null ? totalRooms : 0}">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Phòng trống</h3>
+                <div class="number" th:text="${availableRooms != null ? availableRooms : 0}">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Dịch vụ</h3>
+                <div class="number" th:text="${totalServices != null ? totalServices : 0}">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Doanh thu</h3>
+                <div class="number" th:text="${totalRevenue != null ? totalRevenue : 0}">0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Chức năng quản trị</h2>
+            <p>Chọn chức năng cần quản lý.</p>
+
+            <a class="btn" href="/admin/rooms">Quản lý phòng</a>
+            <a class="btn" href="/admin/services">Quản lý dịch vụ</a>
+            <a class="btn" href="/admin/statistics">Xem thống kê</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

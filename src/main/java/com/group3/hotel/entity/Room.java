@@ -20,6 +20,9 @@ public class Room {
     @Column(nullable = false, unique = true)
     private String roomNumber;
 
+    @Column
+    private Integer floor;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoomStatus roomStatus;

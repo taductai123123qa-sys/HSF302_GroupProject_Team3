@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form dịch vụ</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 230px;
+            background: #1f3b64;
+            color: white;
+            padding: 24px 18px;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 28px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover {
+            background: #2c5288;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1f3b64;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 90px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-actions {
+            margin-top: 22px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 7px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #2c7be5;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <div class="sidebar">
+        <h2>Hotel Admin</h2>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/rooms">Quản lý phòng</a>
+        <a href="/admin/services">Quản lý dịch vụ</a>
+        <a href="/admin/statistics">Thống kê</a>
+    </div>
+
+    <div class="content">
+        <h1 th:text="${hotelService != null and hotelService.id != null ? 'Cập nhật dịch vụ' : 'Thêm dịch vụ mới'}">
+            Thêm dịch vụ mới
+        </h1>
+
+        <p>Nhập thông tin dịch vụ đi kèm.</p>
+
+        <div class="card">
+            <form th:action="@{/admin/services/save}" th:object="${hotelService}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group">
+                    <label for="name">Tên dịch vụ</label>
+                    <input id="name"
+                           type="text"
+                           th:field="*{name}"
+                           placeholder="Ví dụ: Spa Package"
+                           required>
+                </div>
+
+                <div class="two-col">
+                    <div class="form-group">
+                        <label for="serviceType">Loại dịch vụ</label>
+                        <select id="serviceType" th:field="*{serviceType}">
+                            <option value="">-- Chọn loại dịch vụ --</option>
+
+                            <option th:each="type : ${serviceTypes}"
+                                    th:value="${type}"
+                                    th:text="${type}">
+                                SPA
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Trạng thái</label>
+                        <select id="status" th:field="*{status}">
+                            <option value="">-- Chọn trạng thái --</option>
+
+                            <option th:each="st : ${serviceStatuses}"
+                                    th:value="${st}"
+                                    th:text="${st}">
+                                ACTIVE
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Giá</label>
+                    <input id="price"
+                           type="number"
+                           step="1000"
+                           min="0"
+                           th:field="*{price}"
+                           placeholder="Ví dụ: 300000"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Mô tả</label>
+                    <textarea id="description"
+                              th:field="*{description}"
+                              placeholder="Nhập mô tả dịch vụ"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <a href="/admin/services" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
