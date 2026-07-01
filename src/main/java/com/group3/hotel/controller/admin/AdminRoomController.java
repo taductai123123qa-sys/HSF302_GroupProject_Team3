@@ -1,4 +1,4 @@
-package com.group3.hotel.controller;
+package com.group3.hotel.controller.admin;
 
 import com.group3.hotel.entity.Room;
 import com.group3.hotel.enums.RoomStatus;
