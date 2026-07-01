@@ -6,13 +6,13 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "booking_details")
+@Table(name = "booking_services")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookingDetail {
+public class BookingService {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +23,11 @@ public class BookingDetail {
     private RoomBooking roomBooking;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private RoomCategory roomCategory;
+    @JoinColumn(name = "service_id", nullable = false)
+    private HotelService hotelService;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @Column(nullable = false)
+    private Integer quantity;
 
     @Column(nullable = false)
     private BigDecimal price;
