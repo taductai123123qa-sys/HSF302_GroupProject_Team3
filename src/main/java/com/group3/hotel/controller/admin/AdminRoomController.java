@@ -24,7 +24,8 @@ public class AdminRoomController {
         return "admin/rooms";
     }
 
-    @GetMapping("/create")
+    // Đã đổi từ "/create" thành "/add" cho khớp với nút bấm ở HTML
+    @GetMapping("/add")
     public String createForm(Model model) {
         model.addAttribute("room", Room.builder().roomStatus(RoomStatus.AVAILABLE).floor(1).build());
         addFormData(model);
@@ -54,6 +55,7 @@ public class AdminRoomController {
 
     private void addFormData(Model model) {
         model.addAttribute("categories", roomCategoryRepository.findAllByOrderByNameAsc());
-        model.addAttribute("statuses", RoomStatus.values());
+        // Đã đổi tên biến từ "statuses" thành "roomStatuses" cho khớp với HTML
+        model.addAttribute("roomStatuses", RoomStatus.values());
     }
 }
