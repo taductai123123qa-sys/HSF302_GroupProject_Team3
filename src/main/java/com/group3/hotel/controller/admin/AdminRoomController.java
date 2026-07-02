@@ -24,7 +24,6 @@ public class AdminRoomController {
         return "admin/rooms";
     }
 
-    // Đã đổi từ "/create" thành "/add" cho khớp với nút bấm ở HTML
     @GetMapping("/add")
     public String createForm(Model model) {
         model.addAttribute("room", Room.builder().roomStatus(RoomStatus.AVAILABLE).floor(1).build());
