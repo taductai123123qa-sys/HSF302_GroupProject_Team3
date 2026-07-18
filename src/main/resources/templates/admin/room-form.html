@@ -2,58 +2,72 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Form phòng</title>
+    <title>Thêm Phòng Mới</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f7f6; margin: 0; }
-        .content { flex: 1; padding: 30px; margin-left: 280px; width: 100%; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 3px 12px rgba(0,0,0,0.08); max-width: 800px; border: none; }
+        .admin-card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .form-label { font-weight: 600; color: #4a5568; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .custom-input { border-radius: 10px; padding: 12px 16px; border: 1px solid #e2e8f0; background-color: #f8fafc; transition: all 0.2s; cursor: pointer; }
+        .custom-input:focus { background-color: #fff; border-color: #0d6efd; box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1); cursor: text; }
+        .btn-custom { border-radius: 10px; padding: 12px 24px; font-weight: 600; transition: all 0.3s; }
+        .main-content { margin-left: 260px; padding: 2rem; min-height: 100vh; background-color: #f8f9fa; }
     </style>
 </head>
-<body class="d-flex">
+<body>
 
 <div th:replace="~{admin/sidebar :: adminSidebar}"></div>
 
-<div class="content container-fluid py-4">
-    <h2 class="fw-bold text-dark mb-1" th:text="${room != null and room.id != null ? 'Cập nhật phòng' : 'Thêm phòng mới'}">Thêm phòng mới</h2>
-    <p class="text-muted mb-4">Nhập thông tin phòng cụ thể.</p>
-
-    <div class="card">
-        <form th:action="@{/admin/rooms/save}" th:object="${room}" method="post">
-            <input type="hidden" th:field="*{id}">
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Số phòng</label>
-                    <input type="text" class="form-control" th:field="*{roomNumber}" placeholder="Ví dụ: 101" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Tầng</label>
-                    <input type="number" class="form-control" th:field="*{floor}" min="1" placeholder="Ví dụ: 1" required>
-                </div>
+<div class="main-content">
+    <div class="container-fluid max-w-7xl">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-0">Thêm Phòng Mới</h2>
+                <p class="text-muted small mt-1">Khởi tạo phòng cụ thể dựa trên Hạng phòng đã có.</p>
             </div>
+        </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Hạng phòng</label>
-                <select class="form-select" th:field="*{roomCategory.id}" required>
-                    <option value="">-- Chọn hạng phòng --</option>
-                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">Standard</option>
-                </select>
-            </div>
+        <div class="card admin-card mx-auto" style="max-width: 800px;">
+            <div class="card-body p-4 p-md-5">
+                <form th:action="@{/admin/rooms/save}" method="post">
 
-            <div class="mb-4">
-                <label class="form-label fw-bold">Trạng thái phòng</label>
-                <select class="form-select" th:field="*{roomStatus}" required>
-                    <option value="">-- Chọn trạng thái --</option>
-                    <option th:each="status : ${roomStatuses}" th:value="${status}" th:text="${status}">AVAILABLE</option>
-                </select>
-            </div>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Số phòng <span class="text-danger">*</span></label>
+                            <input type="text" name="roomNumber" class="form-control custom-input" placeholder="Ví dụ: 101, 205..." required autofocus>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tầng <span class="text-danger">*</span></label>
+                            <input type="number" name="floor" class="form-control custom-input" placeholder="Ví dụ: 1, 2..." min="1" required>
+                        </div>
+                    </div>
 
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary px-4">Lưu</button>
-                <a href="/admin/rooms" class="btn btn-secondary px-4">Hủy</a>
+                    <div class="mb-4">
+                        <label class="form-label">Thuộc Hạng phòng <span class="text-danger">*</span></label>
+                        <select name="categoryId" class="form-select custom-input" required>
+                            <option value="" disabled selected>-- Chọn hạng phòng tương ứng --</option>
+                            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="form-label">Trạng thái ban đầu <span class="text-danger">*</span></label>
+                        <select name="status" class="form-select custom-input" required>
+                            <option value="AVAILABLE" selected>AVAILABLE (Trống - Sẵn sàng đón khách)</option>
+                            <option value="MAINTENANCE">MAINTENANCE (Đang bảo trì/Sửa chữa)</option>
+                            <option value="CLEANING">CLEANING (Đang dọn dẹp)</option>
+                        </select>
+                    </div>
+
+                    <hr class="text-muted mb-4">
+
+                    <div class="d-flex justify-content-end gap-3">
+                        <a th:href="@{/admin/rooms}" class="btn btn-light btn-custom text-secondary border">Hủy bỏ</a>
+                        <button type="submit" class="btn btn-primary btn-custom shadow-sm"><i class="fas fa-check-circle me-2"></i> Lưu Phòng</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
