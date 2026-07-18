@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chuyển phòng - HSF Hotel</title>
+    <!-- Use same layout/css as other pages -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/reception.css}">
+    <style>
+        .room-option {
+            cursor: pointer;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+        .room-option:hover {
+            background-color: #f8f9fa;
+        }
+        .room-option.selected {
+            border-color: #0d6efd;
+            background-color: #f0f7ff;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar (Optional, can be extracted to fragment) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/reception/bookings">Lễ tân - HSF Hotel</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Nút Back -->
+        <a th:href="@{/reception/bookings/{id}(id=${booking.id})}" class="btn btn-outline-secondary mb-3">
+            <i class="fas fa-arrow-left"></i> Trở về Chi tiết
+        </a>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <h4 class="mb-0 fw-bold text-primary"><i class="fas fa-exchange-alt me-2"></i> Chuyển phòng</h4>
+                <hr>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p class="mb-1 text-muted">Khách hàng</p>
+                        <h5 class="fw-bold" th:text="${booking.customer.fullName}">Nguyễn Văn A</h5>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-1 text-muted">Đơn hàng</p>
+                        <h5 class="fw-bold">#<span th:text="${booking.id}">1</span></h5>
+                    </div>
+                </div>
+
+                <div class="mb-4 p-3 bg-light rounded border border-secondary border-opacity-25">
+                    <h6 class="fw-bold text-secondary text-uppercase mb-2" style="font-size: 0.85rem;">Phòng hiện tại</h6>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-secondary fs-5 me-2 px-3 py-2" th:text="${detail.room != null ? detail.room.roomNumber : 'N/A'}">201</span>
+                        <span class="fw-medium fs-5" th:text="${detail.roomCategory.name}">Standard</span>
+                        <input type="hidden" id="currentCategoryId" th:value="${detail.roomCategory.id}">
+                        <input type="hidden" id="currentCategoryName" th:value="${detail.roomCategory.name}">
+                    </div>
+                </div>
+
+                <form th:action="@{/reception/bookings/{id}/change-room/{detailId}(id=${booking.id}, detailId=${detail.id})}" method="post" id="changeRoomForm">
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">Danh sách phòng</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="filterMode" id="filterSame" value="SAME" checked onchange="filterRooms()">
+                            <label class="form-check-label fw-medium" for="filterSame">
+                                Chỉ hiển thị cùng hạng (<span class="text-primary" th:text="${detail.roomCategory.name}">Standard</span>)
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="filterMode" id="filterAll" value="ALL" onchange="filterRooms()">
+                            <label class="form-check-label fw-medium" for="filterAll">
+                                Hiển thị tất cả phòng
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 p-3 bg-white border rounded">
+                        <div id="roomListContainer" class="row">
+                            <!-- Danh sách phòng render từ model -->
+                            <div th:each="r : ${allAvailableRooms}" class="col-md-6 col-lg-4 room-item-wrapper" th:data-category-id="${r.roomCategory.id}" th:data-category-name="${r.roomCategory.name}">
+                                <div class="room-option" th:data-room-id="${r.id}" th:data-cat-id="${r.roomCategory.id}" th:data-cat-name="${r.roomCategory.name}" onclick="handleRoomSelect(this)">
+                                    <div class="d-flex align-items-center">
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input room-radio" type="radio" name="newRoomId" th:value="${r.id}" required>
+                                        </div>
+                                        <div class="ms-3">
+                                            <span class="fw-bold fs-5" th:text="${r.roomNumber}">203</span><br>
+                                            <small class="text-muted" th:text="${r.roomCategory.name}">Standard</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="noRoomMsg" class="text-muted p-3 text-center" style="display: none;">Không có phòng trống phù hợp.</div>
+                        </div>
+                    </div>
+
+                    <!-- Hộp cảnh báo khác hạng -->
+                    <div id="upgradeWarningBox" class="warning-box mb-4">
+                        <h6 class="fw-bold text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Bạn đang chuyển sang hạng phòng khác</h6>
+                        <p class="mb-2">Hạng hiện tại: <strong id="lblCurrentCat">Standard</strong> <i class="fas fa-arrow-right mx-2 text-muted"></i> Hạng mới: <strong id="lblNewCat">Deluxe</strong></p>
+                        
+                        <hr>
+                        <h6 class="fw-bold mb-3 mt-3">Giá phòng:</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="priceOption" id="priceKeep" value="KEEP" checked>
+                            <label class="form-check-label" for="priceKeep">Giữ nguyên</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="priceOption" id="priceNew" value="NEW">
+                            <label class="form-check-label" for="priceNew">Theo giá mới</label>
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold" id="btnSubmit" disabled>
+                            Chuyển phòng
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const currentCatId = document.getElementById('currentCategoryId').value;
+        const currentCatName = document.getElementById('currentCategoryName').value;
+
+        // Khởi tạo lọc phòng
+        window.onload = function() {
+            filterRooms();
+        };
+
+        function filterRooms() {
+            const isSameCatOnly = document.getElementById('filterSame').checked;
+            const items = document.querySelectorAll('.room-item-wrapper');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const catId = item.getAttribute('data-category-id');
+                if (isSameCatOnly && catId !== currentCatId) {
+                    item.style.display = 'none';
+                } else {
+                    item.style.display = 'block';
+                    visibleCount++;
+                }
+            });
+
+            document.getElementById('noRoomMsg').style.display = visibleCount === 0 ? 'block' : 'none';
+            
+            // Xóa chọn phòng khi đổi filter
+            const checkedRadio = document.querySelector('.room-radio:checked');
+            if (checkedRadio) {
+                checkedRadio.checked = false;
+                document.querySelectorAll('.room-option').forEach(el => el.classList.remove('selected'));
+                checkWarning(null, null);
+            }
+            document.getElementById('btnSubmit').disabled = true;
+        }
+
+        function handleRoomSelect(element) {
+            const roomId = element.getAttribute('data-room-id');
+            const catId = element.getAttribute('data-cat-id');
+            const catName = element.getAttribute('data-cat-name');
+            selectRoom(element, roomId, catId, catName);
+        }
+
+        function selectRoom(element, roomId, categoryId, categoryName) {
+            // Unselect all
+            document.querySelectorAll('.room-option').forEach(el => el.classList.remove('selected'));
+            // Select current
+            element.classList.add('selected');
+            // Check the radio
+            const radio = element.querySelector('.room-radio');
+            radio.checked = true;
+            
+            // Enable submit
+            document.getElementById('btnSubmit').disabled = false;
+
+            // Check warning
+            checkWarning(categoryId, categoryName);
+        }
+
+        function checkWarning(newCatId, newCatName) {
+            const warningBox = document.getElementById('upgradeWarningBox');
+            if (newCatId && newCatId != currentCatId) {
+                document.getElementById('lblCurrentCat').innerText = currentCatName;
+                document.getElementById('lblNewCat').innerText = newCatName;
+                warningBox.style.display = 'block';
+            } else {
+                warningBox.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

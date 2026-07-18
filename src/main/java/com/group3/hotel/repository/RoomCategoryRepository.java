@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface RoomCategoryRepository extends JpaRepository<RoomCategory,Long> {
-
+    List<RoomCategory> findAllByOrderByNameAsc();
 
     @Query("SELECT rc FROM RoomCategory rc WHERE rc.capacity >= :guestCount AND " +
             "(SELECT COUNT(r) FROM Room r WHERE r.roomCategory = rc AND r.roomStatus != com.group3.hotel.enums.RoomStatus.MAINTENANCE) > " +

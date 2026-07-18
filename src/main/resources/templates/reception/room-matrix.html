@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ đồ phòng (Room Matrix)</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/reception.css">
+</head>
+
+<body>
+
+    <!-- Alert Toast -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show alert-toast" role="alert"
+        id="successAlert">
+        <div class="d-flex align-items-center">
+            <span class="fs-5 me-2">✓</span>
+            <span th:text="${success}"></span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show alert-toast" role="alert"
+        id="errorAlert">
+        <div class="d-flex align-items-center">
+            <span class="fs-5 me-2">⚠</span>
+            <span th:text="${error}"></span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            Reception
+        </div>
+
+        <div class="sidebar-group">Đặt phòng</div>
+        <a href="/reception/bookings" class="active">
+            <span class="sidebar-icon"></span> Danh sách đơn
+        </a>
+        <a href="/reception/rooms">
+            <span class="sidebar-icon"></span> Sơ đồ phòng
+        </a>
+
+        <div class="mt-auto mb-3">
+            <a href="#">
+                <span class="sidebar-icon"></span> Cài đặt
+            </a>
+            <a href="#">
+                <span class="sidebar-icon"></span> Đăng xuất
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title mb-3">Sơ đồ phòng</h1>
+            <!-- Legend -->
+            <div class="matrix-legend">
+                <div class="legend-item">
+                    <div class="legend-color available"></div> AVAILABLE
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color occupied"></div> OCCUPIED
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color cleaning"></div> CLEANING
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color maintenance"></div> MAINTENANCE
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Form (Toolbar) -->
+        <div class="toolbar">
+            <form th:action="@{/reception/rooms}" method="get" class="w-100 d-flex gap-3 align-items-end">
+                <div class="flex-grow-1">
+                    <label class="form-label">Tìm theo số phòng</label>
+                    <div class="position-relative">
+                        <input type="text" name="keyword" class="form-control ps-5" th:value="${keyword}"
+                            placeholder="VD: 101, 202">
+                    </div>
+                </div>
+                <div style="width: 250px;">
+                    <label class="form-label">Hạng phòng</label>
+                    <select name="categoryId" class="form-select">
+                        <option value="">Tất cả hạng phòng</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"
+                            th:selected="${cat.id == categoryId}"></option>
+                    </select>
+                </div>
+                <div style="width: 250px;">
+                    <label class="form-label">Trạng thái</label>
+                    <select name="status" class="form-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option th:each="stat : ${allStatuses}" th:value="${stat}" th:text="${stat}"
+                            th:selected="${stat == status}"></option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Lọc</button>
+                    <a href="/reception/rooms" class="btn btn-outline-secondary ms-2"
+                        style="height: 42px; line-height: 28px;">Xóa lọc</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Matrix View -->
+        <div th:each="entry : ${roomsByCategory}" class="mb-5">
+            <h4 class="mb-3 text-dark fw-bold border-bottom pb-2" th:text="${entry.key}">Standard Room</h4>
+
+            <div class="room-grid">
+                <div th:each="room : ${entry.value}" class="room-card"
+                    th:classappend="'room-' + ${#strings.toLowerCase(room.roomStatus.name())}">
+                    <!-- Menu 3 chấm -->
+                    <div class="room-actions dropdown" th:if="${room.roomStatus.name() != 'OCCUPIED'}">
+                        <button class="btn-dots dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">⋮</button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <h6 class="dropdown-header">Cập nhật trạng thái</h6>
+                            </li>
+                            <li>
+                                <form th:action="@{/reception/rooms/{id}/status(id=${room.id})}" method="post">
+                                    <input type="hidden" name="status" value="AVAILABLE">
+                                    <button type="submit" class="dropdown-item">→ Available (Trống)</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form th:action="@{/reception/rooms/{id}/status(id=${room.id})}" method="post">
+                                    <input type="hidden" name="status" value="NEED_CLEANING">
+                                    <button type="submit" class="dropdown-item">→ Need Cleaning (Dọn dẹp)</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form th:action="@{/reception/rooms/{id}/status(id=${room.id})}" method="post">
+                                    <input type="hidden" name="status" value="MAINTENANCE">
+                                    <button type="submit" class="dropdown-item">→ Maintenance (Bảo trì)</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="room-header">
+                        <div class="room-number" th:text="${room.roomNumber}">101</div>
+                    </div>
+
+                    <div class="room-status-text" th:classappend="
+                     ${room.roomStatus.name() == 'AVAILABLE' ? 'text-available' : 
+                      (room.roomStatus.name() == 'OCCUPIED' ? 'text-occupied' : 
+                      (room.roomStatus.name() == 'NEED_CLEANING' ? 'text-cleaning' : 'text-maintenance'))}">
+                        <span th:text="${room.roomStatus.name()}">AVAILABLE</span>
+                    </div>
+
+                    <div class="room-type" th:text="${room.roomCategoryName}">Standard Room</div>
+
+                    <!-- Guest Info (Chỉ hiển thị nếu OCCUPIED và có data từ Backend) -->
+                    <div class="room-guest-info mt-auto"
+                        th:if="${room.roomStatus.name() == 'OCCUPIED' && room.currentGuestName != null}">
+                        <div class="room-guest-name" th:text="${room.currentGuestName}">Nguyễn Văn A</div>
+                        <div class="room-guest-meta">
+                            Out: <span th:text="${#temporals.format(room.checkOutDate, 'dd/MM')}">12/06</span> • <span
+                                th:text="${room.numberOfGuests}">2</span> pax
+                        </div>
+                    </div>
+
+                    <div class="room-guest-info mt-auto" th:if="${room.roomStatus.name() == 'NEED_CLEANING'}">
+                        <div class="room-guest-meta fst-italic">Expected: 30 min</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${roomsByCategory.isEmpty()}" class="text-center py-5">
+            <div class="text-muted fs-1 mb-3">📭</div>
+            <h5 class="fw-semibold text-dark">Không tìm thấy phòng nào phù hợp</h5>
+            <p class="text-muted mb-0">Thử thay đổi bộ lọc tìm kiếm hoặc từ khóa.</p>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                let successAlert = document.getElementById('successAlert');
+                if (successAlert) {
+                    let bsAlert = new bootstrap.Alert(successAlert);
+                    bsAlert.close();
+                }
+                let errorAlert = document.getElementById('errorAlert');
+                if (errorAlert) {
+                    let bsAlert = new bootstrap.Alert(errorAlert);
+                    bsAlert.close();
+                }
+            }, 3000);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

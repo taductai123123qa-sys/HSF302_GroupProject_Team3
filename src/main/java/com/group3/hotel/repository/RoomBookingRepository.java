@@ -8,8 +8,14 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 @Repository
 public interface RoomBookingRepository extends JpaRepository<RoomBooking, Long> {
+    List<RoomBooking> findAllByOrderByCheckInDateDesc();
     List<RoomBooking> findByBookingStatusAndExpiredAtBefore(BookingStatus status, LocalDateTime now);
     List<RoomBooking> findByCustomerOrderByCreatedAtDesc(com.group3.hotel.entity.Customer customer);
 
