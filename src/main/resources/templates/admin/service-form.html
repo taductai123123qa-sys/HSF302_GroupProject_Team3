@@ -2,63 +2,81 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Form Dịch Vụ</title>
+    <title>Thêm Dịch Vụ Mới</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f7f6; margin: 0; }
-        .content { flex: 1; padding: 30px; margin-left: 280px; width: 100%; }
-        .premium-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); max-width: 800px; border: none; }
+        .admin-card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .form-label { font-weight: 600; color: #4a5568; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .custom-input { border-radius: 10px; padding: 12px 16px; border: 1px solid #e2e8f0; background-color: #f8fafc; transition: all 0.2s; }
+        .custom-input:focus { background-color: #fff; border-color: #0dcaf0; box-shadow: 0 0 0 4px rgba(13, 202, 240, 0.1); }
+        .btn-custom { border-radius: 10px; padding: 12px 24px; font-weight: 600; transition: all 0.3s; }
+        .main-content { margin-left: 260px; padding: 2rem; min-height: 100vh; background-color: #f8f9fa; }
     </style>
 </head>
-<body class="d-flex">
+<body>
 
 <div th:replace="~{admin/sidebar :: adminSidebar}"></div>
 
-<div class="content container-fluid py-4">
-    <h2 class="fw-bold text-dark mb-1" th:text="${hotelService != null and hotelService.id != null ? 'Cập nhật dịch vụ' : 'Thêm dịch vụ mới'}">Thêm dịch vụ mới</h2>
-    <p class="text-muted mb-4">Nhập thông tin dịch vụ đi kèm.</p>
-
-    <div class="premium-card">
-        <form th:action="@{/admin/services/save}" th:object="${hotelService}" method="post">
-            <input type="hidden" th:field="*{id}">
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Tên dịch vụ</label>
-                <input type="text" class="form-control" th:field="*{name}" placeholder="Ví dụ: Spa Package" required>
+<div class="main-content">
+    <div class="container-fluid max-w-7xl">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-0">Thêm Dịch Vụ Mới</h2>
+                <p class="text-muted small mt-1">Cấu hình các dịch vụ đi kèm cho khách sạn.</p>
             </div>
+        </div>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Loại dịch vụ</label>
-                    <select class="form-select" th:field="*{serviceType}">
-                        <option value="">-- Chọn loại dịch vụ --</option>
-                        <option th:each="type : ${serviceTypes}" th:value="${type}" th:text="${type}">SPA</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Trạng thái</label>
-                    <select class="form-select" th:field="*{status}">
-                        <option value="">-- Chọn trạng thái --</option>
-                        <option th:each="st : ${serviceStatuses}" th:value="${st}" th:text="${st}">ACTIVE</option>
-                    </select>
-                </div>
-            </div>
+        <div class="card admin-card mx-auto" style="max-width: 850px;">
+            <div class="card-body p-4 p-md-5">
+                <form th:action="@{/admin/services/save}" method="post">
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Giá (VNĐ)</label>
-                <input type="number" class="form-control" step="1000" min="0" th:field="*{price}" placeholder="Ví dụ: 300000" required>
-            </div>
+                    <div class="mb-4">
+                        <label class="form-label">Tên dịch vụ <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control custom-input" placeholder="Ví dụ: Spa Package, Bữa sáng Buffet..." required autofocus>
+                    </div>
 
-            <div class="mb-4">
-                <label class="form-label fw-bold">Mô tả</label>
-                <textarea class="form-control" th:field="*{description}" rows="3" placeholder="Nhập mô tả dịch vụ"></textarea>
-            </div>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Loại dịch vụ <span class="text-danger">*</span></label>
+                            <select name="type" class="form-select custom-input" required>
+                                <option value="" disabled selected>-- Chọn loại dịch vụ --</option>
+                                <option value="FOOD">Ẩm thực (F&B)</option>
+                                <option value="WELLNESS">Sức khỏe & Làm đẹp</option>
+                                <option value="TRANSPORT">Di chuyển</option>
+                                <option value="OTHER">Khác</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
+                            <select name="status" class="form-select custom-input" required>
+                                <option value="ACTIVE" selected>Đang hoạt động</option>
+                                <option value="INACTIVE">Ngưng phục vụ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Giá dịch vụ (VNĐ) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0 rounded-start"><i class="fas fa-tag"></i></span>
+                                <input type="number" name="price" class="form-control custom-input border-start-0 ps-0 rounded-start-0" placeholder="Ví dụ: 300000" min="0" required>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary px-5">Lưu</button>
-                <a href="/admin/services" class="btn btn-secondary px-4">Hủy</a>
+                    <div class="mb-5">
+                        <label class="form-label">Mô tả dịch vụ</label>
+                        <textarea name="description" class="form-control custom-input" rows="4" placeholder="Nhập mô tả chi tiết để lễ tân tư vấn cho khách..."></textarea>
+                    </div>
+
+                    <hr class="text-muted mb-4">
+
+                    <div class="d-flex justify-content-end gap-3">
+                        <a th:href="@{/admin/services}" class="btn btn-light btn-custom text-secondary border">Hủy thao tác</a>
+                        <button type="submit" class="btn btn-info text-white btn-custom shadow-sm"><i class="fas fa-save me-2"></i> Lưu Dịch Vụ</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
