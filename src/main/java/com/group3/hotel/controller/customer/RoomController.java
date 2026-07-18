@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.security.Principal;
+import java.util.List;
+import com.group3.hotel.repository.CustomerRepository;
+import com.group3.hotel.repository.RoomBookingRepository;
+import com.group3.hotel.entity.Customer;
+import com.group3.hotel.entity.RoomBooking;
 
 @Controller
 @RequestMapping("/customer")
@@ -26,6 +32,12 @@ public class RoomController {
 
     @Autowired
     private HotelServiceService hotelServiceService;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private RoomBookingRepository roomBookingRepository;
 
     @GetMapping("/rooms")
     public String rooms(Model model) {
@@ -103,10 +115,28 @@ public class RoomController {
     }
 
     @GetMapping("/booking/history")
-    public String bookingHistory(Model model) {
-        // TODO: Viết logic lấy danh sách Booking từ Database theo User đang đăng nhập ở đây
-        // Tạm thời mock 1 list rỗng hoặc null để load giao diện trước
-        model.addAttribute("bookings", java.util.Collections.emptyList());
+    public String bookingHistory(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        Customer customer = customerRepository.findByUserEmail(email).orElse(null);
+
+        if (customer != null) {
+            List<RoomBooking> bookings = roomBookingRepository.findByCustomerOrderByCreatedAtDesc(customer);
+            model.addAttribute("bookings", bookings);
+            
+            long countAll = bookings.size();
+            long countCheckedIn = bookings.stream().filter(b -> b.getBookingStatus().name().equals("CHECKED_IN")).count();
+            long countCancelled = bookings.stream().filter(b -> b.getBookingStatus().name().equals("CANCELLED")).count();
+            
+            model.addAttribute("countAll", countAll);
+            model.addAttribute("countCheckedIn", countCheckedIn);
+            model.addAttribute("countCancelled", countCancelled);
+        } else {
+            model.addAttribute("bookings", java.util.Collections.emptyList());
+        }
 
         return "customer/booking-history";
     }

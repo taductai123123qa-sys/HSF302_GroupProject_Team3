@@ -27,7 +27,31 @@ public class DataInitializer {
             UserRepository userRepository,
             CustomerRepository customerRepository) {
         return args -> {
-            // 1. Khởi tạo dữ liệu người dùng (Customer) để test luồng Đặt phòng
+            // 1. TẠO TÀI KHOẢN ADMIN (MỚI THÊM)
+            if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
+                User adminUser = User.builder()
+                        .email("admin@gmail.com")
+                        // Đã được mã hóa BCrypt
+                        .password(passwordEncoder.encode("123456"))
+                        .role(UserRole.ADMIN)
+                        .build();
+                userRepository.save(adminUser);
+                System.out.println("Tạo thành công tài khoản ADMIN: admin@gmail.com / 123456");
+            }
+
+            if (userRepository.findByEmail("re@gmail.com").isEmpty()) {
+                User adminUser = User.builder()
+                        .email("re@gmail.com")
+                        // Đã được mã hóa BCrypt
+                        .password(passwordEncoder.encode("123"))
+                        .role(UserRole.RECEPTIONIST)
+                        .build();
+                userRepository.save(adminUser);
+                System.out.println("Tạo thành công tài khoản ADMIN: re@gmail.com / 123456");
+            }
+
+            // 2. KHỞI TẠO TÀI KHOẢN GUEST MỚI (ĐÃ FIX MÃ HÓA)
+            // Đổi email một chút thành guest2 để code chạy lệnh tạo mới
             if (userRepository.findByEmail("guest@hotel.com").isEmpty()) {
                 User guestUser = User.builder()
                         .email("guest@hotel.com")
