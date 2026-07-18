@@ -115,7 +115,10 @@ public class RoomController {
     }
 
     @GetMapping("/booking/history")
-    public String bookingHistory(Model model, Principal principal) {
+    public String bookingHistory(
+            @RequestParam(value = "status", defaultValue = "ALL") String status,
+            @RequestParam(value = "sort", defaultValue = "desc") String sort,
+            Model model, Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -124,19 +127,39 @@ public class RoomController {
         Customer customer = customerRepository.findByUserEmail(email).orElse(null);
 
         if (customer != null) {
-            List<RoomBooking> bookings = roomBookingRepository.findByCustomerOrderByCreatedAtDesc(customer);
-            model.addAttribute("bookings", bookings);
+            List<RoomBooking> allBookings = roomBookingRepository.findByCustomerOrderByCreatedAtDesc(customer);
             
-            long countAll = bookings.size();
-            long countCheckedIn = bookings.stream().filter(b -> b.getBookingStatus().name().equals("CHECKED_IN")).count();
-            long countCancelled = bookings.stream().filter(b -> b.getBookingStatus().name().equals("CANCELLED")).count();
+            // Lọc theo trạng thái
+            List<RoomBooking> filteredBookings = allBookings;
+            if (!"ALL".equalsIgnoreCase(status)) {
+                filteredBookings = allBookings.stream()
+                        .filter(b -> b.getBookingStatus().name().equalsIgnoreCase(status))
+                        .collect(java.util.stream.Collectors.toList());
+            }
+
+            // Sắp xếp
+            if ("asc".equalsIgnoreCase(sort)) {
+                java.util.Collections.reverse(filteredBookings);
+            }
+
+            model.addAttribute("bookings", filteredBookings);
+            
+            long countAll = allBookings.size();
+            long countCheckedIn = allBookings.stream().filter(b -> b.getBookingStatus().name().equals("CHECKED_IN")).count();
+            long countCancelled = allBookings.stream().filter(b -> b.getBookingStatus().name().equals("CANCELLED")).count();
             
             model.addAttribute("countAll", countAll);
             model.addAttribute("countCheckedIn", countCheckedIn);
             model.addAttribute("countCancelled", countCancelled);
         } else {
             model.addAttribute("bookings", java.util.Collections.emptyList());
+            model.addAttribute("countAll", 0);
+            model.addAttribute("countCheckedIn", 0);
+            model.addAttribute("countCancelled", 0);
         }
+
+        model.addAttribute("currentStatus", status.toUpperCase());
+        model.addAttribute("currentSort", sort.toLowerCase());
 
         return "customer/booking-history";
     }

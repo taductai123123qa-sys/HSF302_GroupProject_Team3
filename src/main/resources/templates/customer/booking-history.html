@@ -184,7 +184,7 @@
                                     <h4 class="room-names mb-3"
                                         style="font-family: 'Playfair Display', serif; font-weight: 600; color: #1e293b; line-height: 1.3;">
                                         <th:block th:each="detail, iterStat : ${booking.bookingDetails}">
-                                            <th:block th:text="${detail.roomCategory.categoryName}"></th:block>
+                                            <th:block th:text="${detail.roomCategory.name}"></th:block>
                                             <th:block th:if="${!iterStat.last}"> &amp; </th:block>
                                         </th:block>
                                     </h4>
@@ -193,7 +193,7 @@
                                         <span th:each="detail : ${booking.bookingDetails}"
                                             class="badge bg-light text-secondary border border-light-subtle me-2 mb-2 px-3 py-2 fw-normal"
                                             style="font-size: 0.75rem;"
-                                            th:text="'1x ' + ${detail.roomCategory.categoryName}"></span>
+                                            th:text="'1x ' + ${detail.roomCategory.name}"></span>
                                         <!-- <span class="badge bg-light text-secondary border border-light-subtle me-2 mb-2 px-3 py-2 fw-normal" style="font-size: 0.75rem;">Ăn sáng bao gồm</span> -->
                                     </div>
 
