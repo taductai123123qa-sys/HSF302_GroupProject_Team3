@@ -31,24 +31,20 @@ public class BookingController {
 
     private final PaymentRepository paymentRepository;
 
-    // 1. Endpoint xử lý form đặt phòng từ trang Detail và chuyển qua giao diện chọn mức thanh toán (50% hoặc 100%)
     @PostMapping("/select-payment")
     public String selectPaymentMethod(@ModelAttribute BookingCreateRequest request, Model model) {
         RoomCategory category = roomCategoryRepository.findById(request.getCategoryId()).orElse(null);
         if (category == null) {
-            return "redirect:/"; // Lỗi không tìm thấy loại phòng
+            return "redirect:/";
         }
 
-        // Tính số đêm lưu trú (ít nhất 1 đêm)
         long nights = ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
         if (nights <= 0) nights = 1;
 
-        // Tính tổng tiền gốc
         BigDecimal totalPrice = category.getPricePerNight()
                 .multiply(BigDecimal.valueOf(nights))
                 .multiply(BigDecimal.valueOf(request.getRoomCount()));
 
-        // Đẩy dữ liệu sang form chọn phương thức cọc
         model.addAttribute("bookingRequest", request);
         model.addAttribute("category", category);
         model.addAttribute("totalPrice", totalPrice);
@@ -57,7 +53,6 @@ public class BookingController {
         return "customer/booking-payment-select";
     }
 
-    // 2. Endpoint xử lý tạo đơn tạm thời và chuyển hướng tới VNPay
     @PostMapping("/process-vnpay")
     public String processVnPay(
             @ModelAttribute BookingCreateRequest request,
@@ -66,14 +61,11 @@ public class BookingController {
             HttpServletRequest httpRequest,
             RedirectAttributes redirectAttributes) {
 
-        // Uỷ thác nghiệp vụ lưu vào DB cho BookingService
         RoomBooking booking = bookingService.createBooking(request, depositRate, totalPrice);
 
-        // Tính toán số tiền thanh toán thực tế dựa trên tỷ lệ cọc
         BigDecimal paymentAmountBd = totalPrice.multiply(BigDecimal.valueOf(depositRate)).divide(BigDecimal.valueOf(100));
         long paymentAmount = paymentAmountBd.longValue();
 
-        // Lấy IP của user
         String ipAddress = httpRequest.getHeader("X-Forwarded-For");
         if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = httpRequest.getRemoteAddr();
@@ -82,14 +74,11 @@ public class BookingController {
             ipAddress = ipAddress.split(",")[0].trim();
         }
 
-        // Uỷ thác việc gen URL cho VnPayService (Giả định VnPayService đã được update để xài txnRef)
         String paymentUrl = vnPayService.createPaymentUrl(booking.getId(), paymentAmount, ipAddress);
         
-        // Redirect khách sang cổng thanh toán
         return "redirect:" + paymentUrl;
     }
 
-    // 3. Endpoint nhận Callback/IPN trả về từ VNPAY
     @GetMapping("/vnpay-callback")
     public String vnpayCallback(@RequestParam Map<String, String> params, Model model) {
         
