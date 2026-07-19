@@ -44,7 +44,7 @@ public class SecurityConfig {
                             if (isAdmin) {
                                 response.sendRedirect("/admin/dashboard");
                             } else if (isReceptionist) {
-                                response.sendRedirect("/reception/room-matrix");
+                                response.sendRedirect("/reception/bookings");
                             } else {
                                 response.sendRedirect("/"); // Khách hàng về trang chủ
                             }
