@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,139 +9,149 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/reception.css">
 </head>
+
 <body>
 
-<div th:if="${success}" class="alert alert-success alert-dismissible fade show alert-toast" role="alert" id="successAlert">
-    <div class="d-flex align-items-center">
-        <span class="fs-5 me-2">✓</span>
-        <span th:text="${success}"></span>
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show alert-toast" role="alert"
+        id="successAlert">
+        <div class="d-flex align-items-center">
+            <span class="fs-5 me-2">✓</span>
+            <span th:text="${success}"></span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<div th:if="${error}" class="alert alert-danger alert-dismissible fade show alert-toast" role="alert" id="errorAlert">
-    <div class="d-flex align-items-center">
-        <span class="fs-5 me-2">⚠</span>
-        <span th:text="${error}"></span>
-    </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-
-<!-- Sidebar -->
-<div class="sidebar">
-    <div class="sidebar-brand">
-        Reception
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show alert-toast" role="alert"
+        id="errorAlert">
+        <div class="d-flex align-items-center">
+            <span class="fs-5 me-2">⚠</span>
+            <span th:text="${error}"></span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <div class="sidebar-group">Đặt phòng</div>
-    <a href="/reception/bookings" class="active">
-        <span class="sidebar-icon"></span> Danh sách đơn
-    </a>
-    <a href="/reception/rooms">
-        <span class="sidebar-icon"></span> Sơ đồ phòng
-    </a>
-    
-    <div class="mt-auto mb-3">
-        <a href="/reception/settings">
-            <span class="sidebar-icon"></span> Cài đặt
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            Reception
+        </div>
+
+        <div class="sidebar-group">Đặt phòng</div>
+        <a href="/reception/bookings" class="active">
+            <span class="sidebar-icon"></span> Danh sách đơn
         </a>
-        <a href="/">
-            <span class="sidebar-icon"></span> Đăng xuất
+        <a href="/reception/rooms">
+            <span class="sidebar-icon"></span> Sơ đồ phòng
         </a>
-    </div>
-</div>
 
-<!-- Main Content -->
-<div class="main-wrapper">
-    <a th:href="@{/reception/bookings/{id}(id=${booking.id})}" class="back-link">← Quay lại chi tiết đơn</a>
-    
-    <div class="page-header d-flex align-items-center gap-3">
-        <h1 class="page-title">Xử lý Check-in / Gán phòng</h1>
-        <span class="status-badge bg-confirmed">CONFIRMED</span>
+        <div class="mt-auto mb-3">
+            <a href="/reception/settings">
+                <span class="sidebar-icon"></span> Cài đặt
+            </a>
+            <a href="/">
+                <span class="sidebar-icon"></span> Đăng xuất
+            </a>
+        </div>
     </div>
 
-    <!-- Booking Info Summary -->
-    <div class="card mb-4 bg-light border-0 p-4">
-        <div class="row">
-            <div class="col-md-3">
-                <span class="text-muted d-block" style="font-size: 0.85rem;">Mã đơn</span>
-                <span class="fw-bold" th:text="'BK' + ${booking.id}">BK123</span>
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <a th:href="@{/reception/bookings/{id}(id=${booking.id})}" class="back-link">← Quay lại chi tiết đơn</a>
+
+        <div class="page-header d-flex align-items-center gap-3">
+            <h1 class="page-title">Xử lý Check-in / Gán phòng</h1>
+            <span class="status-badge bg-confirmed">CONFIRMED</span>
+        </div>
+
+        <!-- Booking Info Summary -->
+        <div class="card mb-4 bg-light border-0 p-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="text-muted d-block" style="font-size: 0.85rem;">Mã đơn</span>
+                    <span class="fw-bold" th:text="'BK' + ${booking.id}">BK123</span>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block" style="font-size: 0.85rem;">Khách hàng</span>
+                    <span class="fw-bold" th:text="${booking.customer.fullName}">Nguyễn Văn A</span>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block" style="font-size: 0.85rem;">Check-in / Check-out</span>
+                    <span class="fw-bold"
+                        th:text="${#temporals.format(booking.checkInDate, 'dd/MM')} + ' - ' + ${#temporals.format(booking.checkOutDate, 'dd/MM/yyyy')}">...</span>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block" style="font-size: 0.85rem;">Số khách</span>
+                    <span class="fw-bold" th:text="${booking.numberOfGuests} + ' người'">2</span>
+                </div>
             </div>
-            <div class="col-md-3">
-                <span class="text-muted d-block" style="font-size: 0.85rem;">Khách hàng</span>
-                <span class="fw-bold" th:text="${booking.customer.fullName}">Nguyễn Văn A</span>
-            </div>
-            <div class="col-md-3">
-                <span class="text-muted d-block" style="font-size: 0.85rem;">Check-in / Check-out</span>
-                <span class="fw-bold" th:text="${#temporals.format(booking.checkInDate, 'dd/MM')} + ' - ' + ${#temporals.format(booking.checkOutDate, 'dd/MM/yyyy')}">...</span>
-            </div>
-            <div class="col-md-3">
-                <span class="text-muted d-block" style="font-size: 0.85rem;">Số khách</span>
-                <span class="fw-bold" th:text="${booking.numberOfGuests} + ' người'">2</span>
+        </div>
+
+        <!-- Room Assignment Form -->
+        <div class="card p-0">
+            <div class="card-body p-4">
+                <h3 class="card-title mb-4">Gán phòng vật lý</h3>
+                <p class="text-muted mb-4">Vui lòng chọn phòng trống (AVAILABLE) tương ứng với hạng phòng khách đã đặt.
+                </p>
+
+                <form th:action="@{/reception/bookings/{id}/check-in(id=${booking.id})}" method="post">
+
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Hạng phòng đã đặt</th>
+                                    <th>Giá/đêm</th>
+                                    <th>Gán phòng (Chọn phòng trống)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="detail, stat : ${booking.bookingDetails}">
+                                    <td>
+                                        <div class="fw-medium text-dark" th:text="${detail.roomCategory.name}">Standard
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span
+                                            th:text="${#numbers.formatDecimal(detail.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">1.500.000
+                                            VNĐ</span>
+                                    </td>
+                                    <td>
+                                        <select th:name="'detailRoom[' + ${detail.id} + ']'"
+                                            class="form-select border-primary" required>
+                                            <option value="">-- Chọn phòng --</option>
+                                            <option th:each="room : ${availableRoomsMap[detail.roomCategory.id]}"
+                                                th:value="${room.id}" th:text="'Phòng ' + ${room.roomNumber}">101
+                                            </option>
+                                        </select>
+                                        <div th:if="${#lists.isEmpty(availableRoomsMap[detail.roomCategory.id])}"
+                                            class="text-danger mt-1" style="font-size: 0.8rem;">
+                                            ⚠ Không còn phòng trống (AVAILABLE) nào thuộc hạng này!
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-primary px-5 py-2">Xác nhận Check-in</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Room Assignment Form -->
-    <div class="card p-0">
-        <div class="card-body p-4">
-            <h3 class="card-title mb-4">Gán phòng vật lý</h3>
-            <p class="text-muted mb-4">Vui lòng chọn phòng trống (AVAILABLE) tương ứng với hạng phòng khách đã đặt.</p>
-            
-            <form th:action="@{/reception/bookings/{id}/check-in(id=${booking.id})}" method="post">
-                
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead>
-                            <tr>
-                                <th>Hạng phòng đã đặt</th>
-                                <th>Giá/đêm</th>
-                                <th>Gán phòng (Chọn phòng trống)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="detail, stat : ${booking.bookingDetails}">
-                                <td>
-                                    <div class="fw-medium text-dark" th:text="${detail.roomCategory.name}">Standard</div>
-                                </td>
-                                <td>
-                                    <span th:text="${#numbers.formatDecimal(detail.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">1.500.000 VNĐ</span>
-                                </td>
-                                <td>
-                                    <select th:name="'detailRoom[' + ${detail.id} + ']'" class="form-select border-primary" required>
-                                        <option value="">-- Chọn phòng --</option>
-                                        <option th:each="room : ${availableRoomsMap[detail.roomCategory.id]}"
-                                                th:value="${room.id}"
-                                                th:text="'Phòng ' + ${room.roomNumber}">101</option>
-                                    </select>
-                                    <div th:if="${#lists.isEmpty(availableRoomsMap[detail.roomCategory.id])}" class="text-danger mt-1" style="font-size: 0.8rem;">
-                                        ⚠ Không còn phòng trống (AVAILABLE) nào thuộc hạng này!
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="mt-4 text-end">
-                    <button type="submit" class="btn btn-primary px-5 py-2">Xác nhận Check-in</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        setTimeout(function() {
-            let errorAlert = document.getElementById('errorAlert');
-            if (errorAlert) {
-                let bsAlert = new bootstrap.Alert(errorAlert);
-                bsAlert.close();
-            }
-        }, 3000);
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                let errorAlert = document.getElementById('errorAlert');
+                if (errorAlert) {
+                    let bsAlert = new bootstrap.Alert(errorAlert);
+                    bsAlert.close();
+                }
+            }, 3000);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
 
+</html>

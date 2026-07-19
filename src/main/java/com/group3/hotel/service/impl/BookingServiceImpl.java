@@ -127,7 +127,6 @@ public class BookingServiceImpl implements IBookingService {
         Payment payment = paymentRepository.findFirstByRoomBookingIdOrderByIdDesc(bookingId).orElse(null);
         if (payment != null && payment.getStatus() == PaymentStatus.UNPAID) {
         }
-
         roomAllocationService.releaseRoomsForCancelledBooking(booking);
     }
 

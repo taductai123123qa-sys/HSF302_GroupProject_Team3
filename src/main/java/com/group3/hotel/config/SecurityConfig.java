@@ -8,9 +8,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.group3.hotel.security.CustomAuthentication;
+import org.springframework.beans.factory.annotation.Autowired;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private CustomAuthentication customAuthenticationSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,7 +44,7 @@ public class SecurityConfig {
                             if (isAdmin) {
                                 response.sendRedirect("/admin/dashboard");
                             } else if (isReceptionist) {
-                                response.sendRedirect("/reception/rooms");
+                                response.sendRedirect("/reception/bookings");
                             } else {
                                 response.sendRedirect("/"); // Khách hàng về trang chủ
                             }

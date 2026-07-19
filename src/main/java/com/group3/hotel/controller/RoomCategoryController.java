@@ -44,9 +44,9 @@ public class RoomCategoryController {
 
     @PostMapping("/save")
     public String saveCategory(@ModelAttribute("category") RoomCategory category,
-                               @RequestParam(value = "images", required = false) MultipartFile[] images) {
+                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
 
-        if (images != null && images.length > 0 && !images[0].isEmpty()) {
+        if (imageFile != null && !imageFile.isEmpty()) {
             try {
                 String uploadDir = "src/main/resources/static/images/rooms/";
                 Path uploadPath = Paths.get(uploadDir);
@@ -55,8 +55,7 @@ public class RoomCategoryController {
                     Files.createDirectories(uploadPath);
                 }
 
-                MultipartFile mainImage = images[0];
-                String originalFileName = mainImage.getOriginalFilename();
+                String originalFileName = imageFile.getOriginalFilename();
                 String fileExtension = "";
                 if (originalFileName != null && originalFileName.contains(".")) {
                     fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
@@ -65,7 +64,7 @@ public class RoomCategoryController {
                 String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
                 Path filePath = uploadPath.resolve(uniqueFileName);
 
-                Files.copy(mainImage.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
                 category.setImgUrl("/images/rooms/" + uniqueFileName);
 

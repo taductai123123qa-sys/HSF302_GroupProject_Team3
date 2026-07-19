@@ -68,13 +68,10 @@
 </div>
 
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    // Tên biến ĐÃ ĐƯỢC ĐỔI cho khớp 100% với Controller của bạn
     var labels = /*[[${categoryLabels}]]*/ ['Standard', 'Deluxe', 'Suite', 'VIP'];
     var revenues = /*[[${categoryRevenue}]]*/ [5000000, 8500000, 12000000, 4000000];
     var occupancies = /*[[${occupancyRates}]]*/ [65, 80, 45, 90];
 
-    // Biểu đồ Doanh thu (Bar Chart)
     const ctxRev = document.getElementById('revenueChart').getContext('2d');
     new Chart(ctxRev, {
         type: 'bar',
@@ -92,7 +89,6 @@
         options: { responsive: true, scales: { y: { beginAtZero: true } } }
     });
 
-    // Biểu đồ Tỷ lệ lấp đầy (Doughnut Chart)
     const ctxOcc = document.getElementById('occupancyChart').getContext('2d');
     new Chart(ctxOcc, {
         type: 'doughnut',
@@ -107,7 +103,6 @@
         },
         options: { responsive: true, maintainAspectRatio: false }
     });
-    /*]]>*/
 </script>
 </body>
 </html>

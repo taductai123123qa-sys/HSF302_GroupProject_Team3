@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Chuyển phòng - HSF Hotel</title>
@@ -16,13 +17,16 @@
             margin-bottom: 10px;
             transition: all 0.2s ease;
         }
+
         .room-option:hover {
             background-color: #f8f9fa;
         }
+
         .room-option.selected {
             border-color: #0d6efd;
             background-color: #f0f7ff;
         }
+
         .warning-box {
             background-color: #fff3cd;
             border-left: 4px solid #ffc107;
@@ -33,6 +37,7 @@
         }
     </style>
 </head>
+
 <body class="bg-light">
     <!-- Navbar (Optional, can be extracted to fragment) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
@@ -65,26 +70,33 @@
                 </div>
 
                 <div class="mb-4 p-3 bg-light rounded border border-secondary border-opacity-25">
-                    <h6 class="fw-bold text-secondary text-uppercase mb-2" style="font-size: 0.85rem;">Phòng hiện tại</h6>
+                    <h6 class="fw-bold text-secondary text-uppercase mb-2" style="font-size: 0.85rem;">Phòng hiện tại
+                    </h6>
                     <div class="d-flex align-items-center">
-                        <span class="badge bg-secondary fs-5 me-2 px-3 py-2" th:text="${detail.room != null ? detail.room.roomNumber : 'N/A'}">201</span>
+                        <span class="badge bg-secondary fs-5 me-2 px-3 py-2"
+                            th:text="${detail.room != null ? detail.room.roomNumber : 'N/A'}">201</span>
                         <span class="fw-medium fs-5" th:text="${detail.roomCategory.name}">Standard</span>
                         <input type="hidden" id="currentCategoryId" th:value="${detail.roomCategory.id}">
                         <input type="hidden" id="currentCategoryName" th:value="${detail.roomCategory.name}">
                     </div>
                 </div>
 
-                <form th:action="@{/reception/bookings/{id}/change-room/{detailId}(id=${booking.id}, detailId=${detail.id})}" method="post" id="changeRoomForm">
+                <form
+                    th:action="@{/reception/bookings/{id}/change-room/{detailId}(id=${booking.id}, detailId=${detail.id})}"
+                    method="post" id="changeRoomForm">
                     <div class="mb-4">
                         <h6 class="fw-bold mb-3">Danh sách phòng</h6>
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="filterMode" id="filterSame" value="SAME" checked onchange="filterRooms()">
+                            <input class="form-check-input" type="radio" name="filterMode" id="filterSame" value="SAME"
+                                checked onchange="filterRooms()">
                             <label class="form-check-label fw-medium" for="filterSame">
-                                Chỉ hiển thị cùng hạng (<span class="text-primary" th:text="${detail.roomCategory.name}">Standard</span>)
+                                Chỉ hiển thị cùng hạng (<span class="text-primary"
+                                    th:text="${detail.roomCategory.name}">Standard</span>)
                             </label>
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="filterMode" id="filterAll" value="ALL" onchange="filterRooms()">
+                            <input class="form-check-input" type="radio" name="filterMode" id="filterAll" value="ALL"
+                                onchange="filterRooms()">
                             <label class="form-check-label fw-medium" for="filterAll">
                                 Hiển thị tất cả phòng
                             </label>
@@ -94,11 +106,15 @@
                     <div class="mb-4 p-3 bg-white border rounded">
                         <div id="roomListContainer" class="row">
                             <!-- Danh sách phòng render từ model -->
-                            <div th:each="r : ${allAvailableRooms}" class="col-md-6 col-lg-4 room-item-wrapper" th:data-category-id="${r.roomCategory.id}" th:data-category-name="${r.roomCategory.name}">
-                                <div class="room-option" th:data-room-id="${r.id}" th:data-cat-id="${r.roomCategory.id}" th:data-cat-name="${r.roomCategory.name}" onclick="handleRoomSelect(this)">
+                            <div th:each="r : ${allAvailableRooms}" class="col-md-6 col-lg-4 room-item-wrapper"
+                                th:data-category-id="${r.roomCategory.id}"
+                                th:data-category-name="${r.roomCategory.name}">
+                                <div class="room-option" th:data-room-id="${r.id}" th:data-cat-id="${r.roomCategory.id}"
+                                    th:data-cat-name="${r.roomCategory.name}" onclick="handleRoomSelect(this)">
                                     <div class="d-flex align-items-center">
                                         <div class="form-check m-0">
-                                            <input class="form-check-input room-radio" type="radio" name="newRoomId" th:value="${r.id}" required>
+                                            <input class="form-check-input room-radio" type="radio" name="newRoomId"
+                                                th:value="${r.id}" required>
                                         </div>
                                         <div class="ms-3">
                                             <span class="fw-bold fs-5" th:text="${r.roomNumber}">203</span><br>
@@ -107,19 +123,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="noRoomMsg" class="text-muted p-3 text-center" style="display: none;">Không có phòng trống phù hợp.</div>
+                            <div id="noRoomMsg" class="text-muted p-3 text-center" style="display: none;">Không có phòng
+                                trống phù hợp.</div>
                         </div>
                     </div>
 
-                    <!-- Hộp cảnh báo khác hạng -->
+                    <!-- Cảnh báo chuyển hạng -->
                     <div id="upgradeWarningBox" class="warning-box mb-4">
-                        <h6 class="fw-bold text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Bạn đang chuyển sang hạng phòng khác</h6>
-                        <p class="mb-2">Hạng hiện tại: <strong id="lblCurrentCat">Standard</strong> <i class="fas fa-arrow-right mx-2 text-muted"></i> Hạng mới: <strong id="lblNewCat">Deluxe</strong></p>
-                        
+                        <h6 class="fw-bold text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Bạn đang chuyển
+                            sang hạng phòng khác</h6>
+                        <p class="mb-2">Hạng hiện tại: <strong id="lblCurrentCat">Standard</strong> <i
+                                class="fas fa-arrow-right mx-2 text-muted"></i> Hạng mới: <strong
+                                id="lblNewCat">Deluxe</strong></p>
+
                         <hr>
                         <h6 class="fw-bold mb-3 mt-3">Giá phòng:</h6>
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="priceOption" id="priceKeep" value="KEEP" checked>
+                            <input class="form-check-input" type="radio" name="priceOption" id="priceKeep" value="KEEP"
+                                checked>
                             <label class="form-check-label" for="priceKeep">Giữ nguyên</label>
                         </div>
                         <div class="form-check">
@@ -144,7 +165,7 @@
         const currentCatName = document.getElementById('currentCategoryName').value;
 
         // Khởi tạo lọc phòng
-        window.onload = function() {
+        window.onload = function () {
             filterRooms();
         };
 
@@ -164,7 +185,7 @@
             });
 
             document.getElementById('noRoomMsg').style.display = visibleCount === 0 ? 'block' : 'none';
-            
+
             // Xóa chọn phòng khi đổi filter
             const checkedRadio = document.querySelector('.room-radio:checked');
             if (checkedRadio) {
@@ -190,7 +211,7 @@
             // Check the radio
             const radio = element.querySelector('.room-radio');
             radio.checked = true;
-            
+
             // Enable submit
             document.getElementById('btnSubmit').disabled = false;
 
@@ -210,5 +231,5 @@
         }
     </script>
 </body>
-</html>
 
+</html>

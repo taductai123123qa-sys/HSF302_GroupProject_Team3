@@ -66,16 +66,16 @@
             <!-- Legend -->
             <div class="matrix-legend">
                 <div class="legend-item">
-                    <div class="legend-color available"></div> AVAILABLE
+                    <div class="legend-color available"></div> Available
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color occupied"></div> OCCUPIED
+                    <div class="legend-color occupied"></div> Occupied
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color cleaning"></div> CLEANING
+                    <div class="legend-color cleaning"></div> Need Cleaning
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color maintenance"></div> MAINTENANCE
+                    <div class="legend-color maintenance"></div> Maintenance
                 </div>
             </div>
         </div>
@@ -132,19 +132,19 @@
                             <li>
                                 <form th:action="@{/reception/rooms/{id}/status(id=${room.id})}" method="post">
                                     <input type="hidden" name="status" value="AVAILABLE">
-                                    <button type="submit" class="dropdown-item">→ Available (Trống)</button>
+                                    <button type="submit" class="dropdown-item">Available</button>
                                 </form>
                             </li>
                             <li>
                                 <form th:action="@{/reception/rooms/{id}/status(id=${room.id})}" method="post">
                                     <input type="hidden" name="status" value="NEED_CLEANING">
-                                    <button type="submit" class="dropdown-item">→ Need Cleaning (Dọn dẹp)</button>
+                                    <button type="submit" class="dropdown-item">Need Cleaning</button>
                                 </form>
                             </li>
                             <li>
                                 <form th:action="@{/reception/rooms/{id}/status(id=${room.id})}" method="post">
                                     <input type="hidden" name="status" value="MAINTENANCE">
-                                    <button type="submit" class="dropdown-item">→ Maintenance (Bảo trì)</button>
+                                    <button type="submit" class="dropdown-item">Maintenance</button>
                                 </form>
                             </li>
                         </ul>
@@ -158,7 +158,7 @@
                      ${room.roomStatus.name() == 'AVAILABLE' ? 'text-available' : 
                       (room.roomStatus.name() == 'OCCUPIED' ? 'text-occupied' : 
                       (room.roomStatus.name() == 'NEED_CLEANING' ? 'text-cleaning' : 'text-maintenance'))}">
-                        <span th:text="${room.roomStatus.name()}">AVAILABLE</span>
+                        <span th:text="${room.roomStatus.name()}">Available</span>
                     </div>
 
                     <div class="room-type" th:text="${room.roomCategoryName}">Standard Room</div>

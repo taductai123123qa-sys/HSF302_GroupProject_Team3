@@ -1,65 +1,85 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
 </head>
+
 <body>
-<div th:fragment="adminSidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white shadow-lg"
-     style="width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; background: linear-gradient(180deg, #1a1c24 0%, #282b36 100%); font-family: 'Inter', sans-serif;">
+    <div th:fragment="adminSidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white shadow-lg"
+        style="width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; background: linear-gradient(180deg, #1a1c24 0%, #282b36 100%); font-family: 'Inter', sans-serif;">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <a href="/admin/dashboard" class="d-flex align-items-center mb-4 mt-2 me-md-auto text-white text-decoration-none justify-content-center w-100">
-        <span class="fs-4 fw-bold" style="background: -webkit-linear-gradient(45deg, #0dcaf0, #0d6efd); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Phúc Nguyên Hotel</span>
-    </a>
-    <hr class="border-secondary mb-4">
+        <a href="/admin/dashboard"
+            class="d-flex align-items-center mb-4 mt-2 me-md-auto text-white text-decoration-none justify-content-center w-100">
+            <span class="fs-4 fw-bold"
+                style="background: -webkit-linear-gradient(45deg, #0dcaf0, #0d6efd); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Phúc
+                Nguyên Hotel</span>
+        </a>
+        <hr class="border-secondary mb-4">
 
-    <ul class="nav nav-pills flex-column mb-auto gap-2" id="admin-menu">
-        <li class="nav-item">
-            <a th:href="@{/admin/dashboard}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
-                <i class="me-2">📊</i> Tổng Quan
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/admin/categories}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
-                <i class="me-2">🏨</i> Hạng Phòng
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/admin/rooms}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
-                <i class="me-2">🔑</i> Quản Lý Phòng
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/admin/services}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
-                <i class="me-2">🛎️</i> Quản Lý Dịch Vụ
-            </a>
-        </li>
-    </ul>
+        <ul class="nav nav-pills flex-column mb-auto gap-2" id="admin-menu">
+            <li class="nav-item">
+                <a th:href="@{/admin/dashboard}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
+                    <i class="me-2"></i> Tổng Quan
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/categories}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
+                    <i class="me-2"></i> Hạng Phòng
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/rooms}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
+                    <i class="me-2"></i> Quản Lý Phòng
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/services}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
+                    <i class="me-2"></i> Quản Lý Dịch Vụ
+                </a>
+            </li>
+        </ul>
 
-    <hr class="border-secondary mt-4 mb-4">
-    <div class="text-center pb-3">
-        <a href="/customer/rooms" class="btn btn-outline-info rounded-pill px-4 py-2 w-100 fw-bold" style="transition: all 0.3s;">Về trang Khách</a>
-    </div>
+        <hr class="border-secondary mt-4 mb-4">
+        <div class="text-center pb-3">
+            <a href="/customer/rooms" class="btn btn-outline-info rounded-pill px-4 py-2 w-100 fw-bold"
+                style="transition: all 0.3s;">Về trang Khách</a>
+        </div>
 
-    <style>
-        /* Hiệu ứng hover và active cho menu */
-        #admin-menu .nav-link { transition: all 0.3s ease; opacity: 0.8; }
-        #admin-menu .nav-link:hover { opacity: 1; background: rgba(255,255,255,0.05); transform: translateX(5px); }
-        #admin-menu .nav-link.active { opacity: 1; background: linear-gradient(45deg, #0d6efd, #0dcaf0) !important; box-shadow: 0 4px 15px rgba(13,110,253,0.3); font-weight: 600; }
-    </style>
+        <style>
+            #admin-menu .nav-link {
+                transition: all 0.3s ease;
+                opacity: 0.8;
+            }
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const currentUrl = window.location.pathname;
-            const menuItems = document.querySelectorAll('#admin-menu a');
-            menuItems.forEach(item => {
-                if (currentUrl.includes(item.getAttribute('href'))) {
-                    item.classList.add('active');
-                }
+            #admin-menu .nav-link:hover {
+                opacity: 1;
+                background: rgba(255, 255, 255, 0.05);
+                transform: translateX(5px);
+            }
+
+            #admin-menu .nav-link.active {
+                opacity: 1;
+                background: linear-gradient(45deg, #0d6efd, #0dcaf0) !important;
+                box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+                font-weight: 600;
+            }
+        </style>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const currentUrl = window.location.pathname;
+                const menuItems = document.querySelectorAll('#admin-menu a');
+                menuItems.forEach(item => {
+                    if (currentUrl.includes(item.getAttribute('href'))) {
+                        item.classList.add('active');
+                    }
+                });
             });
-        });
-    </script>
-</div>
+        </script>
+    </div>
 </body>
+
 </html>

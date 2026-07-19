@@ -73,6 +73,26 @@ public class DataInitializer {
                 System.out.println("Tạo thành công tài khoản GUEST: guest2@hotel.com / 123456");
             }
 
+            // 2.5 TẠO TÀI KHOẢN LỄ TÂN (HOẶC CẬP NHẬT MẬT KHẨU MÃ HÓA NẾU CHƯA CÓ)
+            java.util.Optional<User> letanOpt = userRepository.findByEmail("letan@gmail.com");
+            if (letanOpt.isEmpty()) {
+                User letan = User.builder()
+                        .email("letan@gmail.com")
+                        .password(passwordEncoder.encode("12345"))
+                        .role(UserRole.RECEPTIONIST)
+                        .build();
+                userRepository.save(letan);
+                System.out.println("Tạo thành công tài khoản LỄ TÂN: letan@gmail.com / 12345");
+            } else {
+                User letan = letanOpt.get();
+                // Nếu password không bắt đầu bằng $2a$ (định dạng của BCrypt) thì cập nhật lại
+                if (!letan.getPassword().startsWith("$2a$")) {
+                    letan.setPassword(passwordEncoder.encode("12345"));
+                    userRepository.save(letan);
+                    System.out.println("Cập nhật mật khẩu mã hóa cho tài khoản LỄ TÂN: letan@gmail.com / 12345");
+                }
+            }
+
             // 3. DỮ LIỆU PHÒNG (GIỮ NGUYÊN NHƯ CŨ)
             if (roomCategoryRepository.count() == 0) {
                 RoomCategory standard = RoomCategory.builder()

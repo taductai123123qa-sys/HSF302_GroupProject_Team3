@@ -18,8 +18,8 @@ public class RoomMatrixDTO {
     private RoomStatus roomStatus;
     private String roomCategoryName;
     private Long roomCategoryId;
-    
-    // Additional info when room is OCCUPIED
+
+    // in thong tin khahc hang khi phong chuyen da gan khi checkin
     private String currentGuestName;
     private LocalDate checkOutDate;
     private Integer numberOfGuests;
