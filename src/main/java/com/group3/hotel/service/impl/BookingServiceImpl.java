@@ -4,15 +4,12 @@ import com.group3.hotel.dto.request.BookingCreateRequest;
 import com.group3.hotel.entity.Payment;
 import com.group3.hotel.entity.RoomBooking;
 import com.group3.hotel.entity.RoomCategory;
-import com.group3.hotel.entity.User;
 import com.group3.hotel.enums.BookingStatus;
 import com.group3.hotel.enums.PaymentMethod;
 import com.group3.hotel.enums.PaymentStatus;
-import com.group3.hotel.enums.UserRole;
 import com.group3.hotel.repository.PaymentRepository;
 import com.group3.hotel.repository.RoomBookingRepository;
 import com.group3.hotel.repository.RoomCategoryRepository;
-import com.group3.hotel.repository.UserRepository;
 import com.group3.hotel.service.IBookingService;
 import com.group3.hotel.service.RoomAllocationService;
 import lombok.RequiredArgsConstructor;
@@ -33,35 +30,18 @@ public class BookingServiceImpl implements IBookingService {
     private final RoomBookingRepository roomBookingRepository;
     private final RoomCategoryRepository roomCategoryRepository;
     private final PaymentRepository paymentRepository;
-    private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
     private final RoomAllocationService roomAllocationService;
 
     @Override
     @Transactional
     public RoomBooking createBooking(BookingCreateRequest request, Integer depositRate, BigDecimal totalPrice, String email) {
-        if (email == null) {
-            email = "guest@hotel.com";
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("User must be logged in to book a room.");
         }
-        User currentUser = userRepository.findByEmail(email).orElse(null);
-        if (currentUser == null) {
-            currentUser = User.builder()
-                    .email(email)
-                    .password("123456")
-                    .role(UserRole.GUEST)
-                    .build();
-            currentUser = userRepository.save(currentUser);
-        }
-
-        Customer currentCustomer = customerRepository.findByUserEmail(email).orElse(null);
-        if (currentCustomer == null) {
-            currentCustomer = Customer.builder()
-                    .user(currentUser)
-                    .fullName(email)
-                    .phone("0123456789")
-                    .build();
-            currentCustomer = customerRepository.save(currentCustomer);
-        }
+        
+        Customer currentCustomer = customerRepository.findByUserEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Customer profile not found for email: " + email));
 
         BigDecimal paymentAmountBd = totalPrice.multiply(BigDecimal.valueOf(depositRate)).divide(BigDecimal.valueOf(100));
 

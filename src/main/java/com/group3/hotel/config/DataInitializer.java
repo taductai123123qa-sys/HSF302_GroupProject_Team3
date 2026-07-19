@@ -1,10 +1,6 @@
 package com.group3.hotel.config;
 
-import com.group3.hotel.entity.Room;
-import com.group3.hotel.entity.RoomCategory;
-import com.group3.hotel.enums.RoomStatus;
-import com.group3.hotel.repository.RoomCategoryRepository;
-import com.group3.hotel.repository.RoomRepository;
+
 import com.group3.hotel.entity.User;
 import com.group3.hotel.entity.Customer;
 import com.group3.hotel.enums.UserRole;
@@ -15,16 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder; // Mới thêm
 
-import java.math.BigDecimal;
-import java.util.Arrays;
+
 
 @Configuration
 public class DataInitializer {
 
     @Bean
     public CommandLineRunner initData(
-            RoomCategoryRepository roomCategoryRepository,
-            RoomRepository roomRepository,
             UserRepository userRepository,
             CustomerRepository customerRepository,
             PasswordEncoder passwordEncoder) { // Bơm bộ mã hóa vào đây
@@ -93,50 +86,8 @@ public class DataInitializer {
                 }
             }
 
-            // 3. DỮ LIỆU PHÒNG (GIỮ NGUYÊN NHƯ CŨ)
-            if (roomCategoryRepository.count() == 0) {
-                RoomCategory standard = RoomCategory.builder()
-                        .name("Standard Room")
-                        .pricePerNight(new BigDecimal("1000000.00"))
-                        .description("A comfortable standard room with basic amenities.")
-                        .capacity(2)
-                        .size(25.0)
-                        .imgUrl("/images/room/standard/standard_08.jpg")
-                        .build();
-
-                RoomCategory deluxe = RoomCategory.builder()
-                        .name("Deluxe Room")
-                        .pricePerNight(new BigDecimal("1500000.00"))
-                        .description("A spacious deluxe room with premium amenities and a city view.")
-                        .capacity(3)
-                        .size(35.0)
-                        .imgUrl("/images/room/deluxe/deluxe_08.jpg")
-                        .build();
-
-                RoomCategory suite = RoomCategory.builder()
-                        .name("Suite")
-                        .pricePerNight(new BigDecimal("2500000.00"))
-                        .description("A luxurious suite with a separate living area and ocean view.")
-                        .capacity(4)
-                        .size(50.0)
-                        .imgUrl("/images/room/suite/suite_08.jpg")
-                        .build();
-
-                roomCategoryRepository.saveAll(Arrays.asList(standard, deluxe, suite));
-
-                Room room101 = Room.builder().roomNumber("101").roomStatus(RoomStatus.AVAILABLE).roomCategory(standard).build();
-                Room room102 = Room.builder().roomNumber("102").roomStatus(RoomStatus.AVAILABLE).roomCategory(standard).build();
-                Room room103 = Room.builder().roomNumber("103").roomStatus(RoomStatus.AVAILABLE).roomCategory(standard).build();
-
-                Room room201 = Room.builder().roomNumber("201").roomStatus(RoomStatus.AVAILABLE).roomCategory(deluxe).build();
-                Room room202 = Room.builder().roomNumber("202").roomStatus(RoomStatus.AVAILABLE).roomCategory(deluxe).build();
-
-                Room room301 = Room.builder().roomNumber("301").roomStatus(RoomStatus.AVAILABLE).roomCategory(suite).build();
-
-                roomRepository.saveAll(Arrays.asList(room101, room102, room103, room201, room202, room301));
-
-                System.out.println("Sample Data Initialized!");
-            }
+            // 3. DỮ LIỆU PHÒNG ĐÃ BỊ XÓA THEO YÊU CẦU CỦA USER
+            System.out.println("Sample Data Initialized (Accounts only)!");
         };
     }
 }

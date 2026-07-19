@@ -23,7 +23,7 @@ public class SeasonalPrice {
     @JoinColumn(name = "category_id", nullable = false)
     private RoomCategory roomCategory;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String seasonName;
 
     @Column(nullable = false)

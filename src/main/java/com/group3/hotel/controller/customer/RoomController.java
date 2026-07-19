@@ -34,6 +34,9 @@ public class RoomController {
     @Autowired
     private com.group3.hotel.service.IBookingService bookingService;
 
+    @Autowired
+    private com.group3.hotel.repository.CustomerRepository customerRepository;
+
     @GetMapping("/rooms")
     public String rooms(@PageableDefault(size = 6) Pageable pageable, Model model) {
         RoomSearchRequest searchRequest = new RoomSearchRequest();
@@ -71,6 +74,7 @@ public class RoomController {
     public String roomDetail(@PathVariable("id") Long id,
                              @ModelAttribute("searchRequest") RoomSearchRequest searchRequest,
                              @RequestParam(value = "roomCount", required = false) Integer roomCountParam,
+                             Principal principal,
                              Model model) {
         RoomCategory category = roomCategoryService.getCategoryById(id);
         if (category == null) {
@@ -96,6 +100,12 @@ public class RoomController {
         bookingRequest.setCheckInDate(searchRequest.getCheckInDate());
         bookingRequest.setCheckOutDate(searchRequest.getCheckOutDate());
         bookingRequest.setRoomCount((roomCountParam != null && roomCountParam > 0) ? roomCountParam : 1);
+        if (principal != null) {
+            customerRepository.findByUserEmail(principal.getName()).ifPresent(customer -> {
+                bookingRequest.setFullName(customer.getFullName());
+                bookingRequest.setPhone(customer.getPhone());
+            });
+        }
         
         model.addAttribute("bookingRequest", bookingRequest);
 

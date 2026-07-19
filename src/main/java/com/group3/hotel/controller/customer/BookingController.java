@@ -29,7 +29,11 @@ public class BookingController {
 
     // 1. Endpoint xử lý form đặt phòng từ trang Detail và chuyển qua giao diện chọn mức thanh toán (50% hoặc 100%)
     @PostMapping("/select-payment")
-    public String selectPaymentMethod(@ModelAttribute BookingCreateRequest request, Model model) {
+    public String selectPaymentMethod(@ModelAttribute BookingCreateRequest request, Model model, java.security.Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
         RoomCategory category = roomCategoryService.getCategoryById(request.getCategoryId());
         if (category == null) {
             return "redirect:/"; // Lỗi không tìm thấy loại phòng
@@ -57,7 +61,10 @@ public class BookingController {
             RedirectAttributes redirectAttributes,
             java.security.Principal principal) {
 
-        String email = principal != null ? principal.getName() : "guest@hotel.com";
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        String email = principal.getName();
 
         RoomBooking booking;
         try {
