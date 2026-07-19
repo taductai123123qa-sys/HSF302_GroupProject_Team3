@@ -1,6 +1,7 @@
 package com.group3.hotel.entity;
 
 import com.group3.hotel.enums.BookingStatus;
+import com.group3.hotel.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -69,9 +70,9 @@ public class RoomBooking {
     }
 
     @Transient
-    public com.group3.hotel.enums.PaymentStatus getPaymentStatus() {
+    public PaymentStatus getPaymentStatus() {
         if (payments == null || payments.isEmpty()) {
-            return com.group3.hotel.enums.PaymentStatus.UNPAID;
+            return PaymentStatus.UNPAID;
         }
         return payments.get(payments.size() - 1).getStatus();
     }
@@ -82,7 +83,7 @@ public class RoomBooking {
             return BigDecimal.ZERO;
         }
         return payments.stream()
-                .filter(p -> p.getStatus() == com.group3.hotel.enums.PaymentStatus.PAID)
+                .filter(p -> p.getStatus() == PaymentStatus.PAID)
                 .map(Payment::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
