@@ -42,7 +42,7 @@ public class RoomBooking {
     @Column(nullable = false)
     private Integer numberOfGuests;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String notes;
 
     @OneToMany(mappedBy = "roomBooking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

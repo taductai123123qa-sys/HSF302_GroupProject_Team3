@@ -20,13 +20,13 @@ public class HotelService {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String name;
 
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
     @Enumerated(EnumType.STRING)
     @Column
