@@ -52,6 +52,11 @@ public class AdminRoomService {
         if (room.getRoomStatus() == RoomStatus.OCCUPIED) {
             throw new BadRequestException("Phòng đang có khách, không được xóa");
         }
-        roomRepository.delete(room);
+        try {
+            roomRepository.delete(room);
+            roomRepository.flush();
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            throw new BadRequestException("Không thể xóa phòng này vì đã có lịch sử đặt phòng liên quan");
+        }
     }
 }
