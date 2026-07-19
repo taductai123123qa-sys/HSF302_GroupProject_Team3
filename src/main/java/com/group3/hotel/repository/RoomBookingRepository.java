@@ -17,6 +17,7 @@ import org.springframework.data.repository.query.Param;
 public interface RoomBookingRepository extends JpaRepository<RoomBooking, Long> {
     List<RoomBooking> findAllByOrderByCheckInDateDesc();
     List<RoomBooking> findByBookingStatusAndExpiredAtBefore(BookingStatus status, LocalDateTime now);
+    List<RoomBooking> findByCustomerOrderByCreatedAtDesc(com.group3.hotel.entity.Customer customer);
 
     @Query("SELECT rb FROM RoomBooking rb WHERE " +
            "(:status IS NULL OR rb.bookingStatus = :status) AND " +

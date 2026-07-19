@@ -67,4 +67,12 @@ public class RoomBooking {
             this.expiredAt = this.createdAt.plusMinutes(5);
         }
     }
+
+    @Transient
+    public com.group3.hotel.enums.PaymentStatus getPaymentStatus() {
+        if (payments == null || payments.isEmpty()) {
+            return com.group3.hotel.enums.PaymentStatus.UNPAID;
+        }
+        return payments.get(payments.size() - 1).getStatus();
+    }
 }

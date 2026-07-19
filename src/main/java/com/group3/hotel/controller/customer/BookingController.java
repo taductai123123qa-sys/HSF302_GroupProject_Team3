@@ -64,10 +64,13 @@ public class BookingController {
             @RequestParam("depositRate") Integer depositRate, // Nhận tỷ lệ cọc 50 hoặc 100
             @RequestParam("totalPrice") BigDecimal totalPrice,
             HttpServletRequest httpRequest,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            java.security.Principal principal) {
+
+        String email = principal != null ? principal.getName() : "guest@hotel.com";
 
         // Uỷ thác nghiệp vụ lưu vào DB cho BookingService
-        RoomBooking booking = bookingService.createBooking(request, depositRate, totalPrice);
+        RoomBooking booking = bookingService.createBooking(request, depositRate, totalPrice, email);
 
         // Tính toán số tiền thanh toán thực tế dựa trên tỷ lệ cọc
         BigDecimal paymentAmountBd = totalPrice.multiply(BigDecimal.valueOf(depositRate)).divide(BigDecimal.valueOf(100));

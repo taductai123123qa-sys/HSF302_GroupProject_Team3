@@ -32,7 +32,6 @@ public class DashboardController {
         model.addAttribute("availableRooms", roomRepository.countByRoomStatus(RoomStatus.AVAILABLE));
         model.addAttribute("totalServices", hotelServiceRepository.count());
 
-        // 2. Lấy dữ liệu doanh thu (Cộng dồn từ query bạn đã có)
         List<Object[]> revenueData = bookingDetailRepository.getRevenueByCategory();
         double totalRevenue = 0;
         List<String> categoryLabels = new ArrayList<>();
@@ -46,7 +45,6 @@ public class DashboardController {
         }
         model.addAttribute("totalRevenue", totalRevenue);
 
-        // 3. Data cho biểu đồ
         List<Object[]> countData = bookingDetailRepository.getBookingCountByCategory();
         List<Integer> occupancyRates = new ArrayList<>();
         for (Object[] row : countData) {

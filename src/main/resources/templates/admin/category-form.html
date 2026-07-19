@@ -1,77 +1,104 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Thông tin Hạng phòng</title>
+    <title>Thêm Hạng Phòng Mới</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f7f6; }
-        .card { border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important; }
-        .card-header { border-radius: 16px 16px 0 0 !important; background: linear-gradient(135deg, #4e73df, #224abe) !important; border-bottom: none; }
-        .form-control, .form-select { border-radius: 8px; padding: 12px 15px; border: 1px solid #e3e6f0; transition: all 0.2s; background-color: #f8f9fc;}
-        .form-control:focus, .form-select:focus { border-color: #4e73df; box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.15); background-color: #fff;}
-        .btn { border-radius: 8px; padding: 10px 24px; font-weight: 600; transition: all 0.3s; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .admin-card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .form-label { font-weight: 600; color: #4a5568; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .custom-input { border-radius: 10px; padding: 12px 16px; border: 1px solid #e2e8f0; background-color: #f8fafc; transition: all 0.2s; }
+        .custom-input:focus { background-color: #fff; border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        .btn-custom { border-radius: 10px; padding: 12px 24px; font-weight: 600; transition: all 0.3s; }
+        .img-preview { width: 100%; max-height: 250px; object-fit: cover; border-radius: 10px; display: none; border: 2px dashed #cbd5e1; }
+        .main-content { margin-left: 260px; padding: 2rem; min-height: 100vh; background-color: #f8f9fa; }
     </style>
 </head>
-<body class="bg-light d-flex" style="min-height: 100vh;">
+<body>
 
 <div th:replace="~{admin/sidebar :: adminSidebar}"></div>
 
-<div class="container-fluid py-5 w-100">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white text-center py-3">
-                    <h4 class="mb-0" th:text="${category.id == null} ? 'Thêm Hạng phòng mới' : 'Cập nhật Hạng phòng'">Hạng phòng</h4>
-                </div>
-                <div class="card-body p-4">
+<div class="main-content">
+    <div class="container-fluid max-w-7xl">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-0">Thêm Hạng Phòng Mới</h2>
+                <p class="text-muted small mt-1">Nhập thông tin chi tiết và hình ảnh cho hạng phòng.</p>
+            </div>
+            <a th:href="@{/admin/categories}" class="btn btn-light btn-custom text-secondary border shadow-sm"><i class="fas fa-arrow-left me-2"></i> Quay lại</a>
+        </div>
 
-                    <form th:action="@{/admin/categories/save}" th:object="${category}" method="post" enctype="multipart/form-data">
-
-                        <input type="hidden" th:field="*{id}">
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Tên hạng phòng</label>
-                                <input type="text" class="form-control" th:field="*{name}" required placeholder="VD: Standard Room">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Giá mỗi đêm (VNĐ)</label>
-                                <input type="number" step="0.01" class="form-control" th:field="*{pricePerNight}" required placeholder="VD: 1000000">
-                            </div>
+        <div class="card admin-card">
+            <div class="card-body p-4 p-md-5">
+                <form th:action="@{/admin/categories/save}" method="post" enctype="multipart/form-data" th:object="${category}">
+                    <input type="hidden" th:field="*{id}" />
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Tên hạng phòng <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}" class="form-control custom-input" placeholder="VD: Standard Room, Deluxe..." required autofocus>
                         </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Sức chứa (Người)</label>
-                                <input type="number" class="form-control" th:field="*{capacity}" required placeholder="VD: 2">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Diện tích (m²)</label>
-                                <input type="number" step="0.1" class="form-control" th:field="*{size}" placeholder="VD: 25.5">
+                        <div class="col-md-6">
+                            <label class="form-label">Giá mỗi đêm (VNĐ) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" th:field="*{pricePerNight}" class="form-control custom-input rounded-end-0" placeholder="VD: 1000000" min="0" required>
+                                <span class="input-group-text bg-light border-start-0 text-muted rounded-end">VNĐ</span>
                             </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Mô tả chi tiết</label>
-                            <textarea class="form-control" th:field="*{description}" rows="3" placeholder="Nhập mô tả về hạng phòng..."></textarea>
+                        <div class="col-md-6">
+                            <label class="form-label">Sức chứa (Người) <span class="text-danger">*</span></label>
+                            <input type="number" th:field="*{capacity}" class="form-control custom-input" placeholder="VD: 2" min="1" required>
                         </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-primary">Hình ảnh hạng phòng</label>
-                            <input type="file" name="images" class="form-control" accept="image/*">
+                        <div class="col-md-6">
+                            <label class="form-label">Diện tích (m²) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" th:field="*{size}" class="form-control custom-input rounded-end-0" step="0.1" placeholder="VD: 25.5" min="1" required>
+                                <span class="input-group-text bg-light border-start-0 text-muted rounded-end">m²</span>
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="d-flex justify-content-between">
-                            <a th:href="@{/admin/categories}" class="btn btn-secondary">Quay lại</a>
-                            <button type="submit" class="btn btn-success px-5">Lưu thông tin</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="mb-4">
+                        <label class="form-label">Mô tả chi tiết</label>
+                        <textarea th:field="*{description}" class="form-control custom-input" rows="4" placeholder="Nhập những điểm nổi bật của hạng phòng này..."></textarea>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="form-label">Hình ảnh đại diện</label>
+                        <input type="file" name="imageFile" class="form-control custom-input mb-3" id="imageInput" accept="image/*">
+                        <img id="preview" src="#" alt="Xem trước hình ảnh" class="img-preview shadow-sm mt-2">
+                    </div>
+
+                    <hr class="text-muted mb-4">
+
+                    <div class="d-flex justify-content-end gap-3">
+                        <button type="reset" class="btn btn-light btn-custom text-secondary border">Xóa form</button>
+                        <button type="submit" class="btn btn-success btn-custom shadow-sm"><i class="fas fa-save me-2"></i> Lưu Thông Tin</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('preview');
+
+    imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', function() {
+                preview.src = this.result;
+                preview.style.display = 'block';
+            });
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+            preview.src = "";
+        }
+    });
+</script>
 </body>
 </html>
