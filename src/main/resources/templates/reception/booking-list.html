@@ -44,10 +44,10 @@
     </a>
 
     <div class="mt-auto mb-3">
-        <a href="#">
+        <a href="/reception/settings">
             <span class="sidebar-icon"></span> Cài đặt
         </a>
-        <a href="#">
+        <a href="/">
             <span class="sidebar-icon"></span> Đăng xuất
         </a>
     </div>
@@ -84,10 +84,10 @@
             <div style="width: 250px;">
                 <label class="form-label">Sắp xếp theo</label>
                 <select name="sort" class="form-select">
-                    <option value="createdAt,desc" th:selected="${sortParam == 'createdAt,desc'}">Ngày tạo (Mới nhất)</option>
-                    <option value="createdAt,asc" th:selected="${sortParam == 'createdAt,asc'}">Ngày tạo (Cũ nhất)</option>
-                    <option value="checkInDate,asc" th:selected="${sortParam == 'checkInDate,asc'}">Ngày Check-in (Tăng dần)</option>
-                    <option value="checkInDate,desc" th:selected="${sortParam == 'checkInDate,desc'}">Ngày Check-in (Giảm dần)</option>
+                    <option value="createdAt,desc" th:selected="${sortParam == 'createdAt,desc'}">Mới nhất</option>
+                    <option value="createdAt,asc" th:selected="${sortParam == 'createdAt,asc'}">Cũ nhất</option>
+                    <option value="checkInDate,asc" th:selected="${sortParam == 'checkInDate,asc'}">Tăng dần</option>
+                    <option value="checkInDate,desc" th:selected="${sortParam == 'checkInDate,desc'}">Giảm dần</option>
                 </select>
             </div>
             <div>
@@ -194,3 +194,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

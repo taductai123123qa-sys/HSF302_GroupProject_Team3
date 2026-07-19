@@ -86,7 +86,7 @@ public class DataInitializer {
 
                 RoomCategory deluxe = RoomCategory.builder()
                         .name("Deluxe Room")
-                        .pricePerNight(new BigDecimal("150.00"))
+                        .pricePerNight(new BigDecimal("1500000.00"))
                         .description("A spacious deluxe room with premium amenities and a city view.")
                         .capacity(3)
                         .size(35.0)
@@ -95,7 +95,7 @@ public class DataInitializer {
 
                 RoomCategory suite = RoomCategory.builder()
                         .name("Suite")
-                        .pricePerNight(new BigDecimal("250.00"))
+                        .pricePerNight(new BigDecimal("2500000.00"))
                         .description("A luxurious suite with a separate living area and ocean view.")
                         .capacity(4)
                         .size(50.0)
@@ -106,10 +106,10 @@ public class DataInitializer {
 
                 Room room101 = Room.builder().roomNumber("101").roomStatus(RoomStatus.AVAILABLE).roomCategory(standard).build();
                 Room room102 = Room.builder().roomNumber("102").roomStatus(RoomStatus.AVAILABLE).roomCategory(standard).build();
-                Room room103 = Room.builder().roomNumber("103").roomStatus(RoomStatus.OCCUPIED).roomCategory(standard).build();
+                Room room103 = Room.builder().roomNumber("103").roomStatus(RoomStatus.AVAILABLE).roomCategory(standard).build();
 
                 Room room201 = Room.builder().roomNumber("201").roomStatus(RoomStatus.AVAILABLE).roomCategory(deluxe).build();
-                Room room202 = Room.builder().roomNumber("202").roomStatus(RoomStatus.NEED_CLEANING).roomCategory(deluxe).build();
+                Room room202 = Room.builder().roomNumber("202").roomStatus(RoomStatus.AVAILABLE).roomCategory(deluxe).build();
 
                 Room room301 = Room.builder().roomNumber("301").roomStatus(RoomStatus.AVAILABLE).roomCategory(suite).build();
 
