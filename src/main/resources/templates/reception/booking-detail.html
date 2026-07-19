@@ -101,8 +101,9 @@
                                 <span class="info-label">Số lượng khách</span>
                                 <span class="info-value" th:text="${booking.numberOfGuests} + ' người'">2 người</span>
                             </div>
-                            <div class="info-row">
-                                <span class="info-label">Ghi chú</span>
+                            <span class="info-label">Ghi chú</span>
+                            <div class="info-row" th:if="${booking.bookingStatus.name() == 'PENDING'}">
+
                                 <span class="info-value text-muted"
                                     th:text="${booking.notes != null ? booking.notes : 'Không có'}">...</span>
                             </div>
@@ -148,6 +149,13 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Yêu cầu từ khách hàng-->
+                <div class="card mb-4 border-danger" th:if="${booking.hasSpecialRequest()}">
+                    <h3 class="card-title text-danger"><i class="fas fa-exclamation-circle me-2"></i>Yêu cầu</h3>
+                    <div class="p-3 bg-light border border-danger rounded text-danger" style="white-space: pre-wrap; font-weight: 500;" th:text="${booking.notes}">
                     </div>
                 </div>
             </div>

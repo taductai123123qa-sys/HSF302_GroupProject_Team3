@@ -26,7 +26,7 @@ public class HotelService {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
     @Enumerated(EnumType.STRING)
     @Column

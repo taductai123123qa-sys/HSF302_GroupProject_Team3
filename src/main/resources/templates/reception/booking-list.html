@@ -143,9 +143,14 @@
                                 </span>
                             </td>
                             <td class="text-end pe-4">
-                                <a th:href="@{/reception/bookings/{id}(id=${booking.id})}"
-                                    class="btn btn-sm btn-outline-primary"
-                                    style="height: auto; padding: 4px 12px; font-size: 0.85rem;">Chi tiết</a>
+                                <div class="position-relative d-inline-block">
+                                    <a th:href="@{/reception/bookings/{id}(id=${booking.id})}"
+                                        class="btn btn-sm btn-outline-primary"
+                                        style="height: auto; padding: 4px 12px; font-size: 0.85rem;">Chi tiết</a>
+                                    <span th:if="${booking.hasSpecialRequest()}" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" title="Có yêu cầu từ khách">
+                                        <span class="visually-hidden">Yêu cầu</span>
+                                    </span>
+                                </div>
                             </td>
                         </tr>
 

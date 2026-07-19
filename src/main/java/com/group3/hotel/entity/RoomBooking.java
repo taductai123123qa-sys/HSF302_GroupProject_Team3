@@ -43,7 +43,7 @@ public class RoomBooking {
     @Column(nullable = false)
     private Integer numberOfGuests;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String notes;
 
     @OneToMany(mappedBy = "roomBooking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -93,5 +93,17 @@ public class RoomBooking {
         BigDecimal paid = getPaidAmount();
         BigDecimal remaining = totalPrice.subtract(paid);
         return remaining.compareTo(BigDecimal.ZERO) > 0 ? remaining : BigDecimal.ZERO;
+    }
+
+    @Transient
+    public boolean hasSpecialRequest() {
+        if (notes == null || notes.isEmpty()) {
+            return false;
+        }
+        if (bookingStatus != BookingStatus.CONFIRMED && bookingStatus != BookingStatus.CHECKED_IN) {
+            return false;
+        }
+        // Xử lý lỗi font chữ từ DB (chữ Ầ và Ạ bị biến thành ?) bằng cách nhận diện tiền tố an toàn
+        return notes.contains("[YÊU C");
     }
 }

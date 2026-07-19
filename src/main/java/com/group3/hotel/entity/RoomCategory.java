@@ -25,7 +25,7 @@ public class RoomCategory {
     @Column(nullable = false)
     private BigDecimal pricePerNight;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(nullable = false)
