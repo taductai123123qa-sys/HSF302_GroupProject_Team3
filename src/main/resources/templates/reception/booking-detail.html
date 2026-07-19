@@ -174,21 +174,22 @@
 
                 <!-- Thông tin thanh toán -->
                 <div class="card mb-4 bg-light border-0">
-                    <h3 class="card-title mb-3">Tổng thanh toán</h3>
+                    <h3 class="card-title mb-3">Thông tin thanh toán</h3>
                     <div class="total-row">
-                        <span class="info-label">Tiền phòng</span>
+                        <span class="info-label">Tổng tiền</span>
                         <span class="info-value"
                             th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">3.000.000
                             VNĐ</span>
                     </div>
                     <div class="total-row">
-                        <span class="info-label">Phụ phí/Giảm giá</span>
-                        <span class="info-value">0 VNĐ</span>
+                        <span class="info-label">Đã thanh toán</span>
+                        <span class="info-value text-success"
+                            th:text="${#numbers.formatDecimal(booking.paidAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
                     </div>
-                    <div class="total-row final">
-                        <span>Tổng cộng</span>
-                        <span
-                            th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">3.000.000
+                    <div class="total-row final mt-2 pt-3 border-top">
+                        <span>Còn nợ</span>
+                        <span class="text-danger"
+                            th:text="${#numbers.formatDecimal(booking.remainingAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">3.000.000
                             VNĐ</span>
                     </div>
                 </div>

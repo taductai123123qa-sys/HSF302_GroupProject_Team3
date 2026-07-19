@@ -75,4 +75,22 @@ public class RoomBooking {
         }
         return payments.get(payments.size() - 1).getStatus();
     }
+
+    @Transient
+    public BigDecimal getPaidAmount() {
+        if (payments == null || payments.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return payments.stream()
+                .filter(p -> p.getStatus() == com.group3.hotel.enums.PaymentStatus.PAID)
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Transient
+    public BigDecimal getRemainingAmount() {
+        BigDecimal paid = getPaidAmount();
+        BigDecimal remaining = totalPrice.subtract(paid);
+        return remaining.compareTo(BigDecimal.ZERO) > 0 ? remaining : BigDecimal.ZERO;
+    }
 }
