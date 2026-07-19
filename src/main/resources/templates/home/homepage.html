@@ -6,6 +6,30 @@
 <body class="bg-light">
 <header th:replace="~{layout/fragments :: customer_header}"></header>
 
+<!-- Toast thông báo đặt phòng thành công (hiển thị khi có flash message) -->
+<div th:if="${successMessage}" class="position-fixed top-0 start-50 translate-middle-x mt-5" style="z-index: 9999;">
+    <div class="alert alert-success alert-dismissible fade show shadow-lg d-flex align-items-center"
+         role="alert" style="border-radius: 14px; padding: 16px 24px; min-width: 360px;">
+        <i class="fas fa-check-circle fa-2x me-3"></i>
+        <div class="text-start">
+            <strong class="d-block fs-6">Đã đặt phòng thành công!</strong>
+            <span class="small" th:text="${successMessage}"></span>
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+<div th:if="${errorMessage}" class="position-fixed top-0 start-50 translate-middle-x mt-5" style="z-index: 9999;">
+    <div class="alert alert-danger alert-dismissible fade show shadow-lg d-flex align-items-center"
+         role="alert" style="border-radius: 14px; padding: 16px 24px; min-width: 360px;">
+        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+        <div class="text-start">
+            <strong class="d-block fs-6">Đặt phòng thất bại</strong>
+            <span class="small" th:text="${errorMessage}"></span>
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
 <!-- Hero Section -->
 <section class="position-relative d-flex align-items-center justify-content-center"
          style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1920&auto=format&fit=crop') no-repeat center center; background-size: cover; min-height: 80vh;">

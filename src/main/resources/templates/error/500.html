@@ -71,17 +71,24 @@
         <div class="error-title">Lỗi hệ thống</div>
 
         <div class="error-message">
-            Hệ thống đang gặp lỗi trong quá trình xử lý. Vui lòng thử lại sau hoặc liên hệ quản trị viên.
+            Hệ thống đang gặp lỗi trong quá trình xử lý. Bạn sẽ được chuyển về trang chủ trong giây lát...
         </div>
 
         <div class="error-message" th:if="${message != null}">
             <span th:text="${message}"></span>
         </div>
 
-        <a href="/admin/dashboard" class="btn">Về trang quản trị</a>
+        <a href="/" class="btn">Về trang chủ</a>
         <a href="javascript:history.back()" class="btn btn-back">Quay lại</a>
     </div>
 </div>
+
+<script>
+    // Tự động chuyển về trang chủ sau 3 giây
+    setTimeout(function () {
+        window.location.href = '/';
+    }, 3000);
+</script>
 
 </body>
 </html>

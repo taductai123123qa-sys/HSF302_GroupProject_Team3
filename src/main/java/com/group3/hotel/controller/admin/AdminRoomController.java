@@ -2,6 +2,7 @@ package com.group3.hotel.controller.admin;
 
 import com.group3.hotel.entity.Room;
 import com.group3.hotel.enums.RoomStatus;
+import com.group3.hotel.exception.BadRequestException;
 import com.group3.hotel.repository.RoomCategoryRepository;
 import com.group3.hotel.service.AdminRoomService;
 import lombok.RequiredArgsConstructor;
@@ -40,21 +41,32 @@ public class AdminRoomController {
 
     @PostMapping("/save")
     public String saveRoom(@ModelAttribute Room room, RedirectAttributes redirectAttributes) {
-        adminRoomService.saveRoom(room);
-        redirectAttributes.addFlashAttribute("success", "Lưu phòng thành công");
+        try {
+            adminRoomService.saveRoom(room);
+            redirectAttributes.addFlashAttribute("success", "Lưu phòng thành công");
+        } catch (BadRequestException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/admin/rooms";
+        }
         return "redirect:/admin/rooms";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteRoom(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        adminRoomService.deleteRoom(id);
-        redirectAttributes.addFlashAttribute("success", "Xóa phòng thành công");
+        try {
+            adminRoomService.deleteRoom(id);
+            redirectAttributes.addFlashAttribute("success", "Xóa phòng thành công");
+        } catch (BadRequestException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Không thể xóa phòng: " + ex.getMessage());
+        }
         return "redirect:/admin/rooms";
     }
 
     private void addFormData(Model model) {
         model.addAttribute("categories", roomCategoryRepository.findAllByOrderByNameAsc());
-        // Đã đổi tên biến từ "statuses" thành "roomStatuses" cho khớp với HTML
         model.addAttribute("roomStatuses", RoomStatus.values());
     }
 }

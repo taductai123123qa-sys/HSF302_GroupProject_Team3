@@ -40,12 +40,21 @@
                     <i class="me-2"></i> Quản Lý Dịch Vụ
                 </a>
             </li>
+            <li>
+                <a th:href="@{/admin/users}" class="nav-link text-white fs-6 py-3 px-4 rounded-3 transition-all">
+                    <i class="me-2"></i> Quản Lý Khách Hàng
+                </a>
+            </li>
         </ul>
 
         <hr class="border-secondary mt-4 mb-4">
         <div class="text-center pb-3">
-            <a href="/customer/rooms" class="btn btn-outline-info rounded-pill px-4 py-2 w-100 fw-bold"
+            <a href="/customer/rooms" class="btn btn-outline-info rounded-pill px-4 py-2 w-100 fw-bold mb-2"
                 style="transition: all 0.3s;">Về trang Khách</a>
+            <a href="/logout" class="btn btn-outline-danger rounded-pill px-4 py-2 w-100 fw-bold"
+                style="transition: all 0.3s;">
+                <i class="me-2"></i> Đăng xuất
+            </a>
         </div>
 
         <style>

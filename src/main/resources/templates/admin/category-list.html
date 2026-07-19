@@ -72,16 +72,25 @@
     <div class="d-flex">
         <div th:replace="~{admin/sidebar :: adminSidebar}"></div>
 
-        <div class="container-fluid py-5" style="margin-left: 280px; padding-right: 40px;">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="fw-bold text-dark mb-1">Hạng Phòng</h2>
-                    <p class="text-muted">Quản lý các loại phòng của khách sạn</p>
-                </div>
-                <a th:href="@{/admin/categories/add}" class="btn btn-primary px-4 py-2 shadow-sm">+ Thêm Hạng mới</a>
+    <div class="container-fluid py-5" style="margin-left: 280px; padding-right: 40px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-1">Hạng Phòng</h2>
+                <p class="text-muted">Quản lý các loại phòng của khách sạn</p>
             </div>
+            <a th:href="@{/admin/categories/add}" class="btn btn-primary px-4 py-2 shadow-sm">+ Thêm Hạng mới</a>
+        </div>
 
-            <div class="premium-card">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fas fa-check-circle me-2"></i><span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="premium-card">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -96,7 +105,7 @@
                     <tbody>
                         <tr th:each="cat : ${categories}">
                             <td>
-                                <img th:if="${cat.imgUrl != null}" th:src="${cat.imgUrl}" alt="Room"
+                                <img th:if="${cat.imgUrl != null}" th:src="@{${cat.imgUrl}}" alt="Room"
                                     class="img-thumbnail" style="width: 85px; height: 60px; object-fit: cover;">
                                 <span th:if="${cat.imgUrl == null}" class="badge bg-light text-dark border">No
                                     Image</span>

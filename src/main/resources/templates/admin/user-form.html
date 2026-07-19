@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? 'Cập nhật Khách Hàng' : 'Thêm Khách Hàng Mới'">Thêm Khách Hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .custom-input {
+            border-radius: 10px;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .custom-input:focus {
+            background-color: #fff;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+        }
+
+        .btn-custom {
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div th:replace="~{admin/sidebar :: adminSidebar}"></div>
+
+    <div class="main-content">
+        <div class="container-fluid max-w-7xl">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold text-dark mb-0"
+                        th:text="${isEdit} ? 'Cập nhật Khách Hàng' : 'Thêm Khách Hàng Mới'">Thêm Khách Hàng</h2>
+                    <p class="text-muted small mt-1">
+                        <span th:if="${isEdit}">Chỉnh sửa thông tin tài khoản khách hàng. Để trống mật khẩu nếu không muốn thay đổi.</span>
+                        <span th:unless="${isEdit}">Tạo tài khoản khách hàng mới để có thể đăng nhập đặt phòng.</span>
+                    </p>
+                </div>
+                <a th:href="@{/admin/users}" class="btn btn-light btn-custom text-secondary border shadow-sm">
+                    <i class="fas fa-arrow-left me-2"></i> Quay lại
+                </a>
+            </div>
+
+            <div class="card admin-card mx-auto" style="max-width: 720px;">
+                <div class="card-body p-4 p-md-5">
+                    <form th:action="@{/admin/users/save}" method="post" th:object="${userForm}">
+
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-4">
+                            <label class="form-label">Email đăng nhập <span class="text-danger">*</span></label>
+                            <input type="email" th:field="*{email}" class="form-control custom-input"
+                                   placeholder="VD: customer@gmail.com" required autocomplete="off">
+                            <small class="hint">Email dùng để đăng nhập vào hệ thống.</small>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{fullName}" class="form-control custom-input"
+                                       placeholder="VD: Nguyễn Văn A" required autocomplete="off">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="tel" th:field="*{phone}" class="form-control custom-input"
+                                       placeholder="VD: 0901234567" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="form-label">
+                                Mật khẩu
+                                <span th:if="${!isEdit}" class="text-danger">*</span>
+                                <span th:if="${isEdit}" class="text-muted small fw-normal">(bỏ trống nếu không đổi)</span>
+                            </label>
+                            <input type="password" th:field="*{password}" class="form-control custom-input"
+                                   placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)"
+                                   minlength="6"
+                                   th:required="${!isEdit}"
+                                   autocomplete="new-password">
+                            <small class="hint">Mật khẩu sẽ được mã hóa bằng BCrypt trước khi lưu vào CSDL.</small>
+                        </div>
+
+                        <hr class="text-muted mb-4">
+
+                        <div class="d-flex justify-content-end gap-3">
+                            <a th:href="@{/admin/users}" class="btn btn-light btn-custom text-secondary border">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-success btn-custom shadow-sm">
+                                <i class="fas fa-save me-2"></i>
+                                <span th:text="${isEdit} ? 'Cập nhật' : 'Lưu Khách Hàng'">Lưu</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
