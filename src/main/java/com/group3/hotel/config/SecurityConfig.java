@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.group3.hotel.security.CustomAuthenticationSuccessHandler;
+import com.group3.hotel.security.CustomAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SecurityConfig {
 
     @Autowired
-    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private CustomAuthentication customAuthenticationSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

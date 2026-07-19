@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 @Component
-public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class CustomAuthentication implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
