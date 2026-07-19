@@ -42,15 +42,15 @@ public class DataInitializer {
                 System.out.println("Tạo thành công tài khoản ADMIN: admin@gmail.com / 123456");
             }
 
-            if (userRepository.findByEmail("re@gmail.com").isEmpty()) {
-                User adminUser = User.builder()
-                        .email("re@gmail.com")
+            if (userRepository.findByEmail("receptionist@gmail.com").isEmpty()) {
+                User receptionistUser = User.builder()
+                        .email("receptionist@gmail.com")
                         // Đã được mã hóa BCrypt
-                        .password(passwordEncoder.encode("123"))
+                        .password(passwordEncoder.encode("123456"))
                         .role(UserRole.RECEPTIONIST)
                         .build();
-                userRepository.save(adminUser);
-                System.out.println("Tạo thành công tài khoản ADMIN: re@gmail.com / 123456");
+                userRepository.save(receptionistUser);
+                System.out.println("Tạo thành công tài khoản RECEPTIONIST: receptionist@gmail.com / 123456");
             }
 
             // 2. KHỞI TẠO TÀI KHOẢN GUEST MỚI (ĐÃ FIX MÃ HÓA)

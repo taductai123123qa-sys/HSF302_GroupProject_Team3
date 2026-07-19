@@ -30,10 +30,12 @@ public class RoomAllocationServiceImpl implements RoomAllocationService {
     @Override
     @Transactional
     public void assignTemporaryRooms(RoomBooking booking, RoomCategory category, int roomCount) {
-        // Lấy danh sách các phòng trống của loại phòng này
-        List<Room> availableRooms = roomRepository.findByRoomCategoryIdAndRoomStatus(category.getId(), RoomStatus.AVAILABLE);
+        // Tính toán lại số phòng trống thực tế trong khoảng thời gian khách muốn đặt
+        long totalRooms = roomRepository.countByRoomCategoryIdAndRoomStatusNot(category.getId(), RoomStatus.MAINTENANCE);
+        long bookedRooms = bookingDetailRepository.countBookedRooms(category.getId(), booking.getCheckInDate(), booking.getCheckOutDate());
+        long availableRoomsCount = totalRooms - bookedRooms;
 
-        if (availableRooms.size() < roomCount) {
+        if (availableRoomsCount < roomCount) {
             throw new IllegalArgumentException("Không đủ phòng trống để đặt.");
         }
 

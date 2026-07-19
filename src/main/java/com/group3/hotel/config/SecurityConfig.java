@@ -29,11 +29,25 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
+                        .successHandler((request, response, authentication) -> {
+                            boolean isAdmin = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().contains("ADMIN"));
+                            boolean isReceptionist = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().contains("RECEPTIONIST"));
+
+                            if (isAdmin) {
+                                response.sendRedirect("/admin/dashboard");
+                            } else if (isReceptionist) {
+                                response.sendRedirect("/reception/rooms");
+                            } else {
+                                response.sendRedirect("/"); // Khách hàng về trang chủ
+                            }
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout") // Đăng xuất xong đẩy về login báo thành công
                         .permitAll()
                 );
 

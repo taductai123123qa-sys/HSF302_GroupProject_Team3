@@ -92,6 +92,7 @@ public class BookingServiceImpl implements IBookingService {
                 .paymentMethod(PaymentMethod.VNPAY)
                 .paymentDate(LocalDateTime.now())
                 .status(PaymentStatus.UNPAID)
+                .txnRef(String.valueOf(booking.getId()))
                 .build();
         paymentRepository.save(payment);
 
@@ -128,5 +129,94 @@ public class BookingServiceImpl implements IBookingService {
         }
 
         roomAllocationService.releaseRoomsForCancelledBooking(booking);
+    }
+
+    @Override
+    @Transactional
+    public void cancelCustomerBooking(Long bookingId, String email) throws Exception {
+        Customer customer = customerRepository.findByUserEmail(email).orElseThrow(() -> new Exception("Customer not found"));
+        RoomBooking booking = roomBookingRepository.findById(bookingId).orElseThrow(() -> new Exception("Booking not found"));
+        
+        if (!booking.getCustomer().getId().equals(customer.getId())) {
+            throw new Exception("You do not have permission to cancel this booking.");
+        }
+        
+        cancelBooking(bookingId);
+    }
+
+    @Override
+    @Transactional
+    public void requestRoomChange(Long bookingId, String email, String reason) throws Exception {
+        Customer customer = customerRepository.findByUserEmail(email).orElseThrow(() -> new Exception("Customer not found"));
+        RoomBooking booking = roomBookingRepository.findById(bookingId).orElseThrow(() -> new Exception("Booking not found"));
+        
+        if (!booking.getCustomer().getId().equals(customer.getId())) {
+            throw new Exception("You do not have permission to perform this action.");
+        }
+        
+        if (booking.getBookingStatus() == BookingStatus.CHECKED_IN || booking.getBookingStatus() == BookingStatus.CONFIRMED) {
+            String prefix = booking.getBookingStatus() == BookingStatus.CHECKED_IN ? "[YÊU CẦU ĐỔI PHÒNG - " : "[YÊU CẦU NÂNG HẠNG - ";
+            String dateStr = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now());
+            String newNote = prefix + dateStr + "]: " + reason;
+            
+            if (booking.getNotes() == null || booking.getNotes().isEmpty()) {
+                booking.setNotes(newNote);
+            } else {
+                booking.setNotes(booking.getNotes() + "\n\n" + newNote);
+            }
+            
+            roomBookingRepository.save(booking);
+        } else {
+            throw new Exception("Invalid booking status for this request.");
+        }
+    }
+
+    @Override
+    public com.group3.hotel.dto.response.BookingHistoryDTO getCustomerBookingHistory(String email, String status, String sort) {
+        Customer customer = customerRepository.findByUserEmail(email).orElse(null);
+        if (customer == null) {
+            return new com.group3.hotel.dto.response.BookingHistoryDTO(java.util.Collections.emptyList(), 0, 0, 0);
+        }
+
+        java.util.List<RoomBooking> allBookings = roomBookingRepository.findByCustomerOrderByCreatedAtDesc(customer);
+        
+        java.util.List<RoomBooking> filteredBookings = allBookings;
+        if (!"ALL".equalsIgnoreCase(status)) {
+            filteredBookings = allBookings.stream()
+                    .filter(b -> b.getBookingStatus().name().equalsIgnoreCase(status))
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        if ("asc".equalsIgnoreCase(sort)) {
+            java.util.Collections.reverse(filteredBookings);
+        }
+
+        long countAll = allBookings.size();
+        long countCheckedIn = allBookings.stream().filter(b -> b.getBookingStatus() == BookingStatus.CHECKED_IN).count();
+        long countCancelled = allBookings.stream().filter(b -> b.getBookingStatus() == BookingStatus.CANCELLED).count();
+
+        return new com.group3.hotel.dto.response.BookingHistoryDTO(filteredBookings, countAll, countCheckedIn, countCancelled);
+    }
+
+    @Override
+    public com.group3.hotel.dto.response.BookingSummaryDTO calculateBookingSummary(BookingCreateRequest request, RoomCategory category) {
+        long nights = java.time.temporal.ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
+        if (nights <= 0) nights = 1;
+
+        BigDecimal totalPrice = category.getPricePerNight()
+                .multiply(BigDecimal.valueOf(nights))
+                .multiply(BigDecimal.valueOf(request.getRoomCount()));
+
+        return new com.group3.hotel.dto.response.BookingSummaryDTO(nights, totalPrice);
+    }
+
+    @Override
+    @Transactional
+    public void updatePaymentGatewayTransaction(String txnRef, String transactionNo) {
+        Payment payment = paymentRepository.findByTxnRef(txnRef).orElse(null);
+        if (payment != null && transactionNo != null && !transactionNo.isEmpty()) {
+            payment.setGatewayTransactionNo(transactionNo);
+            paymentRepository.save(payment);
+        }
     }
 }

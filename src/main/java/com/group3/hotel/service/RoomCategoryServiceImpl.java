@@ -33,6 +33,25 @@ public class RoomCategoryServiceImpl implements RoomCategoryService {
     }
 
     @Override
+    public org.springframework.data.domain.Page<RoomCategory> searchCategory(RoomSearchRequest searchRequest, org.springframework.data.domain.Pageable pageable) {
+        List<RoomCategory> available = searchCategory(searchRequest);
+        
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        
+        List<RoomCategory> pagedCategories;
+        if (available.size() < startItem) {
+            pagedCategories = java.util.Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, available.size());
+            pagedCategories = available.subList(startItem, toIndex);
+        }
+        
+        return new org.springframework.data.domain.PageImpl<>(pagedCategories, pageable, available.size());
+    }
+
+    @Override
     public List<RoomCategory> searchCategory(RoomSearchRequest searchRequest) {
 
         LocalDate checkIn = (searchRequest.getCheckInDate() != null) ? searchRequest.getCheckInDate() : LocalDate.now();

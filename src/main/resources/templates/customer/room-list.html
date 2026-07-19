@@ -194,6 +194,23 @@
                     </div>
                 </div>
             </div>
+            <!-- Pagination Controls -->
+            <div class="pagination-wrapper text-center mt-5" th:if="${totalPages > 1}">
+                <nav aria-label="Room pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/customer/rooms/search(page=${currentPage - 1}, checkInDate=${searchRequest.checkInDate}, checkOutDate=${searchRequest.checkOutDate}, capacity=${searchRequest.capacity}, roomCategory=${searchRequest.roomCategory}, minPrice=${searchRequest.minPrice}, maxPrice=${searchRequest.maxPrice})}" tabindex="-1" aria-disabled="true">Trước</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage == i} ? 'active'">
+                            <a class="page-link" th:href="@{/customer/rooms/search(page=${i}, checkInDate=${searchRequest.checkInDate}, checkOutDate=${searchRequest.checkOutDate}, capacity=${searchRequest.capacity}, roomCategory=${searchRequest.roomCategory}, minPrice=${searchRequest.minPrice}, maxPrice=${searchRequest.maxPrice})}" th:text="${i}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/customer/rooms/search(page=${currentPage + 1}, checkInDate=${searchRequest.checkInDate}, checkOutDate=${searchRequest.checkOutDate}, capacity=${searchRequest.capacity}, roomCategory=${searchRequest.roomCategory}, minPrice=${searchRequest.minPrice}, maxPrice=${searchRequest.maxPrice})}">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            
         </section>
 
     </main>

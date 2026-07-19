@@ -29,4 +29,29 @@ public interface IBookingService {
      * @param bookingId Mã đơn
      */
     void cancelBooking(Long bookingId);
+
+    /**
+     * Hủy đơn từ phía khách hàng (có kiểm tra quyền)
+     */
+    void cancelCustomerBooking(Long bookingId, String email) throws Exception;
+
+    /**
+     * Yêu cầu đổi phòng hoặc nâng hạng
+     */
+    void requestRoomChange(Long bookingId, String email, String reason) throws Exception;
+
+    /**
+     * Lấy lịch sử đặt phòng của khách hàng
+     */
+    com.group3.hotel.dto.response.BookingHistoryDTO getCustomerBookingHistory(String email, String status, String sort);
+
+    /**
+     * Tính toán tổng tiền và số đêm
+     */
+    com.group3.hotel.dto.response.BookingSummaryDTO calculateBookingSummary(BookingCreateRequest request, com.group3.hotel.entity.RoomCategory category);
+
+    /**
+     * Cập nhật mã giao dịch từ VNPAY
+     */
+    void updatePaymentGatewayTransaction(String txnRef, String transactionNo);
 }
