@@ -27,5 +27,4 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    // Không còn List<RoomBooking> bookings ở đây nữa. Sẽ chuyển qua Customer.
 }

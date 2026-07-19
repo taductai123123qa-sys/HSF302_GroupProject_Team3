@@ -26,25 +26,25 @@ public class ReceptionSettingsController {
     public String viewSettings(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        
+
         Optional<Receptionist> receptionistOpt = receptionistRepository.findByUserEmail(email);
-        
+
         model.addAttribute("email", email);
         if (receptionistOpt.isPresent()) {
             model.addAttribute("receptionist", receptionistOpt.get());
         }
-        
+
         return "reception/settings";
     }
 
     @PostMapping
     public String updateSettings(@RequestParam String fullName,
-                                 @RequestParam(required = false) String phone,
-                                 @RequestParam(required = false) String shiftType,
-                                 RedirectAttributes redirectAttributes) {
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String shiftType,
+            RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        
+
         Optional<Receptionist> receptionistOpt = receptionistRepository.findByUserEmail(email);
         if (receptionistOpt.isPresent()) {
             Receptionist receptionist = receptionistOpt.get();
@@ -52,12 +52,12 @@ public class ReceptionSettingsController {
             receptionist.setPhone(phone);
             receptionist.setShiftType(shiftType);
             receptionistRepository.save(receptionist);
-            
+
             redirectAttributes.addFlashAttribute("success", "Cập nhật thông tin thành công!");
         } else {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy hồ sơ Lễ tân để cập nhật.");
         }
-        
+
         return "redirect:/reception/settings";
     }
 }

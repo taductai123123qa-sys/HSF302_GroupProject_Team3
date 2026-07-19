@@ -25,7 +25,7 @@ public class BookingCreateRequest {
     private Integer guestCount;
     private Integer roomCount;
 
-    // Customer Information
+    // thong tin kahc hang khi tao hoa don
     private String fullName;
     private String phone;
     private String idCard;

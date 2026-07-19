@@ -23,7 +23,7 @@ public class ReceptionRoomController {
     private final IRoomService roomService;
     private final RoomCategoryService roomCategoryService;
 
-    // 1. Xem sơ đồ phòng (Room Matrix)
+    // Xem sơ đồ phòng
     @GetMapping
     public String roomMatrix(
             @RequestParam(required = false) String keyword,
@@ -32,16 +32,17 @@ public class ReceptionRoomController {
             Model model) {
 
         List<RoomMatrixDTO> rooms = roomService.getRoomsWithFilters(keyword, status, categoryId);
-        
-        // Group rooms by category for matrix display
+
+        // Gom các phòng theo từng hạng phòng
         Map<String, List<RoomMatrixDTO>> roomsByCategory = rooms.stream()
-                .collect(Collectors.groupingBy(RoomMatrixDTO::getRoomCategoryName, java.util.TreeMap::new, Collectors.toList()));
+                .collect(Collectors.groupingBy(RoomMatrixDTO::getRoomCategoryName, java.util.TreeMap::new,
+                        Collectors.toList()));
 
         model.addAttribute("roomsByCategory", roomsByCategory);
         model.addAttribute("categories", roomCategoryService.getAllCategories());
         model.addAttribute("allStatuses", RoomStatus.values());
-        
-        // Retain filters
+
+        // Giữ nguyên các bộ lọc
         model.addAttribute("keyword", keyword);
         model.addAttribute("status", status);
         model.addAttribute("categoryId", categoryId);
@@ -49,7 +50,7 @@ public class ReceptionRoomController {
         return "reception/room-matrix";
     }
 
-    // 2. Cập nhật trạng thái phòng (VD: dọn xong)
+    // Cập nhật trạng thái phòng
     @PostMapping("/{id}/status")
     public String updateRoomStatus(
             @PathVariable("id") Long id,
