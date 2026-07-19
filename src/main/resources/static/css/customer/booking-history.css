@@ -90,152 +90,86 @@ body {
 
 .luxury-booking-card {
     border: none;
-    border-radius: 12px;
+    border-radius: 4px;
     background: #ffffff;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.03);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    padding: 24px;
+    padding: 30px;
 }
 
 .luxury-booking-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
 }
 
-.card-left-panel {
-    border-right: 1px solid #f1f5f9;
+.card-cancelled {
+    opacity: 0.6;
+    pointer-events: none;
+    filter: grayscale(100%);
 }
 
-.booking-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: #94a3b8;
-    display: block;
-    margin-bottom: 4px;
+.card-cancelled .badge {
+    filter: grayscale(0%); /* Keep the red badge color */
 }
 
-.booking-id {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #1e293b;
+.check-in-out-box {
+    margin-top: 10px;
 }
 
-.booking-date-label {
-    font-size: 0.75rem;
-    color: #64748b;
-    display: block;
+.room-names {
+    font-size: 1.5rem;
 }
 
-.booking-date-value {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #1e293b;
+.card-cancelled .room-names {
+    color: #94a3b8 !important;
 }
 
-.luxury-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    background: #ffffff;
+.card-cancelled .text-dark {
+    color: #94a3b8 !important;
 }
 
-.badge-pending { color: #64748b; border: 1px solid #e2e8f0; }
-.badge-confirmed { color: #0284c7; border: 1px solid #bae6fd; }
-.badge-checkedin { color: #b45309; border: 1px solid #fde68a; background-color: #fef3c7 !important; }
-.badge-checkedout { color: #16a34a; border: 1px solid #bbf7d0; }
-.badge-cancelled { color: #ef4444; border: 1px solid #fee2e2; }
-
-.status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-right: 6px;
-}
-.badge-pending .status-dot { background-color: #94a3b8; }
-.badge-confirmed .status-dot { background-color: #0ea5e9; }
-.badge-checkedin .status-dot { background-color: #f59e0b; }
-.badge-checkedout .status-dot { background-color: #22c55e; }
-.badge-cancelled .status-dot { background-color: #ef4444; }
-
-.icon-box {
-    width: 36px;
-    height: 36px;
-    background-color: #f1f5f9;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64748b;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-}
-
-.detail-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    color: #94a3b8;
-    text-transform: uppercase;
-}
-
-.detail-value {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #1e293b;
-}
-
-.room-qty {
-    font-weight: 700;
-    margin-right: 4px;
-}
-
-.luxury-price {
-    font-family: 'Playfair Display', serif;
-    color: #b89146;
-    font-size: 1.4rem;
-    font-weight: 700;
-}
-
-.payment-status {
-    font-size: 0.8rem;
-    color: #64748b;
-    display: flex;
-    align-items: center;
-}
-
-.payment-status i {
-    margin-right: 6px;
+.card-cancelled .luxury-price-new {
+    color: #94a3b8 !important;
 }
 
 .btn-cancel-luxury {
     color: #ef4444;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-decoration: underline;
+    font-size: 0.85rem;
+    font-weight: 400;
+    text-decoration: none;
     background: none;
     border: none;
     padding: 0;
-    margin-top: 10px;
 }
 
 .btn-cancel-luxury:hover {
     color: #dc2626;
-}
-
-.text-link {
-    color: #b89146;
-    font-size: 0.8rem;
     text-decoration: underline;
 }
 
-.text-link:hover {
-    color: #9a7b3c;
+/* Adjust layout on small screens */
+@media (max-width: 768px) {
+    .card-left-panel {
+        border-right: none !important;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 20px;
+        margin-bottom: 20px !important;
+    }
+    
+    .card-middle-panel {
+        border-right: none !important;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 20px;
+        margin-bottom: 20px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    
+    .card-right-panel {
+        padding-left: 0 !important;
+        text-align: left !important;
+    }
+    
+    .payment-badge-wrapper {
+        justify-content: flex-start !important;
+    }
 }

@@ -34,27 +34,20 @@ public class RoomAllocationServiceImpl implements RoomAllocationService {
         List<Room> availableRooms = roomRepository.findByRoomCategoryIdAndRoomStatus(category.getId(), RoomStatus.AVAILABLE);
 
         if (availableRooms.size() < roomCount) {
-            throw new IllegalArgumentException("Không đủ phòng trống để gán tạm thời.");
+            throw new IllegalArgumentException("Không đủ phòng trống để đặt.");
         }
 
-        // Bốc đủ số lượng phòng khách đặt
+        // Tạo chi tiết đơn hàng (BookingDetail) mà CHƯA gán phòng vật lý
         for (int i = 0; i < roomCount; i++) {
-            Room room = availableRooms.get(i);
-            
-            // Đổi trạng thái phòng thành đang giữ chỗ (OCCUPIED) để khách khác không đặt được
-            room.setRoomStatus(RoomStatus.OCCUPIED);
-            roomRepository.save(room);
-
-            // Tạo chi tiết đơn hàng lưu lại lịch sử
             BookingDetail detail = BookingDetail.builder()
                     .roomBooking(booking)
                     .roomCategory(category)
-                    .room(room)
+                    .room(null) // Bỏ trống id phòng (chưa gán)
                     .price(category.getPricePerNight())
                     .build();
             bookingDetailRepository.save(detail);
         }
-        log.info("Đã gán tạm thời {} phòng cho đơn hàng ID: {}", roomCount, booking.getId());
+        log.info("Đã tạo {} chi tiết đặt phòng (chưa gán phòng vật lý) cho đơn hàng ID: {}", roomCount, booking.getId());
     }
 
     @Override

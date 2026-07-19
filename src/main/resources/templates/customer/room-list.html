@@ -198,10 +198,7 @@
 
     </main>
 
-    <!-- FORM ẨN ĐỂ ĐẨY LÊN BACKEND -->
-    <!-- Form GET này sẽ gom toàn bộ dữ liệu biến thành URL param để đẩy sang trang Information -->
-    <form id="hidden-booking-form" action="/customer/booking/information" method="GET">
-    </form>
+
 
     <!-- Footer -->
     <footer th:replace="~{layout/fragments :: customer_footer}"></footer>
@@ -306,32 +303,7 @@
             window.location.href = targetUrl;
         }
 
-        // -- Logic Slider hình ảnh cũ của UI -- //
-        function changeImage(categoryId, direction) {
-            const slider = document.getElementById('slider-' + categoryId);
-            if (!slider) return;
-            const images = slider.querySelectorAll('.slider-image');
-            if (images.length <= 1) return;
 
-            let currentIndex = 0;
-            for (let i = 0; i < images.length; i++) {
-                if (images[i].style.display !== 'none') {
-                    currentIndex = i;
-                    break;
-                }
-            }
-
-            images[currentIndex].style.display = 'none';
-
-            let nextIndex = currentIndex + direction;
-            if (nextIndex >= images.length) {
-                nextIndex = 0;
-            } else if (nextIndex < 0) {
-                nextIndex = images.length - 1;
-            }
-
-            images[nextIndex].style.display = 'block';
-        }
     </script>
 </body>
 

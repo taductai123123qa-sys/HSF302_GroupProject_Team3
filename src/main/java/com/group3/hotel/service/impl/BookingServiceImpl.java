@@ -40,8 +40,7 @@ public class BookingServiceImpl implements IBookingService {
     @Override
     @Transactional
     public RoomBooking createBooking(BookingCreateRequest request, Integer depositRate, BigDecimal totalPrice) {
-        // Giả lập lấy User đang đăng nhập (Thực tế nên lấy từ SecurityContext)
-        User currentUser = userRepository.findByEmail("guest@hotel.com").orElse(null); 
+        User currentUser = userRepository.findByEmail("guest@hotel.com").orElse(null);
         if (currentUser == null) {
             currentUser = User.builder()
                     .email("guest@hotel.com")
@@ -105,7 +104,6 @@ public class BookingServiceImpl implements IBookingService {
 
         Payment payment = paymentRepository.findFirstByRoomBookingIdOrderByIdDesc(bookingId).orElse(null);
         if (payment != null) {
-            // Kiểm tra xem số tiền thanh toán là cọc hay full
             if (payment.getAmount().compareTo(booking.getTotalPrice()) >= 0) {
                 payment.setStatus(PaymentStatus.PAID);
             } else {
@@ -124,7 +122,6 @@ public class BookingServiceImpl implements IBookingService {
 
         Payment payment = paymentRepository.findFirstByRoomBookingIdOrderByIdDesc(bookingId).orElse(null);
         if (payment != null && payment.getStatus() == PaymentStatus.UNPAID) {
-            // Không xóa payment, cứ để UNPAID
         }
 
         roomAllocationService.releaseRoomsForCancelledBooking(booking);

@@ -1,0 +1,424 @@
+/* ==========================================================================
+   Design System - Hotel PMS
+   ========================================================================== */
+
+/* --- CSS Variables (Tokens) --- */
+:root {
+    /* Bootstrap 5 Primary Color */
+    --primary: #0d6efd;
+    --primary-hover: #0b5ed7;
+    
+    /* Giao diện sáng sủa, màu sắc giống Bootstrap */
+    --bg-main: #f8f9fa;        /* bg-light */
+    --bg-sidebar: #212529;     /* bg-dark */
+    --bg-sidebar-hover: #343a40;
+    
+    --text-dark: #212529;      
+    --text-muted: #6c757d;     
+    --text-light: #f8f9fa;     
+    
+    --border-color: #dee2e6;   
+    
+    /* Bán kính bo góc chuẩn Bootstrap (0.25rem, 0.375rem, 0.5rem) */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    
+    /* Bóng đổ chuẩn Bootstrap */
+    --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+    --shadow-md: 0 .5rem 1rem rgba(0,0,0,.15);
+    
+    /* Màu sắc trạng thái phòng dựa trên bảng màu Bootstrap Alert (Success, Danger, Warning, Secondary) */
+    --status-available-bg: #d1e7dd;  
+    --status-available-border: #198754;
+    --status-available-text: #0f5132;
+
+    --status-occupied-bg: #f8d7da;   
+    --status-occupied-border: #dc3545;
+    --status-occupied-text: #842029;
+
+    --status-cleaning-bg: #fff3cd;   
+    --status-cleaning-border: #ffc107;
+    --status-cleaning-text: #664d03;
+
+    --status-maintenance-bg: #e2e3e5; 
+    --status-maintenance-border: #6c757d;
+    --status-maintenance-text: #41464b;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Layout --- */
+.sidebar {
+    width: 240px;
+    background-color: var(--bg-sidebar);
+    color: var(--text-light);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.main-wrapper {
+    flex-grow: 1;
+    margin-left: 240px; /* offset for fixed sidebar */
+    padding: 32px 40px;
+    background-color: var(--bg-main);
+    min-height: 100vh;
+}
+
+/* --- Sidebar Details --- */
+.sidebar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.sidebar a {
+    color: #CBD5E1; /* Slate 300 */
+    text-decoration: none;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.sidebar a:hover {
+    background-color: var(--bg-sidebar-hover);
+    color: #FFF;
+}
+.sidebar a.active {
+    background-color: var(--primary);
+    color: #FFF;
+    border-left: 4px solid #60A5FA;
+}
+.sidebar-group {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748B;
+    padding: 24px 24px 8px 24px;
+    font-weight: 600;
+}
+
+/* --- Header & Typography --- */
+.page-header {
+    margin-bottom: 24px;
+}
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+/* --- Cards --- */
+.card {
+    background: #FFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-dark);
+}
+
+/* --- Toolbar (Filter Area) --- */
+.toolbar {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    background: #FFF;
+    padding: 16px 24px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+}
+.toolbar .form-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+.toolbar .form-control, .toolbar .form-select {
+    height: 42px;
+    border-radius: var(--radius-sm);
+    border-color: #CBD5E1;
+}
+.toolbar .form-control:focus, .toolbar .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+.toolbar .btn {
+    height: 42px;
+    font-weight: 500;
+    padding: 0 24px;
+}
+
+/* --- Table --- */
+.table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+.table th {
+    background-color: #F8FAFC;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+.table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+.table tbody tr:hover {
+    background-color: #F1F5F9;
+}
+.booking-id {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+.booking-id:hover {
+    text-decoration: underline;
+}
+
+/* --- Badges (Booking Status) --- */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.bg-pending { background-color: #FEF08A; color: #854D0E; }
+.bg-confirmed { background-color: #BFDBFE; color: #1E3A8A; }
+.bg-checkedin { background-color: #BBF7D0; color: #166534; }
+.bg-checkedout { background-color: #E5E7EB; color: #374151; }
+.bg-cancelled { background-color: #FECACA; color: #991B1B; }
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+}
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+/* --- Booking Detail Specific --- */
+.back-link {
+    display: inline-block;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--border-color);
+}
+.info-row:last-child {
+    border-bottom: none;
+}
+.info-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.info-value {
+    font-weight: 500;
+}
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.95rem;
+}
+.total-row.final {
+    border-top: 1px solid var(--border-color);
+    margin-top: 8px;
+    padding-top: 16px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* --- Room Matrix CSS Grid --- */
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+.room-card {
+    border-radius: var(--radius-md);
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 120px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    transition: all 0.2s ease;
+}
+.room-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+.room-available {
+    background-color: var(--status-available-bg);
+}
+.room-occupied {
+    background-color: var(--status-occupied-bg);
+}
+.room-need_cleaning {
+    background-color: var(--status-cleaning-bg);
+}
+.room-maintenance {
+    background-color: var(--status-maintenance-bg);
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+.room-number {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1;
+}
+.room-type {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+.room-status-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+.text-available { color: var(--status-available-text); }
+.text-occupied { color: var(--status-occupied-text); }
+.text-cleaning { color: var(--status-cleaning-text); }
+.text-maintenance { color: var(--status-maintenance-text); }
+
+.room-guest-info {
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+}
+.room-guest-info div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.room-guest-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+.room-guest-meta {
+    color: var(--text-muted);
+}
+
+/* Menu 3 chấm */
+.room-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+.btn-dots {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0 4px;
+    cursor: pointer;
+}
+.btn-dots:hover {
+    color: var(--text-dark);
+}
+.dropdown-menu {
+    font-size: 0.85rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+}
+
+/* Legend */
+.matrix-legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+.legend-color.available { background-color: var(--status-available-border); }
+.legend-color.occupied { background-color: var(--status-occupied-border); }
+.legend-color.cleaning { background-color: var(--status-cleaning-border); }
+.legend-color.maintenance { background-color: var(--status-maintenance-border); }
+
+/* --- Toast Alert --- */
+.alert-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 1050;
+    min-width: 300px;
+    box-shadow: var(--shadow-md);
+    border: none;
+}
