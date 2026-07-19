@@ -1,5 +1,6 @@
 package com.group3.hotel.controller.reception;
 
+import com.group3.hotel.dto.response.RoomMatrixDTO;
 import com.group3.hotel.entity.Room;
 import com.group3.hotel.enums.RoomStatus;
 import com.group3.hotel.service.IRoomService;
@@ -30,11 +31,11 @@ public class ReceptionRoomController {
             @RequestParam(required = false) Long categoryId,
             Model model) {
 
-        List<com.group3.hotel.dto.response.RoomMatrixDTO> rooms = roomService.getRoomsWithFilters(keyword, status, categoryId);
+        List<RoomMatrixDTO> rooms = roomService.getRoomsWithFilters(keyword, status, categoryId);
         
         // Group rooms by category for matrix display
-        Map<String, List<com.group3.hotel.dto.response.RoomMatrixDTO>> roomsByCategory = rooms.stream()
-                .collect(Collectors.groupingBy(com.group3.hotel.dto.response.RoomMatrixDTO::getRoomCategoryName, java.util.TreeMap::new, Collectors.toList()));
+        Map<String, List<RoomMatrixDTO>> roomsByCategory = rooms.stream()
+                .collect(Collectors.groupingBy(RoomMatrixDTO::getRoomCategoryName, java.util.TreeMap::new, Collectors.toList()));
 
         model.addAttribute("roomsByCategory", roomsByCategory);
         model.addAttribute("categories", roomCategoryService.getAllCategories());

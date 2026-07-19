@@ -1,5 +1,7 @@
 package com.group3.hotel.controller.reception;
 
+import com.group3.hotel.entity.BookingDetail;
+import com.group3.hotel.entity.Room;
 import com.group3.hotel.entity.RoomBooking;
 import com.group3.hotel.enums.BookingStatus;
 import com.group3.hotel.service.IReceptionBookingService;
@@ -100,8 +102,8 @@ public class ReceptionBookingController {
             model.addAttribute("booking", booking);
             
             // Prepare a map of available rooms for each category
-            java.util.Map<Long, java.util.List<com.group3.hotel.entity.Room>> availableRoomsMap = new java.util.HashMap<>();
-            for (com.group3.hotel.entity.BookingDetail detail : booking.getBookingDetails()) {
+            java.util.Map<Long, java.util.List<Room>> availableRoomsMap = new java.util.HashMap<>();
+            for (BookingDetail detail : booking.getBookingDetails()) {
                 Long categoryId = detail.getRoomCategory().getId();
                 if (!availableRoomsMap.containsKey(categoryId)) {
                     availableRoomsMap.put(categoryId, roomService.getAvailableRoomsByCategory(categoryId));
@@ -167,7 +169,7 @@ public class ReceptionBookingController {
                 return "redirect:/reception/bookings/" + id;
             }
             
-            com.group3.hotel.entity.BookingDetail targetDetail = booking.getBookingDetails().stream()
+            BookingDetail targetDetail = booking.getBookingDetails().stream()
                 .filter(d -> d.getId().equals(detailId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy chi tiết đơn."));
@@ -189,7 +191,7 @@ public class ReceptionBookingController {
             java.util.List<com.group3.hotel.entity.Room> allAvailableRooms = roomService.getRoomsWithFilters(null, com.group3.hotel.enums.RoomStatus.AVAILABLE, null)
                 .stream()
                 .map(dto -> {
-                    com.group3.hotel.entity.Room r = new com.group3.hotel.entity.Room();
+                    Room r = new com.group3.hotel.entity.Room();
                     r.setId(dto.getId());
                     r.setRoomNumber(dto.getRoomNumber());
                     com.group3.hotel.entity.RoomCategory cat = new com.group3.hotel.entity.RoomCategory();
