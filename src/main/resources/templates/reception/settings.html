@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt - Lễ Tân</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/reception.css">
+</head>
+<body>
+
+    <!-- Alert Toast -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show alert-toast" role="alert" id="successAlert">
+        <div class="d-flex align-items-center">
+            <span class="fs-5 me-2">✓</span>
+            <span th:text="${success}"></span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show alert-toast" role="alert" id="errorAlert">
+        <div class="d-flex align-items-center">
+            <span class="fs-5 me-2">⚠</span>
+            <span th:text="${error}"></span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            Reception
+        </div>
+
+        <div class="sidebar-group">Đặt phòng</div>
+        <a href="/reception/bookings">
+            <span class="sidebar-icon"></span> Danh sách đơn
+        </a>
+        <a href="/reception/rooms">
+            <span class="sidebar-icon"></span> Sơ đồ phòng
+        </a>
+
+        <div class="mt-auto mb-3">
+            <a href="/reception/settings" class="active">
+                <span class="sidebar-icon"></span> Cài đặt
+            </a>
+            <a href="/auth/logout">
+                <span class="sidebar-icon"></span> Đăng xuất
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <div class="page-header">
+            <h1 class="page-title mb-3">Cài đặt tài khoản</h1>
+        </div>
+
+        <div class="card" style="max-width: 600px;">
+            <h4 class="card-title">Thông tin Lễ tân</h4>
+            <form th:action="@{/reception/settings}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Email đăng nhập</label>
+                    <input type="text" class="form-control" th:value="${email}" disabled>
+                    <div class="form-text">Email không thể thay đổi.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Họ và tên</label>
+                    <input type="text" class="form-control" name="fullName" th:value="${receptionist != null ? receptionist.fullName : ''}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" class="form-control" name="phone" th:value="${receptionist != null ? receptionist.phone : ''}">
+                </div>
+
+
+
+                <button type="submit" class="btn btn-primary mt-3 px-4">Lưu thay đổi</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                let successAlert = document.getElementById('successAlert');
+                if (successAlert) {
+                    let bsAlert = new bootstrap.Alert(successAlert);
+                    bsAlert.close();
+                }
+                let errorAlert = document.getElementById('errorAlert');
+                if (errorAlert) {
+                    let bsAlert = new bootstrap.Alert(errorAlert);
+                    bsAlert.close();
+                }
+            }, 3000);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

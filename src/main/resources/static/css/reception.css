@@ -4,46 +4,50 @@
 
 /* --- CSS Variables (Tokens) --- */
 :root {
-    --primary: #2563EB;        /* Blue 600 */
-    --primary-hover: #1D4ED8;  /* Blue 700 */
+    /* Bootstrap 5 Primary Color */
+    --primary: #0d6efd;
+    --primary-hover: #0b5ed7;
     
-    --bg-main: #F8FAFC;        /* Slate 50 */
-    --bg-sidebar: #1E293B;     /* Slate 800 */
-    --bg-sidebar-hover: #334155;
+    /* Giao diện sáng sủa, màu sắc giống Bootstrap */
+    --bg-main: #f8f9fa;        /* bg-light */
+    --bg-sidebar: #212529;     /* bg-dark */
+    --bg-sidebar-hover: #343a40;
     
-    --text-dark: #0F172A;      /* Slate 900 */
-    --text-muted: #64748B;     /* Slate 500 */
-    --text-light: #F8FAFC;     /* Slate 50 */
+    --text-dark: #212529;      
+    --text-muted: #6c757d;     
+    --text-light: #f8f9fa;     
     
-    --border-color: #E2E8F0;   /* Slate 200 */
+    --border-color: #dee2e6;   
     
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
+    /* Bán kính bo góc chuẩn Bootstrap (0.25rem, 0.375rem, 0.5rem) */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
     
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Bóng đổ chuẩn Bootstrap */
+    --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+    --shadow-md: 0 .5rem 1rem rgba(0,0,0,.15);
     
-    /* Room Status Colors (Backgrounds) */
-    --status-available-bg: #F0FDF4;  /* Green 50 */
-    --status-available-border: #22C55E;
-    --status-available-text: #15803D;
+    /* Màu sắc trạng thái phòng dựa trên bảng màu Bootstrap Alert (Success, Danger, Warning, Secondary) */
+    --status-available-bg: #d1e7dd;  
+    --status-available-border: #198754;
+    --status-available-text: #0f5132;
 
-    --status-occupied-bg: #FEF2F2;   /* Red 50 */
-    --status-occupied-border: #EF4444;
-    --status-occupied-text: #B91C1C;
+    --status-occupied-bg: #f8d7da;   
+    --status-occupied-border: #dc3545;
+    --status-occupied-text: #842029;
 
-    --status-cleaning-bg: #FFFBEB;   /* Yellow 50 */
-    --status-cleaning-border: #F59E0B;
-    --status-cleaning-text: #B45309;
+    --status-cleaning-bg: #fff3cd;   
+    --status-cleaning-border: #ffc107;
+    --status-cleaning-text: #664d03;
 
-    --status-maintenance-bg: #F3F4F6; /* Gray 100 */
-    --status-maintenance-border: #9CA3AF;
-    --status-maintenance-text: #374151;
+    --status-maintenance-bg: #e2e3e5; 
+    --status-maintenance-border: #6c757d;
+    --status-maintenance-text: #41464b;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
     background-color: var(--bg-main);
     color: var(--text-dark);
     margin: 0;
