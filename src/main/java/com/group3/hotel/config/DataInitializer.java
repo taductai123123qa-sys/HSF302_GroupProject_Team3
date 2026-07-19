@@ -42,6 +42,17 @@ public class DataInitializer {
                 System.out.println("Tạo thành công tài khoản ADMIN: admin@gmail.com / 123456");
             }
 
+            if (userRepository.findByEmail("re@gmail.com").isEmpty()) {
+                User adminUser = User.builder()
+                        .email("re@gmail.com")
+                        // Đã được mã hóa BCrypt
+                        .password(passwordEncoder.encode("123"))
+                        .role(UserRole.RECEPTIONIST)
+                        .build();
+                userRepository.save(adminUser);
+                System.out.println("Tạo thành công tài khoản ADMIN: re@gmail.com / 123456");
+            }
+
             // 2. KHỞI TẠO TÀI KHOẢN GUEST MỚI (ĐÃ FIX MÃ HÓA)
             // Đổi email một chút thành guest2 để code chạy lệnh tạo mới
             if (userRepository.findByEmail("guest2@hotel.com").isEmpty()) {

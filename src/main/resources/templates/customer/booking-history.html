@@ -114,7 +114,7 @@
                             <div class="col-md-3 card-left-panel d-flex flex-column mb-4 mb-md-0 pt-1">
                                 <div class="d-flex align-items-center mb-3">
                                     <span class="booking-id-text me-2 text-muted fw-medium" style="font-size: 0.85rem;"
-                                        th:text="'#PNH-' + ${booking.bookingId}"></span>
+                                        th:text="'#PNH-' + ${booking.id}"></span>
                                     <span th:if="${booking.bookingStatus.name() == 'PENDING'}"
                                         class="badge rounded-pill bg-light text-secondary border border-secondary-subtle">Chờ
                                         thanh toán</span>
@@ -155,7 +155,7 @@
                                             <div class="check-date fw-bold text-dark mt-1" style="font-size: 0.95rem;"
                                                 th:text="${#temporals.format(booking.checkInDate, 'dd MMMM, yyyy')}">
                                             </div>
-                                            <div class="check-time text-muted mt-1" style="font-size: 0.8rem;" th:text="${booking.expectedArrivalTime != null ? booking.expectedArrivalTime : '14:00 PM - 16:00 PM (Giờ tiêu chuẩn)'}">Từ 14:00 PM
+                                            <div class="check-time text-muted mt-1" style="font-size: 0.8rem;">14:00 PM - 16:00 PM (Giờ tiêu chuẩn)
                                             </div>
                                         </div>
                                     </div>
@@ -183,17 +183,17 @@
                                     <!-- Distinct Room Category Names -->
                                     <h4 class="room-names mb-3"
                                         style="font-family: 'Playfair Display', serif; font-weight: 600; color: #1e293b; line-height: 1.3;">
-                                        <th:block th:each="item, iterStat : ${booking.cartItems}">
-                                            <th:block th:text="${item.roomCategory.categoryName}"></th:block>
+                                        <th:block th:each="detail, iterStat : ${booking.bookingDetails}">
+                                            <th:block th:text="${detail.roomCategory.name}"></th:block>
                                             <th:block th:if="${!iterStat.last}"> &amp; </th:block>
                                         </th:block>
                                     </h4>
 
                                     <div class="room-tags mb-4">
-                                        <span th:each="item : ${booking.cartItems}"
+                                        <span th:each="detail : ${booking.bookingDetails}"
                                             class="badge bg-light text-secondary border border-light-subtle me-2 mb-2 px-3 py-2 fw-normal"
                                             style="font-size: 0.75rem;"
-                                            th:text="${item.quantity} + 'x ' + ${item.roomCategory.categoryName}"></span>
+                                            th:text="'1x ' + ${detail.roomCategory.name}"></span>
                                         <!-- <span class="badge bg-light text-secondary border border-light-subtle me-2 mb-2 px-3 py-2 fw-normal" style="font-size: 0.75rem;">Ăn sáng bao gồm</span> -->
                                     </div>
 
@@ -208,35 +208,12 @@
                                             phòng</a>
                                         <form
                                             th:if="${booking.bookingStatus.name() == 'PENDING' or booking.bookingStatus.name() == 'CONFIRMED'}"
-                                            th:action="@{/customer/booking/cancel/{id}(id=${booking.bookingId})}"
+                                            th:action="@{/customer/booking/cancel/{id}(id=${booking.id})}"
                                             method="POST" style="display: none;"></form>
                                     </div>
                                 </div>
 
-                                <!-- Inline form cập nhật giờ đến -->
-                                <div th:if="${booking.bookingStatus.name() == 'CONFIRMED' and !booking.checkInDate.isBefore(T(java.time.LocalDate).now())}"
-                                    class="arrival-form-inline mt-auto pt-3 border-top border-light-subtle border-opacity-50">
-                                    <div class="d-flex align-items-center flex-wrap gap-3">
-                                        <span class="text-uppercase text-muted fw-bold"
-                                            style="font-size: 0.7rem; letter-spacing: 0.5px;">Đổi giờ đến</span>
-                                        <select class="form-select form-select-sm shadow-none"
-                                            th:id="'expectedTimeSelect' + ${booking.bookingId}"
-                                            style="width: auto; background-color: #f8f9fa; border: none; font-size: 0.85rem; font-weight: 500; cursor: pointer;">
-                                            <option value="14:00 PM - 16:00 PM (Giờ tiêu chuẩn)"
-                                                th:selected="${booking.expectedArrivalTime == null or booking.expectedArrivalTime == '14:00 - 16:00 (Giờ tiêu chuẩn)' or booking.expectedArrivalTime == '14:00 PM - 16:00 PM (Giờ tiêu chuẩn)'}">
-                                                14:00 PM - 16:00 PM</option>
-                                            <option value="16:00 PM - 18:00 PM"
-                                                th:selected="${booking.expectedArrivalTime == '16:00 - 18:00' or booking.expectedArrivalTime == '16:00 PM - 18:00 PM'}">16:00 PM -
-                                                18:00 PM</option>
-                                            <option value="Sau 18:00 PM (Đến muộn - Yêu cầu giữ phòng)"
-                                                th:selected="${booking.expectedArrivalTime == 'Sau 18:00 (Đến muộn - Yêu cầu giữ phòng)' or booking.expectedArrivalTime == 'Sau 18:00 PM (Đến muộn - Yêu cầu giữ phòng)'}">
-                                                Sau 18:00 PM</option>
-                                        </select>
-                                        <button type="button" class="btn btn-sm btn-dark px-3 fw-medium"
-                                            style="border-radius: 4px;"
-                                            th:onclick="'updateExpectedTime(' + ${booking.bookingId} + ')'">Lưu</button>
-                                    </div>
-                                </div>
+                                <!-- Inline form cập nhật giờ đến (Removed since not supported by entity) -->
                             </div>
 
                             <!-- Right Column -->
@@ -247,7 +224,7 @@
                                         style="font-size: 0.65rem; letter-spacing: 1px;">Tổng hóa đơn</div>
                                     <div class="luxury-price-new mb-2"
                                         style="font-family: 'Inter', sans-serif; color: #b89146; font-size: 1.4rem; font-weight: 700;"
-                                        th:text="${#numbers.formatDecimal(booking.finalAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'">
+                                        th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'">
                                     </div>
 
                                     <div class="payment-badge-wrapper d-flex justify-content-md-end mb-4">

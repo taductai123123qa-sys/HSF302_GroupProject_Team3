@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.security.Principal;
+import java.util.List;
+import com.group3.hotel.repository.CustomerRepository;
+import com.group3.hotel.repository.RoomBookingRepository;
+import com.group3.hotel.entity.Customer;
+import com.group3.hotel.entity.RoomBooking;
 
 @Controller
 @RequestMapping("/customer")
@@ -26,6 +32,12 @@ public class RoomController {
 
     @Autowired
     private HotelServiceService hotelServiceService;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private RoomBookingRepository roomBookingRepository;
 
     @GetMapping("/rooms")
     public String rooms(Model model) {
@@ -103,10 +115,51 @@ public class RoomController {
     }
 
     @GetMapping("/booking/history")
-    public String bookingHistory(Model model) {
-        // TODO: Viết logic lấy danh sách Booking từ Database theo User đang đăng nhập ở đây
-        // Tạm thời mock 1 list rỗng hoặc null để load giao diện trước
-        model.addAttribute("bookings", java.util.Collections.emptyList());
+    public String bookingHistory(
+            @RequestParam(value = "status", defaultValue = "ALL") String status,
+            @RequestParam(value = "sort", defaultValue = "desc") String sort,
+            Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        Customer customer = customerRepository.findByUserEmail(email).orElse(null);
+
+        if (customer != null) {
+            List<RoomBooking> allBookings = roomBookingRepository.findByCustomerOrderByCreatedAtDesc(customer);
+            
+            // Lọc theo trạng thái
+            List<RoomBooking> filteredBookings = allBookings;
+            if (!"ALL".equalsIgnoreCase(status)) {
+                filteredBookings = allBookings.stream()
+                        .filter(b -> b.getBookingStatus().name().equalsIgnoreCase(status))
+                        .collect(java.util.stream.Collectors.toList());
+            }
+
+            // Sắp xếp
+            if ("asc".equalsIgnoreCase(sort)) {
+                java.util.Collections.reverse(filteredBookings);
+            }
+
+            model.addAttribute("bookings", filteredBookings);
+            
+            long countAll = allBookings.size();
+            long countCheckedIn = allBookings.stream().filter(b -> b.getBookingStatus().name().equals("CHECKED_IN")).count();
+            long countCancelled = allBookings.stream().filter(b -> b.getBookingStatus().name().equals("CANCELLED")).count();
+            
+            model.addAttribute("countAll", countAll);
+            model.addAttribute("countCheckedIn", countCheckedIn);
+            model.addAttribute("countCancelled", countCancelled);
+        } else {
+            model.addAttribute("bookings", java.util.Collections.emptyList());
+            model.addAttribute("countAll", 0);
+            model.addAttribute("countCheckedIn", 0);
+            model.addAttribute("countCancelled", 0);
+        }
+
+        model.addAttribute("currentStatus", status.toUpperCase());
+        model.addAttribute("currentSort", sort.toLowerCase());
 
         return "customer/booking-history";
     }

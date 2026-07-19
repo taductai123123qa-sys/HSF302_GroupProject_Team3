@@ -39,22 +39,25 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     @Transactional
-    public RoomBooking createBooking(BookingCreateRequest request, Integer depositRate, BigDecimal totalPrice) {
-        User currentUser = userRepository.findByEmail("guest@hotel.com").orElse(null);
+    public RoomBooking createBooking(BookingCreateRequest request, Integer depositRate, BigDecimal totalPrice, String email) {
+        if (email == null) {
+            email = "guest@hotel.com";
+        }
+        User currentUser = userRepository.findByEmail(email).orElse(null);
         if (currentUser == null) {
             currentUser = User.builder()
-                    .email("guest@hotel.com")
+                    .email(email)
                     .password("123456")
                     .role(UserRole.GUEST)
                     .build();
             currentUser = userRepository.save(currentUser);
         }
 
-        Customer currentCustomer = customerRepository.findByUserEmail("guest@hotel.com").orElse(null);
+        Customer currentCustomer = customerRepository.findByUserEmail(email).orElse(null);
         if (currentCustomer == null) {
             currentCustomer = Customer.builder()
                     .user(currentUser)
-                    .fullName("Guest User")
+                    .fullName(email)
                     .phone("0123456789")
                     .build();
             currentCustomer = customerRepository.save(currentCustomer);

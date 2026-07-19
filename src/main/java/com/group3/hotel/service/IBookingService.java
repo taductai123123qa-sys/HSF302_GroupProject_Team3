@@ -16,7 +16,7 @@ public interface IBookingService {
      * @param totalPrice Tổng tiền gốc (chưa nhân tỷ lệ)
      * @return Đối tượng RoomBooking vừa tạo
      */
-    RoomBooking createBooking(BookingCreateRequest request, Integer depositRate, BigDecimal totalPrice);
+    RoomBooking createBooking(BookingCreateRequest request, Integer depositRate, BigDecimal totalPrice, String email);
 
     /**
      * Xác nhận đơn đặt phòng thành công (CONFIRMED).
