@@ -133,4 +133,54 @@ public class BookingController {
         
         return "customer/booking-result";
     }
+    @GetMapping("/history")
+    public String bookingHistory(
+            @RequestParam(value = "status", defaultValue = "ALL") String status,
+            @RequestParam(value = "sort", defaultValue = "desc") String sort,
+            Model model, java.security.Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        com.group3.hotel.dto.response.BookingHistoryDTO historyDTO = bookingService.getCustomerBookingHistory(email, status, sort);
+
+        model.addAttribute("bookings", historyDTO.getBookings());
+        model.addAttribute("countAll", historyDTO.getCountAll());
+        model.addAttribute("countCheckedIn", historyDTO.getCountCheckedIn());
+        model.addAttribute("countCancelled", historyDTO.getCountCancelled());
+
+        model.addAttribute("currentStatus", status.toUpperCase());
+        model.addAttribute("currentSort", sort.toLowerCase());
+
+        return "customer/booking-history";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/cancel/{id}")
+    public String cancelBooking(@PathVariable Long id, java.security.Principal principal, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        try {
+            bookingService.cancelCustomerBooking(id, principal.getName());
+            redirectAttributes.addFlashAttribute("successMessage", "Hủy phòng thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/bookings/history";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/request-change/{id}")
+    public String requestRoomChange(@PathVariable Long id, @RequestParam("reason") String reason, java.security.Principal principal, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        try {
+            bookingService.requestRoomChange(id, principal.getName(), reason);
+            redirectAttributes.addFlashAttribute("successMessage", "Gửi yêu cầu thành công! Lễ tân sẽ sớm liên hệ với bạn.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/bookings/history";
+    }
 }

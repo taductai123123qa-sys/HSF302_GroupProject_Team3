@@ -18,7 +18,7 @@
         }
         body { font-family: 'Inter', sans-serif; }
         .lux-heading { font-family: 'Playfair Display', serif; }
-        
+
         /* Navbar */
         .lux-navbar { background-color: var(--lux-primary); border-bottom: 2px solid var(--lux-gold); }
         .lux-brand { color: var(--lux-gold) !important; font-family: 'Playfair Display', serif; font-size: 1.6rem; letter-spacing: 1px; }
@@ -83,7 +83,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userMenu">
                                 <li><a class="dropdown-item py-2" th:href="@{/auth/profile}"><i class="fas fa-id-badge me-2 text-secondary"></i>Hồ sơ cá nhân</a></li>
-                                <li><a class="dropdown-item py-2" th:href="@{/customer/booking/history}"><i class="fas fa-history me-2 text-secondary"></i>Lịch sử đặt phòng</a></li>
+                                <li><a class="dropdown-item py-2" th:href="@{/bookings/history}"><i class="fas fa-history me-2 text-secondary"></i>Lịch sử đặt phòng</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item py-2 text-danger" th:href="@{/logout}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
                             </ul>
