@@ -87,7 +87,6 @@ public class AuthController {
         newCustomer.setFullName(fullName);
         newCustomer.setPhone(phone);
         newCustomer.setUser(newUser);
-        newCustomer.setLoyaltyPoints(0);
 
         customerRepository.save(newCustomer);
 

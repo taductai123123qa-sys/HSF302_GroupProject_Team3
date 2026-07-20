@@ -24,15 +24,23 @@ public class DataInitializer {
         return args -> {
 
             // 1. TẠO TÀI KHOẢN ADMIN (MỚI THÊM)
-            if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
+            // Cập nhật password nếu user đã tồn tại nhưng password chưa đúng chuẩn BCrypt
+            java.util.Optional<User> adminOpt = userRepository.findByEmail("admin@gmail.com");
+            if (adminOpt.isEmpty()) {
                 User adminUser = User.builder()
                         .email("admin@gmail.com")
-                        // Đã được mã hóa BCrypt
+                        // Đã được mã hóa BCrypt — mật khẩu thật là 123456
                         .password(passwordEncoder.encode("123456"))
                         .role(UserRole.ADMIN)
                         .build();
                 userRepository.save(adminUser);
                 System.out.println("Tạo thành công tài khoản ADMIN: admin@gmail.com / 123456");
+            } else {
+                User adminUser = adminOpt.get();
+                String adminHash = passwordEncoder.encode("123456");
+                adminUser.setPassword(adminHash);
+                userRepository.save(adminUser);
+                System.out.println("Đã cập nhật lại password BCrypt cho ADMIN: admin@gmail.com / 123456");
             }
 
             if (userRepository.findByEmail("receptionist@gmail.com").isEmpty()) {

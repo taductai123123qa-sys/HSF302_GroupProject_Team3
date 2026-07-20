@@ -32,9 +32,6 @@ public class Customer {
     @Column(columnDefinition = "NVARCHAR(255)")
     private String address;
 
-    @Column(columnDefinition = "int default 0")
-    private Integer loyaltyPoints;
-
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RoomBooking> bookings;
 }

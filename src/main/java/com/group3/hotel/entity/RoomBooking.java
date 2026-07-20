@@ -1,6 +1,7 @@
 package com.group3.hotel.entity;
 
 import com.group3.hotel.enums.BookingStatus;
+import com.group3.hotel.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -69,10 +70,40 @@ public class RoomBooking {
     }
 
     @Transient
-    public com.group3.hotel.enums.PaymentStatus getPaymentStatus() {
+    public PaymentStatus getPaymentStatus() {
         if (payments == null || payments.isEmpty()) {
-            return com.group3.hotel.enums.PaymentStatus.UNPAID;
+            return PaymentStatus.UNPAID;
         }
         return payments.get(payments.size() - 1).getStatus();
+    }
+
+    @Transient
+    public BigDecimal getPaidAmount() {
+        if (payments == null || payments.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return payments.stream()
+                .filter(p -> p.getStatus() == PaymentStatus.PAID)
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Transient
+    public BigDecimal getRemainingAmount() {
+        BigDecimal paid = getPaidAmount();
+        BigDecimal remaining = totalPrice.subtract(paid);
+        return remaining.compareTo(BigDecimal.ZERO) > 0 ? remaining : BigDecimal.ZERO;
+    }
+
+    @Transient
+    public boolean hasSpecialRequest() {
+        if (notes == null || notes.isEmpty()) {
+            return false;
+        }
+        if (bookingStatus != BookingStatus.CONFIRMED && bookingStatus != BookingStatus.CHECKED_IN) {
+            return false;
+        }
+        // Xử lý lỗi font chữ từ DB (chữ Ầ và Ạ bị biến thành ?) bằng cách nhận diện tiền tố an toàn
+        return notes.contains("[YÊU C");
     }
 }

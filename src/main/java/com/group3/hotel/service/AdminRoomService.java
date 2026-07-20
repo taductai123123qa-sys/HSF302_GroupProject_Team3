@@ -6,6 +6,7 @@ import com.group3.hotel.exception.BadRequestException;
 import com.group3.hotel.exception.ResourceNotFoundException;
 import com.group3.hotel.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class AdminRoomService {
 
     private final RoomRepository roomRepository;
+    private final com.group3.hotel.repository.BookingDetailRepository bookingDetailRepository;
 
     public List<Room> getAllRooms() {
         return roomRepository.findAllByOrderByRoomNumberAsc();
@@ -47,16 +49,33 @@ public class AdminRoomService {
         roomRepository.save(room);
     }
 
+    /**
+     * Xóa phòng với các kiểm tra nghiệp vụ để tránh lỗi 500 từ ràng buộc khóa ngoại:
+     * - Chặn nếu phòng đang có khách ở (OCCUPIED)
+     * - Chặn nếu phòng đang nằm trong đơn đặt (kể cả PENDING/CONFIRMED) chưa kết thúc
+     * - Chặn nếu phòng có lịch sử booking detail liên kết (FK constraint)
+     */
     public void deleteRoom(Long id) {
         Room room = getRoomById(id);
+
         if (room.getRoomStatus() == RoomStatus.OCCUPIED) {
-            throw new BadRequestException("Phòng đang có khách, không được xóa");
+            throw new BadRequestException(
+                    "Không thể xóa phòng " + room.getRoomNumber() + " vì đang có khách lưu trú.");
         }
+
+        long activeBookings = bookingDetailRepository.findActiveDetailByRoomId(id).size();
+        if (activeBookings > 0) {
+            throw new BadRequestException(
+                    "Không thể xóa phòng " + room.getRoomNumber() + " vì đang có đơn đặt chưa hoàn tất liên quan.");
+        }
+
         try {
             roomRepository.delete(room);
             roomRepository.flush();
-        } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            throw new BadRequestException("Không thể xóa phòng này vì đã có lịch sử đặt phòng liên quan");
+        } catch (DataIntegrityViolationException e) {
+            throw new BadRequestException(
+                    "Không thể xóa phòng " + room.getRoomNumber()
+                            + " vì đã có lịch sử đặt phòng liên quan trong hệ thống.");
         }
     }
 }

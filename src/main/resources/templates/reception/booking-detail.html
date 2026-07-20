@@ -101,8 +101,9 @@
                                 <span class="info-label">Số lượng khách</span>
                                 <span class="info-value" th:text="${booking.numberOfGuests} + ' người'">2 người</span>
                             </div>
-                            <div class="info-row">
-                                <span class="info-label">Ghi chú</span>
+                            <span class="info-label">Ghi chú</span>
+                            <div class="info-row" th:if="${booking.bookingStatus.name() == 'PENDING'}">
+
                                 <span class="info-value text-muted"
                                     th:text="${booking.notes != null ? booking.notes : 'Không có'}">...</span>
                             </div>
@@ -150,6 +151,13 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Yêu cầu từ khách hàng-->
+                <div class="card mb-4 border-danger" th:if="${booking.hasSpecialRequest()}">
+                    <h3 class="card-title text-danger"><i class="fas fa-exclamation-circle me-2"></i>Yêu cầu</h3>
+                    <div class="p-3 bg-light border border-danger rounded text-danger" style="white-space: pre-wrap; font-weight: 500;" th:text="${booking.notes}">
+                    </div>
+                </div>
             </div>
 
             <!-- Cột phải -->
@@ -174,21 +182,22 @@
 
                 <!-- Thông tin thanh toán -->
                 <div class="card mb-4 bg-light border-0">
-                    <h3 class="card-title mb-3">Tổng thanh toán</h3>
+                    <h3 class="card-title mb-3">Thông tin thanh toán</h3>
                     <div class="total-row">
-                        <span class="info-label">Tiền phòng</span>
+                        <span class="info-label">Tổng tiền</span>
                         <span class="info-value"
                             th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">3.000.000
                             VNĐ</span>
                     </div>
                     <div class="total-row">
-                        <span class="info-label">Phụ phí/Giảm giá</span>
-                        <span class="info-value">0 VNĐ</span>
+                        <span class="info-label">Đã thanh toán</span>
+                        <span class="info-value text-success"
+                            th:text="${#numbers.formatDecimal(booking.paidAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
                     </div>
-                    <div class="total-row final">
-                        <span>Tổng cộng</span>
-                        <span
-                            th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">3.000.000
+                    <div class="total-row final mt-2 pt-3 border-top">
+                        <span>Còn nợ</span>
+                        <span class="text-danger"
+                            th:text="${#numbers.formatDecimal(booking.remainingAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">3.000.000
                             VNĐ</span>
                     </div>
                 </div>

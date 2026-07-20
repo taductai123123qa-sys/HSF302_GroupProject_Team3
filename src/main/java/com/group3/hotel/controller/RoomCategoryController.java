@@ -2,11 +2,12 @@ package com.group3.hotel.controller;
 
 import com.group3.hotel.entity.RoomCategory;
 import com.group3.hotel.repository.RoomCategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,8 +20,14 @@ import java.util.UUID;
 @RequestMapping("/admin/categories")
 public class RoomCategoryController {
 
-    @Autowired
-    private RoomCategoryRepository categoryRepository;
+    private final RoomCategoryRepository categoryRepository;
+
+    @Value("${app.upload.rooms-dir:uploads/rooms}")
+    private String uploadDir;
+
+    public RoomCategoryController(RoomCategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     @GetMapping
     public String listCategories(Model model) {
@@ -44,13 +51,12 @@ public class RoomCategoryController {
 
     @PostMapping("/save")
     public String saveCategory(@ModelAttribute("category") RoomCategory category,
-                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                               RedirectAttributes redirectAttributes) {
 
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
-                String uploadDir = "src/main/resources/static/images/rooms/";
-                Path uploadPath = Paths.get(uploadDir);
-
+                Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                 }
@@ -70,6 +76,9 @@ public class RoomCategoryController {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                redirectAttributes.addFlashAttribute("error",
+                        "Lỗi khi lưu ảnh: " + e.getMessage());
+                return "redirect:/admin/categories/edit/" + category.getId();
             }
         } else if (category.getId() != null) {
             RoomCategory existingCategory = categoryRepository.findById(category.getId()).orElse(null);
@@ -79,12 +88,20 @@ public class RoomCategoryController {
         }
 
         categoryRepository.save(category);
+        redirectAttributes.addFlashAttribute("success",
+                category.getId() == null ? "Thêm hạng phòng thành công" : "Cập nhật hạng phòng thành công");
         return "redirect:/admin/categories";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteCategory(@PathVariable("id") Long id) {
-        categoryRepository.deleteById(id);
+    public String deleteCategory(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            categoryRepository.deleteById(id);
+            redirectAttributes.addFlashAttribute("success", "Xóa hạng phòng thành công");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Không thể xóa hạng phòng này vì đang có phòng vật lý liên quan.");
+        }
         return "redirect:/admin/categories";
     }
 }
