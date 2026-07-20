@@ -5,17 +5,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -28,8 +28,18 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/images/**", "/login", "/register").permitAll()
+                        .requestMatchers("/css/**", "/images/**", "/js/**", "/", "/login", "/register", "/debug/me", "/error", "/403").permitAll()
+
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/reception/**").hasAnyRole("ADMIN", "RECEPTIONIST")
+                        .requestMatchers("/customer/**", "/auth/profile").hasAnyRole("ADMIN", "GUEST")
+
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
+                        })
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -51,7 +61,6 @@ public class SecurityConfig {
                         })
                         .permitAll()
                 )
-                // Logout: cho phép cả GET và POST đều chạy được với URL /logout
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutRequestMatcher(request -> {
