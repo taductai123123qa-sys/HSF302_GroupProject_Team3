@@ -7,48 +7,85 @@
     <title th:text="${title}">Phúc Nguyên Hotel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/home.css}">
+    <style>
+        :root {
+            --lux-primary: #0f172a; /* Slate 900 */
+            --lux-gold: #d4af37;
+            --lux-gold-hover: #b5952f;
+            --lux-light: #f8f9fa;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .lux-heading { font-family: 'Playfair Display', serif; }
+        
+        /* Navbar */
+        .lux-navbar { background-color: var(--lux-primary); border-bottom: 2px solid var(--lux-gold); }
+        .lux-brand { color: var(--lux-gold) !important; font-family: 'Playfair Display', serif; font-size: 1.6rem; letter-spacing: 1px; }
+        .lux-nav-link { color: var(--lux-light) !important; font-weight: 500; transition: color 0.3s; position: relative; margin: 0 5px; }
+        .lux-nav-link:hover { color: var(--lux-gold) !important; }
+        .lux-nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px; display: block;
+            margin-top: 2px; right: 0; background: var(--lux-gold); transition: width .3s ease;
+        }
+        .lux-nav-link:hover::after { width: 100%; left: 0; background: var(--lux-gold); }
+
+        /* Buttons */
+        .lux-btn-primary { background-color: var(--lux-gold); border-color: var(--lux-gold); color: #fff; font-weight: 600; transition: all 0.3s; }
+        .lux-btn-primary:hover { background-color: var(--lux-gold-hover); border-color: var(--lux-gold-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4); }
+        .lux-btn-outline { color: var(--lux-gold); border-color: var(--lux-gold); font-weight: 600; transition: all 0.3s; }
+        .lux-btn-outline:hover { background-color: var(--lux-gold); color: var(--lux-primary); transform: translateY(-2px); }
+
+        /* Footer */
+        .lux-footer { background-color: var(--lux-primary); color: #e0e0e0; border-top: 4px solid var(--lux-gold); }
+        .lux-footer-title { color: var(--lux-gold); font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 1px; }
+        .lux-footer h5 { font-weight: 600; letter-spacing: 0.5px; color: #fff; }
+        .lux-footer a { color: #b0b8c9; transition: all 0.3s; text-decoration: none; }
+        .lux-footer a:hover { color: var(--lux-gold); padding-left: 5px; }
+        .lux-footer .social-icons a { margin-right: 15px; font-size: 1.2rem; transition: all 0.3s; }
+        .lux-footer .social-icons a:hover { padding-left: 0; color: var(--lux-gold); transform: translateY(-3px); display: inline-block; }
+    </style>
 </head>
 
 <body>
 <!-- HEADER -->
 <th:block th:fragment="customer_header">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark lux-navbar shadow sticky-top py-3">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="/">Phúc Nguyên Hotel</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            <a class="navbar-brand fw-bold lux-brand d-flex align-items-center" href="/">
+                <i class="fas fa-hotel me-2 fs-4"></i>Phúc Nguyên Hotel
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/">Trang Chủ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/#about">Giới Thiệu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/#rooms">Hạng Phòng</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/#services">Dịch Vụ</a></li>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link lux-nav-link text-uppercase fs-6 px-2" href="/">Trang Chủ</a></li>
+                    <li class="nav-item"><a class="nav-link lux-nav-link text-uppercase fs-6 px-2" href="/#about">Giới Thiệu</a></li>
+                    <li class="nav-item"><a class="nav-link lux-nav-link text-uppercase fs-6 px-2" href="/#rooms">Hạng Phòng</a></li>
+                    <li class="nav-item"><a class="nav-link lux-nav-link text-uppercase fs-6 px-2" href="/#services">Dịch Vụ</a></li>
                 </ul>
-                <div class="d-flex align-items-center">
-                    <a href="/#rooms" class="btn btn-primary me-2">Đặt Phòng Ngay</a>
+                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                    <a href="/#rooms" class="btn lux-btn-primary rounded-pill px-4 shadow-sm"><i class="fas fa-calendar-alt me-2"></i>Đặt Phòng</a>
 
                     <!-- Hiển thị khi CHƯA đăng nhập -->
                     <th:block sec:authorize="!isAuthenticated()">
-                        <a th:href="@{/login}" class="btn btn-outline-primary">Đăng Nhập</a>
+                        <a th:href="@{/login}" class="btn lux-btn-outline rounded-pill px-4"><i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập</a>
                     </th:block>
 
                     <!-- Hiển thị khi ĐÃ đăng nhập -->
                     <th:block sec:authorize="isAuthenticated()">
                         <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle"></i> Tài khoản
+                            <button class="btn lux-btn-outline rounded-pill px-4 dropdown-toggle d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-2 fs-5"></i> Tài khoản
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                                <li><a class="dropdown-item" th:href="@{/auth/profile}">Hồ sơ</a></li>
-                                <li><a class="dropdown-item" th:href="@{/customer/booking/history}">Lịch sử đặt phòng</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userMenu">
+                                <li><a class="dropdown-item py-2" th:href="@{/auth/profile}"><i class="fas fa-id-badge me-2 text-secondary"></i>Hồ sơ cá nhân</a></li>
+                                <li><a class="dropdown-item py-2" th:href="@{/customer/booking/history}"><i class="fas fa-history me-2 text-secondary"></i>Lịch sử đặt phòng</a></li>
                                 <li><hr class="dropdown-divider"></li>
-
-                                <!-- CHỈ SỬA DUY NHẤT DÒNG NÀY: Xóa chữ /auth đi -->
-                                <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                                <li><a class="dropdown-item py-2 text-danger" th:href="@{/logout}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
                             </ul>
                         </div>
                     </th:block>
@@ -59,32 +96,51 @@
 </th:block>
 
 <!-- FOOTER -->
-<footer class="bg-dark text-white pt-5 pb-3" th:fragment="customer_footer">
+<footer class="lux-footer pt-5 pb-3" th:fragment="customer_footer">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold text-primary">Phúc Nguyên Hotel</h5>
-                <p class="small text-muted">Trải nghiệm kỳ nghỉ sang trọng bậc nhất với hệ thống phòng tiêu chuẩn và dịch vụ hoàn hảo.</p>
+        <div class="row gy-4 mb-4">
+            <div class="col-lg-4 col-md-6">
+                <h4 class="lux-footer-title mb-4"><i class="fas fa-hotel me-2"></i>Phúc Nguyên Hotel</h4>
+                <p class="small text-light pe-lg-4" style="line-height: 1.8;">Trải nghiệm kỳ nghỉ sang trọng bậc nhất với hệ thống phòng tiêu chuẩn 5 sao và dịch vụ hoàn hảo, mang đến cho bạn những khoảnh khắc khó quên.</p>
+                <div class="social-icons mt-4">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <h5>Liên Kết Nhanh</h5>
-                <ul class="list-unstyled small">
-                    <li><a href="/#about" class="text-white text-decoration-none">Về Chúng Tôi</a></li>
-                    <li><a href="/#rooms" class="text-white text-decoration-none">Hạng Phòng</a></li>
-                    <li><a href="/#services" class="text-white text-decoration-none">Dịch Vụ</a></li>
+            <div class="col-lg-2 col-md-6">
+                <h5 class="mb-4 text-uppercase fs-6">Khám Phá</h5>
+                <ul class="list-unstyled small" style="line-height: 2.2;">
+                    <li><a href="/#about">Về Chúng Tôi</a></li>
+                    <li><a href="/#rooms">Hạng Phòng</a></li>
+                    <li><a href="/#services">Dịch Vụ</a></li>
+                    <li><a href="#">Nhà Hàng & Bar</a></li>
+                    <li><a href="#">Spa & Thư Giãn</a></li>
                 </ul>
             </div>
-            <div class="col-md-4 mb-3">
-                <h5>Liên Hệ</h5>
-                <ul class="list-unstyled small text-muted">
-                    <li><i class="fas fa-map-marker-alt me-2"></i> FPT University, Hòa Lạc, Hà Nội</li>
-                    <li><i class="fas fa-phone-alt me-2"></i> +84 123 456 789</li>
-                    <li><i class="fas fa-envelope me-2"></i> contact@phucnguyen.com</li>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="mb-4 text-uppercase fs-6">Chính Sách</h5>
+                <ul class="list-unstyled small" style="line-height: 2.2;">
+                    <li><a href="#">Điều Khoản Chung</a></li>
+                    <li><a href="#">Chính Sách Đặt Phòng</a></li>
+                    <li><a href="#">Chính Sách Hoàn Hủy</a></li>
+                    <li><a href="#">Chính Sách Bảo Mật</a></li>
+                    <li><a href="#">Câu Hỏi Thường Gặp</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="mb-4 text-uppercase fs-6">Liên Hệ</h5>
+                <ul class="list-unstyled small" style="line-height: 2.2;">
+                    <li class="mb-2 d-flex"><i class="fas fa-map-marker-alt mt-1 me-3 text-warning"></i> <span>FPT University, Hòa Lạc, Thạch Thất, Hà Nội</span></li>
+                    <li class="mb-2 d-flex"><i class="fas fa-phone-alt mt-1 me-3 text-warning"></i> <span>+84 123 456 789</span></li>
+                    <li class="mb-2 d-flex"><i class="fas fa-envelope mt-1 me-3 text-warning"></i> <span>contact@phucnguyen.com</span></li>
+                    <li class="mb-2 d-flex"><i class="fas fa-clock mt-1 me-3 text-warning"></i> <span>Lễ tân 24/7</span></li>
                 </ul>
             </div>
         </div>
-        <div class="text-center border-top border-secondary pt-3 mt-3 small text-muted">
-            &copy; 2026 Phúc Nguyên Hotel. MVC Spring Boot System.
+        <div class="text-center border-top border-secondary pt-4 small" style="color: #a0aabf;">
+            &copy; 2026 Phúc Nguyên Hotel. Thiết kế và Phát triển bởi Group 3 - MVC Spring Boot.
         </div>
     </div>
 </footer>
