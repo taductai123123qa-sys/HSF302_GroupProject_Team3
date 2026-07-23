@@ -1,9 +1,13 @@
 package com.group3.hotel.service;
 
+import com.group3.hotel.entity.Room;
 import com.group3.hotel.entity.RoomBooking;
 import com.group3.hotel.enums.BookingStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Map;
 
 public interface IReceptionBookingService {
     
@@ -41,7 +45,7 @@ public interface IReceptionBookingService {
      * @param bookingId Mã đơn
      * @param detailRoomMap Map chứa {BookingDetailId : RoomId} do Lễ tân chọn
      */
-    void checkInBooking(Long bookingId, java.util.Map<Long, Long> detailRoomMap);
+    void checkInBooking(Long bookingId, Map<Long, Long> detailRoomMap);
 
     /**
      * Lễ tân thực hiện Check-out (CHECKED_IN -> CHECKED_OUT)
@@ -58,4 +62,18 @@ public interface IReceptionBookingService {
      * @param keepPrice Giữ nguyên giá phòng cũ hay tính theo giá mới
      */
     void changeRoom(Long bookingId, Long detailId, Long newRoomId, boolean keepPrice);
+
+    /**
+     * Lấy danh sách phòng trống theo từng loại phòng của đơn đặt (phục vụ Check-in)
+     * @param booking Đơn đặt phòng
+     * @return Map chứa key là categoryId và value là danh sách Room trống
+     */
+    Map<Long, List<Room>> getAvailableRoomsByCategoryForBooking(RoomBooking booking);
+
+    /**
+     * Lấy tất cả phòng đang ở trạng thái AVAILABLE (phục vụ Đổi phòng)
+     * @return List of Room
+     */
+    List<Room> getAllAvailableRooms();
 }
+

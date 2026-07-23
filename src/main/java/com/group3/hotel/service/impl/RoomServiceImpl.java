@@ -1,7 +1,10 @@
 package com.group3.hotel.service.impl;
 
+import com.group3.hotel.dto.response.RoomMatrixDTO;
+import com.group3.hotel.entity.BookingDetail;
 import com.group3.hotel.entity.Room;
 import com.group3.hotel.enums.RoomStatus;
+import com.group3.hotel.repository.BookingDetailRepository;
 import com.group3.hotel.repository.RoomRepository;
 import com.group3.hotel.service.IRoomService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +17,7 @@ import java.util.List;
 public class RoomServiceImpl implements IRoomService {
 
     private final RoomRepository roomRepository;
-    private final com.group3.hotel.repository.BookingDetailRepository bookingDetailRepository;
+    private final BookingDetailRepository bookingDetailRepository;
 
     @Override
     public List<Room> getAvailableRoomsByCategory(Long categoryId) {
@@ -22,11 +25,11 @@ public class RoomServiceImpl implements IRoomService {
     }
 
     @Override
-    public List<com.group3.hotel.dto.response.RoomMatrixDTO> getRoomsWithFilters(String keyword, RoomStatus status, Long categoryId) {
+    public List<RoomMatrixDTO> getRoomsWithFilters(String keyword, RoomStatus status, Long categoryId) {
         List<Room> rooms = roomRepository.findWithFilters(keyword, status, categoryId);
         
         return rooms.stream().map(room -> {
-            com.group3.hotel.dto.response.RoomMatrixDTO dto = com.group3.hotel.dto.response.RoomMatrixDTO.builder()
+            RoomMatrixDTO dto = com.group3.hotel.dto.response.RoomMatrixDTO.builder()
                     .id(room.getId())
                     .roomNumber(room.getRoomNumber())
                     .roomStatus(room.getRoomStatus())
@@ -35,9 +38,9 @@ public class RoomServiceImpl implements IRoomService {
                     .build();
                     
             if (room.getRoomStatus() == RoomStatus.OCCUPIED) {
-                List<com.group3.hotel.entity.BookingDetail> activeDetails = bookingDetailRepository.findActiveDetailByRoomId(room.getId());
+                List<BookingDetail> activeDetails = bookingDetailRepository.findActiveDetailByRoomId(room.getId());
                 if (!activeDetails.isEmpty()) {
-                    com.group3.hotel.entity.BookingDetail detail = activeDetails.get(0);
+                    BookingDetail detail = activeDetails.get(0);
                     dto.setCurrentGuestName(detail.getRoomBooking().getCustomer().getFullName());
                     dto.setCheckOutDate(detail.getRoomBooking().getCheckOutDate());
                     dto.setNumberOfGuests(detail.getRoomBooking().getNumberOfGuests());
