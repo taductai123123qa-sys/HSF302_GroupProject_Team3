@@ -6,6 +6,7 @@ import com.group3.hotel.entity.RoomBooking;
 import com.group3.hotel.enums.BookingStatus;
 import com.group3.hotel.enums.RoomStatus;
 import com.group3.hotel.repository.RoomBookingRepository;
+import com.group3.hotel.repository.RoomRepository;
 import com.group3.hotel.service.IReceptionBookingService;
 import com.group3.hotel.service.RoomAllocationService;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +15,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class ReceptionBookingServiceImpl implements IReceptionBookingService {
 
     private final RoomBookingRepository roomBookingRepository;
     private final RoomAllocationService roomAllocationService;
-    private final com.group3.hotel.repository.RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -67,7 +72,7 @@ public class ReceptionBookingServiceImpl implements IReceptionBookingService {
 
     @Override
     @Transactional
-    public void checkInBooking(Long bookingId, java.util.Map<Long, Long> detailRoomMap) {
+    public void checkInBooking(Long bookingId, Map<Long, Long> detailRoomMap) {
         RoomBooking booking = getBookingDetail(bookingId);
 
         // Validate: chỉ có thể checkin với đơn hàng đã CONFIRMED
@@ -172,4 +177,24 @@ public class ReceptionBookingServiceImpl implements IReceptionBookingService {
 
         roomBookingRepository.save(booking);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<Long, List<Room>> getAvailableRoomsByCategoryForBooking(RoomBooking booking) {
+        Map<Long, List<Room>> availableRoomsMap = new HashMap<>();
+        for (BookingDetail detail : booking.getBookingDetails()) {
+            Long categoryId = detail.getRoomCategory().getId();
+            if (!availableRoomsMap.containsKey(categoryId)) {
+                availableRoomsMap.put(categoryId, roomRepository.findByRoomCategoryIdAndRoomStatus(categoryId, RoomStatus.AVAILABLE));
+            }
+        }
+        return availableRoomsMap;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Room> getAllAvailableRooms() {
+        return roomRepository.findWithFilters(null, RoomStatus.AVAILABLE, null);
+    }
 }
+
